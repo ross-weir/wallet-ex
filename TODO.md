@@ -11,6 +11,7 @@ frontend
 
 - - Localization with react-i18next
   - ui with https://react.geist-ui.dev/
+  - ui https://orbit.kiwi/components also a good option, has a wizard component
 
 
 Functionality
