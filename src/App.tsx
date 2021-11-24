@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react'
-import logo from './logo.svg'
-import tauriCircles from './tauri.svg'
-import tauriWord from './wordmark.svg'
+import React, { Suspense } from 'react';
+import logo from './logo.svg';
+import tauriCircles from './tauri.svg';
+import tauriWord from './wordmark.svg';
 import { useTranslation } from 'react-i18next';
-import './App.css'
+import './App.css';
 
 function App() {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ function App() {
         </header>
       </div>
     </Suspense>
-  )
+  );
 }
 
-export default App
+export default App;
