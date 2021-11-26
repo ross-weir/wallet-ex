@@ -44,6 +44,7 @@ Currency converter:
 - Show erg converted to USD (or any other currency)
 
 Nice to have:
+- splash screen while node is starting/loading chain
 - Export transactions
 - Tour on first use (https://github.com/elrumordelaluz/reactour)
 - Notifications for new transactions etc
