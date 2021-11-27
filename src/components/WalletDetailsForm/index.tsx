@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '@kiwicom/orbit-components/lib/Button';
 import Stack from '@kiwicom/orbit-components/lib/Stack';
 import Heading from '@kiwicom/orbit-components/lib/Heading';
+import { useTranslation } from 'react-i18next';
 import InputField from '@kiwicom/orbit-components/lib/InputField';
 
 interface WalletDetailsFormProps {
@@ -20,12 +21,13 @@ const initialState = {
 };
 
 function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
+  const { t } = useTranslation('wallet');
   const [input, setInput] = useState<InputState>({ ...initialState });
   const [error, setError] = useState<ErrorState>({ ...initialState });
 
   const clearErrors = () => setError(() => ({ ...initialState }));
 
-  const onInputChange = (e) => {
+  const onInputChange = (e: any) => {
     const { name, value } = e.target;
 
     clearErrors();
@@ -42,7 +44,7 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
     if (!name) {
       setError((prev) => ({
         ...prev,
-        name: 'Must set a wallet name',
+        name: t('detailsForm.error.noName'),
       }));
 
       return false;
@@ -51,14 +53,14 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
     if (!password1 && !password2) {
       setError((prev) => ({
         ...prev,
-        password1: 'Must set a password',
+        password1: t('detailsForm.error.noPassword'),
       }));
     }
 
     if (password1 !== password2) {
       setError((prev) => ({
         ...prev,
-        password1: "Passwords don't match",
+        password1: t('detailsForm.error.passwordMismatch'),
       }));
 
       return false;
@@ -79,8 +81,8 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
         <Heading>Wallet details</Heading>
         <InputField
           name="name"
-          label="Wallet name"
-          placeholder="My cool wallet"
+          label={t('detailsForm.label.name')}
+          placeholder={t('detailsForm.placeholder.name')}
           value={input.name}
           error={error.name}
           onChange={onInputChange}
@@ -88,8 +90,8 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
         />
         <InputField
           name="password1"
-          label="Wallet password"
-          placeholder="Password"
+          label={t('detailsForm.label.password1')}
+          placeholder={t('detailsForm.placeholder.password1')}
           type="password"
           value={input.password1}
           error={error.password1}
@@ -98,8 +100,8 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
         />
         <InputField
           name="password2"
-          label="Confirm wallet password"
-          placeholder="Confirm password"
+          label={t('detailsForm.label.password2')}
+          placeholder={t('detailsForm.placeholder.password2')}
           type="password"
           value={input.password2}
           error={error.password2}

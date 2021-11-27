@@ -72,9 +72,11 @@
     "@storybook/react": "^6.4.0",
     "@tauri-apps/cli": "^1.0.0-beta.10",
     "@types/styled-components": "^5.1.15",
+    "babel-loader": "8.1.0",
     "cross-env": "^7.0.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.2",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "storybook-react-i18next": "^1.0.13"
   }
 }
