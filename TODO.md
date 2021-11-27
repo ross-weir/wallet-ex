@@ -9,10 +9,24 @@ frontend
 - esbuild
 - use explorer API to get total blocks so we can calculate % sync'd, use node api for as much as possible though
 
+Separate uis for mobile/desktop? It's hard to find a good one that supports both, might as well just separate
+Also no idea when mobile will be supported by tauri
+
 - - Localization with react-i18next
   - ui with https://react.geist-ui.dev/
+    - Has themes
   - ui https://orbit.kiwi/components also a good option, has a wizard component
+    - No themes
+    - Components seem to be a bit richer, input with tags, etc
 
+
+React state management:
+these look like really good samples
+https://kentcdodds.com/blog/how-to-use-react-context-effectively
+https://kentcdodds.com/blog/application-state-management-with-react
+
+Free Illustrations:
+https://undraw.co/illustrations - Maybe create my own illustration component, orbit only supports provided illustrations: https://github.com/kiwicom/orbit/blob/master/packages/orbit-components/src/primitives/IllustrationPrimitive/index.jsx
 
 Functionality
 
@@ -44,7 +58,7 @@ Currency converter:
 - Show erg converted to USD (or any other currency)
 
 Nice to have:
-- splash screen while node is starting/loading chain
+- splash screen while node is starting/loading chain, show useful tips, maybe with https://www.npmjs.com/package/react-responsive-carousel or https://github.com/express-labs/pure-react-carousel
 - Export transactions
 - Tour on first use (https://github.com/elrumordelaluz/reactour)
 - Notifications for new transactions etc
