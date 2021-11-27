@@ -55,6 +55,8 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
         ...prev,
         password1: t('detailsForm.error.noPassword'),
       }));
+
+      return false;
     }
 
     if (password1 !== password2) {
