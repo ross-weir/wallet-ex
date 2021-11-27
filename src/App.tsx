@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import './App.css';
 
 function App() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('wallet');
 
   return (
     <Suspense fallback="loading">
@@ -31,7 +31,7 @@ function App() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {t('title')}
+            {t('error.noWalletName')}
           </a>
           <p>
             Edit <code>src/App.tsx</code> and save to reload.

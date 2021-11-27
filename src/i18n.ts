@@ -9,6 +9,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    ns: ['wallet'],
+    defaultNS: 'wallet',
     fallbackLng: 'en',
     debug: true,
     interpolation: {
