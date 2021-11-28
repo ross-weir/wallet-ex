@@ -26,7 +26,7 @@ const initialErrors: ErrorState = {
 interface Props {
   confirmButtonText: string;
   cancelButtonText: string;
-  onSubmit?: (form: { words: string[] }) => void;
+  onSubmit?: (values: Omit<InputState, 'mneomenic'>) => void;
   onCancel?: (form: InputState) => void;
 }
 
@@ -81,6 +81,7 @@ function WalletRecoveryPhraseForm({
     });
   };
 
+  // Check words length, what other things?
   const validate = (): boolean => true;
 
   const onFormButtonClick = () => {

@@ -10,7 +10,7 @@ interface Props {
 }
 
 // If onRemove is supplied then the words are editable/removable.
-function RecoveryPhraseView({ words, onRemove, height }: Props) {
+function RecoveryPhraseView({ words, onRemove, height = '100px' }: Props) {
   const onRemoveFactory = (i: number) =>
     onRemove ? () => onRemove(i) : undefined;
 
@@ -20,7 +20,10 @@ function RecoveryPhraseView({ words, onRemove, height }: Props) {
         <Box height={height}>
           <Inline spacing="small">
             {words.map((word, i) => (
-              <Tag onRemove={onRemoveFactory(i)}>{word}</Tag>
+              // I _think_ each word in the phrase is unique so lets try this for now
+              <Tag key={word} onRemove={onRemoveFactory(i)}>
+                {word}
+              </Tag>
             ))}
           </Inline>
         </Box>

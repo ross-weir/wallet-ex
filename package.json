@@ -13,6 +13,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "formik": "^2.2.9",
     "i18next": "^21.5.3",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-http-backend": "^1.3.1",
@@ -23,7 +24,8 @@
     "react-scripts": "4.0.3",
     "styled-components": "^4.0.0",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts --openssl-legacy-provider start",
@@ -72,6 +74,7 @@
     "@storybook/react": "^6.4.0",
     "@tauri-apps/cli": "^1.0.0-beta.10",
     "@types/styled-components": "^5.1.15",
+    "@types/yup": "^0.29.13",
     "babel-loader": "8.1.0",
     "cross-env": "^7.0.3",
     "husky": "^7.0.4",
