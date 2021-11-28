@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '@kiwicom/orbit-components/lib/Button';
 import Stack from '@kiwicom/orbit-components/lib/Stack';
 import Heading from '@kiwicom/orbit-components/lib/Heading';
+import Box from '@kiwicom/orbit-components/lib/Box';
 import { useTranslation } from 'react-i18next';
 import InputField from '@kiwicom/orbit-components/lib/InputField';
 
@@ -110,11 +111,10 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
           onChange={onInputChange}
           required
         />
-        <Stack direction="row">
+        <Box display="flex" justify="between">
           <Button type="secondary">Cancel</Button>
-          {/* No idea how to make this button move all the way to the right */}
           <Button onClick={() => onFormButtonClick()}>{buttonText}</Button>
-        </Stack>
+        </Box>
       </Stack>
     </>
   );
