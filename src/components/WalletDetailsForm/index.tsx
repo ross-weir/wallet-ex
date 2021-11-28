@@ -1,141 +1,103 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@kiwicom/orbit-components/lib/Button';
 import Stack from '@kiwicom/orbit-components/lib/Stack';
 import Heading from '@kiwicom/orbit-components/lib/Heading';
 import Box from '@kiwicom/orbit-components/lib/Box';
 import { useTranslation } from 'react-i18next';
 import InputField from '@kiwicom/orbit-components/lib/InputField';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
-interface WalletDetailsFormProps {
+const validationSchema = Yup.object({
+  name: Yup.string().required(),
+  password: Yup.string().min(8).required(),
+  passwordConfirm: Yup.string()
+    .oneOf([Yup.ref('password')], 'Passwords must match')
+    .required(),
+});
+
+const initialValues = { name: '', password: '', passwordConfirm: '' };
+type InputSchema = typeof initialValues;
+
+interface Props {
   confirmButtonText: string;
   cancelButtonText: string;
-  onSubmit?: (form: { name: string; password: string }) => void;
-  onCancel?: (form: InputState) => void;
+  onSubmit?: (values: Omit<InputSchema, 'passwordConfirm'>) => void;
+  onCancel?: (form: InputSchema) => void;
 }
-
-type FieldName = 'name' | 'password1' | 'password2';
-type InputState = Record<FieldName, string>;
-type ErrorState = Record<FieldName, string>;
-
-const initialState = {
-  name: '',
-  password1: '',
-  password2: '',
-};
 
 function WalletDetailsForm({
   onSubmit,
   onCancel,
   cancelButtonText,
   confirmButtonText,
-}: WalletDetailsFormProps) {
+}: Props) {
   const { t } = useTranslation('wallet');
-  const [input, setInput] = useState<InputState>({ ...initialState });
-  const [error, setError] = useState<ErrorState>({ ...initialState });
 
-  const clearErrors = () => setError(() => ({ ...initialState }));
-
-  const onInputChange = (e: any) => {
-    const { name, value } = e.target;
-
-    clearErrors();
-
-    setInput((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const validate = (): boolean => {
-    const { name, password1, password2 } = input;
-
-    if (!name) {
-      setError((prev) => ({
-        ...prev,
-        name: t('detailsForm.error.noName'),
-      }));
-
-      return false;
-    }
-
-    if (!password1 && !password2) {
-      setError((prev) => ({
-        ...prev,
-        password1: t('detailsForm.error.noPassword'),
-      }));
-
-      return false;
-    }
-
-    if (password1 !== password2) {
-      setError((prev) => ({
-        ...prev,
-        password1: t('detailsForm.error.passwordMismatch'),
-      }));
-
-      return false;
-    }
-
-    return true;
-  };
-
-  const onFormButtonClick = () => {
-    if (validate() && onSubmit) {
-      onSubmit({ name: input.name, password: input.password1 });
-    }
-  };
-
-  const onFormCancel = () => {
+  const onFormCancel = (input: InputSchema) => {
     if (onCancel) {
       onCancel({ ...input });
     }
   };
 
   return (
-    <>
-      <Stack spacing="large">
-        <Heading>Wallet details</Heading>
-        <InputField
-          name="name"
-          label={t('detailsForm.label.name')}
-          placeholder={t('detailsForm.placeholder.name')}
-          value={input.name}
-          error={error.name}
-          onChange={onInputChange}
-          required
-        />
-        <InputField
-          name="password1"
-          label={t('detailsForm.label.password1')}
-          placeholder={t('detailsForm.placeholder.password1')}
-          type="password"
-          value={input.password1}
-          error={error.password1}
-          onChange={onInputChange}
-          required
-        />
-        <InputField
-          name="password2"
-          label={t('detailsForm.label.password2')}
-          placeholder={t('detailsForm.placeholder.password2')}
-          type="password"
-          value={input.password2}
-          error={error.password2}
-          onChange={onInputChange}
-          required
-        />
-        <Box display="flex" justify="between">
-          <Button type="secondary" onClick={() => onFormCancel()}>
-            {cancelButtonText}
-          </Button>
-          <Button onClick={() => onFormButtonClick()}>
-            {confirmButtonText}
-          </Button>
-        </Box>
-      </Stack>
-    </>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={({ name, password }, { setSubmitting }) => {
+        if (onSubmit) {
+          onSubmit({ name, password });
+        }
+
+        setSubmitting(false);
+      }}
+    >
+      {(formik) => (
+        <form onSubmit={formik.handleSubmit}>
+          <Stack spacing="large">
+            <Heading>Wallet details</Heading>
+            <InputField
+              id="name"
+              label={t('detailsForm.label.name')}
+              placeholder={t('detailsForm.placeholder.name')}
+              error={formik.touched.name && formik.errors.name}
+              {...formik.getFieldProps('name')}
+              required
+            />
+            <InputField
+              id="password"
+              label={t('detailsForm.label.password1')}
+              placeholder={t('detailsForm.placeholder.password1')}
+              type="password"
+              error={formik.touched.password && formik.errors.password}
+              {...formik.getFieldProps('password')}
+              required
+            />
+            <InputField
+              id="passwordConfirm"
+              label={t('detailsForm.label.password2')}
+              placeholder={t('detailsForm.placeholder.password2')}
+              type="password"
+              error={
+                formik.touched.passwordConfirm && formik.errors.passwordConfirm
+              }
+              {...formik.getFieldProps('passwordConfirm')}
+              required
+            />
+            <Box display="flex" justify="between">
+              <Button
+                type="secondary"
+                onClick={() => onFormCancel(formik.values)}
+              >
+                {cancelButtonText}
+              </Button>
+              <Button submit>{confirmButtonText}</Button>
+            </Box>
+          </Stack>
+        </form>
+      )}
+    </Formik>
   );
 }
 
-export type { WalletDetailsFormProps };
 export default WalletDetailsForm;
