@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from '@kiwicom/orbit-components/lib/Button';
 import Stack from '@kiwicom/orbit-components/lib/Stack';
 import Heading from '@kiwicom/orbit-components/lib/Heading';
@@ -56,6 +55,7 @@ function WalletDetailsForm({
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing="large">
             <Heading>Wallet details</Heading>
+            {/* @ts-ignore */}
             <InputField
               id="name"
               label={t('detailsForm.label.name')}
@@ -64,6 +64,7 @@ function WalletDetailsForm({
               {...formik.getFieldProps('name')}
               required
             />
+            {/* @ts-ignore */}
             <InputField
               id="password"
               label={t('detailsForm.label.password1')}
@@ -73,6 +74,7 @@ function WalletDetailsForm({
               {...formik.getFieldProps('password')}
               required
             />
+            {/* @ts-ignore */}
             <InputField
               id="passwordConfirm"
               label={t('detailsForm.label.password2')}
