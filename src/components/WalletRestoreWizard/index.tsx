@@ -6,6 +6,8 @@ function WalletRestoreWizard() {
     <Wizard id="wallet-restore-wizard" activeStep={2} completedSteps={2}>
       <WizardStep title="Wallet details" />
       <WizardStep title="Recovery phrase" />
+      <WizardStep title="Recovery passphrase" />
+      <WizardStep title="Confirmation" />
     </Wizard>
   );
 }

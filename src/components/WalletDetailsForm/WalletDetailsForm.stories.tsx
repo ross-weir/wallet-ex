@@ -16,5 +16,6 @@ const Template: ComponentStory<typeof WalletDetailsForm> = (args) => (
 export const WalletDetailsCompleted = Template.bind({});
 
 WalletDetailsCompleted.args = {
-  buttonText: 'Create',
+  confirmButtonText: 'Create',
+  cancelButtonText: 'Cancel',
 };

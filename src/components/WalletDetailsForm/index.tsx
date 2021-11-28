@@ -7,8 +7,10 @@ import { useTranslation } from 'react-i18next';
 import InputField from '@kiwicom/orbit-components/lib/InputField';
 
 interface WalletDetailsFormProps {
-  buttonText: string;
+  confirmButtonText: string;
+  cancelButtonText: string;
   onSubmit?: (form: { name: string; password: string }) => void;
+  onCancel?: (form: InputState) => void;
 }
 
 type FieldName = 'name' | 'password1' | 'password2';
@@ -21,7 +23,12 @@ const initialState = {
   password2: '',
 };
 
-function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
+function WalletDetailsForm({
+  onSubmit,
+  onCancel,
+  cancelButtonText,
+  confirmButtonText,
+}: WalletDetailsFormProps) {
   const { t } = useTranslation('wallet');
   const [input, setInput] = useState<InputState>({ ...initialState });
   const [error, setError] = useState<ErrorState>({ ...initialState });
@@ -78,6 +85,12 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
     }
   };
 
+  const onFormCancel = () => {
+    if (onCancel) {
+      onCancel({ ...input });
+    }
+  };
+
   return (
     <>
       <Stack spacing="large">
@@ -112,8 +125,12 @@ function WalletDetailsForm({ onSubmit, buttonText }: WalletDetailsFormProps) {
           required
         />
         <Box display="flex" justify="between">
-          <Button type="secondary">Cancel</Button>
-          <Button onClick={() => onFormButtonClick()}>{buttonText}</Button>
+          <Button type="secondary" onClick={() => onFormCancel()}>
+            {cancelButtonText}
+          </Button>
+          <Button onClick={() => onFormButtonClick()}>
+            {confirmButtonText}
+          </Button>
         </Box>
       </Stack>
     </>
