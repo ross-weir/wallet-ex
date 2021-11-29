@@ -6,14 +6,15 @@ import InputField from '@kiwicom/orbit-components/lib/InputField';
 import RecoveryPhraseView from '../RecoveryPhraseView';
 import Box from '@kiwicom/orbit-components/lib/Box';
 import Button from '@kiwicom/orbit-components/lib/Button';
+import React from 'react';
 
-interface InputState {
+export interface WalletRecoveryPhraseInput {
   words: string[];
   mneomenic: string;
 }
-type ErrorState = Record<keyof InputState, string>;
+type ErrorState = Record<keyof WalletRecoveryPhraseInput, string>;
 
-const initialState: InputState = {
+const initialState: WalletRecoveryPhraseInput = {
   words: [],
   mneomenic: '',
 };
@@ -24,20 +25,24 @@ const initialErrors: ErrorState = {
 };
 
 interface Props {
+  data?: WalletRecoveryPhraseInput;
   confirmButtonText: string;
   cancelButtonText: string;
-  onSubmit?: (values: Omit<InputState, 'mneomenic'>) => void;
-  onCancel?: (form: InputState) => void;
+  onSubmit?: (values: WalletRecoveryPhraseInput) => void;
+  onCancel?: (form: WalletRecoveryPhraseInput) => void;
 }
 
 function WalletRecoveryPhraseForm({
+  data = initialState,
   confirmButtonText,
   cancelButtonText,
   onSubmit,
   onCancel,
 }: Props) {
   const { t } = useTranslation('wallet');
-  const [input, setInput] = useState<InputState>({ ...initialState });
+  const [input, setInput] = useState<WalletRecoveryPhraseInput>({
+    ...data,
+  });
   const [error, setError] = useState<ErrorState>({ ...initialErrors });
 
   const clearErrors = () => setError(() => ({ ...initialErrors }));
@@ -81,12 +86,12 @@ function WalletRecoveryPhraseForm({
     });
   };
 
-  // Check words length, what other things?
+  // TODO: Check words length, what other things?
   const validate = (): boolean => true;
 
   const onFormButtonClick = () => {
     if (validate() && onSubmit) {
-      onSubmit({ words: input.words });
+      onSubmit({ ...input });
     }
   };
 
@@ -96,6 +101,7 @@ function WalletRecoveryPhraseForm({
     }
   };
 
+  // TODO: section for validation errors
   return (
     <>
       <Stack spacing="large">

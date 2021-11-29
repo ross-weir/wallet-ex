@@ -16,16 +16,18 @@ const validationSchema = Yup.object({
 });
 
 const initialValues = { name: '', password: '', passwordConfirm: '' };
-type InputSchema = typeof initialValues;
+export type WalletDetailsInput = typeof initialValues;
 
 interface Props {
+  data?: WalletDetailsInput;
   confirmButtonText: string;
   cancelButtonText: string;
-  onSubmit?: (values: Omit<InputSchema, 'passwordConfirm'>) => void;
-  onCancel?: (form: InputSchema) => void;
+  onSubmit?: (values: WalletDetailsInput) => void;
+  onCancel?: (form: WalletDetailsInput) => void;
 }
 
 function WalletDetailsForm({
+  data = initialValues,
   onSubmit,
   onCancel,
   cancelButtonText,
@@ -33,7 +35,7 @@ function WalletDetailsForm({
 }: Props) {
   const { t } = useTranslation('wallet');
 
-  const onFormCancel = (input: InputSchema) => {
+  const onFormCancel = (input: WalletDetailsInput) => {
     if (onCancel) {
       onCancel({ ...input });
     }
@@ -41,14 +43,14 @@ function WalletDetailsForm({
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={data}
       validationSchema={validationSchema}
-      onSubmit={({ name, password }, { setSubmitting }) => {
-        if (onSubmit) {
-          onSubmit({ name, password });
-        }
-
+      onSubmit={(values, { setSubmitting }) => {
         setSubmitting(false);
+
+        if (onSubmit) {
+          onSubmit({ ...values });
+        }
       }}
     >
       {(formik) => (

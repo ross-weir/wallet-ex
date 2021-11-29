@@ -2,12 +2,14 @@ Software:
 
 backend
 - Tauri
+- diesel-rs for db/barel for migrations
 
 frontend
 - React
 - TypeScript
 - esbuild
 - use explorer API to get total blocks so we can calculate % sync'd, use node api for as much as possible though
+- react-app-rewired for changing configs
 
 Separate uis for mobile/desktop? It's hard to find a good one that supports both, might as well just separate
 Also no idea when mobile will be supported by tauri

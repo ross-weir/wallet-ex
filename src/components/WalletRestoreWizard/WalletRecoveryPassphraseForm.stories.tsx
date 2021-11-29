@@ -1,4 +1,3 @@
-import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import WalletRecoveryPassphraseForm from './WalletRecoveryPassphraseForm.tsx';
@@ -14,10 +13,13 @@ export default {
 } as ComponentMeta<typeof WalletRecoveryPassphraseForm>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof WalletRecoveryPassphraseForm> = () => (
-  <WalletRecoveryPassphraseForm />
-);
+const Template: ComponentStory<typeof WalletRecoveryPassphraseForm> = (
+  args,
+) => <WalletRecoveryPassphraseForm {...args} />;
 
 export const WalletRecoveryPassphraseFormStep = Template.bind({});
 
-WalletRecoveryPassphraseFormStep.args = {};
+WalletRecoveryPassphraseFormStep.args = {
+  confirmButtonText: 'Create',
+  cancelButtonText: 'Cancel',
+};
