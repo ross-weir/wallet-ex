@@ -1,9 +1,9 @@
-import { WalletBackendType } from '../types';
+import { WalletInterfaceType } from '../walletInterfaces';
 
 export class Wallet {
-  private backend: WalletBackendType;
+  private walletInterfaceType: WalletInterfaceType;
 
-  constructor(backend: WalletBackendType) {
-    this.backend = backend;
+  constructor(walletInterfaceType: WalletInterfaceType) {
+    this.walletInterfaceType = walletInterfaceType;
   }
 }
