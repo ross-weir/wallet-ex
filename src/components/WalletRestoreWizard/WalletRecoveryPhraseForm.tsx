@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import Stack from '@kiwicom/orbit-components/lib/Stack';
-import Heading from '@kiwicom/orbit-components/lib/Heading';
 import { useTranslation } from 'react-i18next';
-import InputField from '@kiwicom/orbit-components/lib/InputField';
 import RecoveryPhraseView from '../RecoveryPhraseView';
-import Box from '@kiwicom/orbit-components/lib/Box';
-import Button from '@kiwicom/orbit-components/lib/Button';
+import { Grid, Header, Button, Form } from 'semantic-ui-react';
 
 export interface WalletRecoveryPhraseInput {
   words: string[];
@@ -104,27 +100,47 @@ function WalletRecoveryPhraseForm({
   // TODO: section for validation errors
   return (
     <>
-      <Stack spacing="large">
-        <Heading>Recovery Phrase</Heading>
-        <RecoveryPhraseView words={input.words} onRemove={onMneomenicRemoved} />
-        <InputField
-          name="mneomenic"
-          placeholder="Add word..."
-          value={input.mneomenic}
-          error={error.mneomenic}
-          onChange={onInputChange}
-          onKeyUp={onMneomenicKeyDown}
-          onBlur={addMneomenicToWords}
-        />
-        <Box display="flex" justify="between">
-          <Button type="secondary" onClick={() => onFormCancel()}>
-            {cancelButtonText}
-          </Button>
-          <Button onClick={() => onFormButtonClick()}>
-            {confirmButtonText}
-          </Button>
-        </Box>
-      </Stack>
+      <Grid columns={1}>
+        <Grid.Column>
+          <Header as="h1">Recovery Phrase</Header>
+        </Grid.Column>
+        <Grid.Column>
+          <RecoveryPhraseView
+            words={input.words}
+            onRemove={onMneomenicRemoved}
+          />
+        </Grid.Column>
+        <Grid.Column>
+          <Form.Input
+            fluid
+            name="mneomenic"
+            placeholder="Add word..."
+            value={input.mneomenic}
+            error={error.mneomenic || undefined}
+            onChange={onInputChange}
+            onKeyUp={onMneomenicKeyDown}
+            onBlur={addMneomenicToWords}
+          />
+        </Grid.Column>
+        <Grid.Column>
+          <Grid columns={2} stackable>
+            <Grid.Column>
+              <Button onClick={() => onFormCancel()}>{cancelButtonText}</Button>
+            </Grid.Column>
+            <Grid.Column>
+              {/* Add `fluid` only for mobile devices */}
+              <Button
+                type="submit"
+                floated="right"
+                primary
+                onClick={() => onFormButtonClick()}
+              >
+                {confirmButtonText}
+              </Button>
+            </Grid.Column>
+          </Grid>
+        </Grid.Column>
+      </Grid>
     </>
   );
 }
