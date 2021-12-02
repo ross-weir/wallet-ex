@@ -80,6 +80,7 @@ function WalletRestoreWizard({ onSubmit, onCompleted, onCancel }: Props) {
     };
 
     if (formData[formName]) {
+      // @ts-ignore
       props.data = formData[formName];
     }
 

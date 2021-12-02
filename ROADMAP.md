@@ -4,6 +4,11 @@
 
 ## 1. Restore wallet (create is done basically the same way as restore)
 
+WalletService backend should be configurable so we can use tauri or ledger
+
+using ledger: https://sygn.github.io/integrate-the-nano-ledger-s-with-your-web-app/
+https://github.com/Emurgo/yoroi-extension-ledger-connect
+
 __use one wallet/phrase but multiple accounts within the wallet__ (by using different deriviation paths)
 Support multiple wallets, one mnemonic, derive multiple wallets by using passphrases: https://blog.trezor.io/passphrase-the-ultimate-protection-for-your-accounts-3a311990925b
 people often use more than one wallet. If we use more than one they should be password protected
@@ -51,3 +56,7 @@ For starting out development just connect to an already running node
 We can add node management later in development (starting/stopping/etc)
 Also need to consider how to bundle the node with this app, we need to get the node jar as a exe
 Then maybe use exe as a tuari sidecar?
+
+use ergo-explorer to get data
+we can build it into a standalone exe with `nexe` and use it to talk to a local node
+OR talk to the legit deployed ergo explorer so the wallet supports both light and full operating modes

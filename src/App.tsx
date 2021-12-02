@@ -1,15 +1,14 @@
-import React, { Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
+import WalletActionView from './components/WalletActionView';
+import { BackendProvider } from './hooks';
 
 function App() {
-  const { t } = useTranslation('wallet');
-
   return (
-    <Suspense fallback="loading">
+    <BackendProvider>
       <div className="App">
         <p>Hello world</p>
       </div>
-    </Suspense>
+      <WalletActionView />
+    </BackendProvider>
   );
 }
 

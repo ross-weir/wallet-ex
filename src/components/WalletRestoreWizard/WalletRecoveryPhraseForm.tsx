@@ -6,7 +6,6 @@ import InputField from '@kiwicom/orbit-components/lib/InputField';
 import RecoveryPhraseView from '../RecoveryPhraseView';
 import Box from '@kiwicom/orbit-components/lib/Box';
 import Button from '@kiwicom/orbit-components/lib/Button';
-import React from 'react';
 
 export interface WalletRecoveryPhraseInput {
   words: string[];
@@ -58,6 +57,7 @@ function WalletRecoveryPhraseForm({
     }));
   };
 
+  // TODO: only only letters to be added, no numbers or symbols
   const addMneomenicToWords = (e: any) => {
     const { value } = e.target;
 

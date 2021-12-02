@@ -36,7 +36,7 @@ Configuration:
 Config on the settings view of the gui
 - saved to ini file
 - loaded on startup
-- - Operating mode: Full, SPV
+- - Operating mode: Full, SPV, light mode
   - ?
 
 Wallet:
@@ -58,6 +58,12 @@ Transactions:
 
 Currency converter:
 - Show erg converted to USD (or any other currency)
+
+Data types:
+// supports wallets with multiple accounts
+Wallet: name, id, secret key (if not hw), account idx
+Account: wallet_id, address idx
+
 
 Nice to have:
 - splash screen while node is starting/loading chain, show useful tips, maybe with https://www.npmjs.com/package/react-responsive-carousel or https://github.com/express-labs/pure-react-carousel

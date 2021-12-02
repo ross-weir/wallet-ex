@@ -17,6 +17,7 @@ const Template: ComponentStory<typeof WalletRestoreWizard> = () => (
   <WalletRestoreWizard
     onSubmit={() => undefined}
     onCompleted={() => undefined}
+    onCancel={() => undefined}
   />
 );
 
