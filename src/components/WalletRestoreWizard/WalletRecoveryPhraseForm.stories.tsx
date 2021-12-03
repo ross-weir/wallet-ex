@@ -13,8 +13,8 @@ export default {
 } as ComponentMeta<typeof WalletRecoveryPhraseForm>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof WalletRecoveryPhraseForm> = (args) => (
-  <WalletRecoveryPhraseForm {...args} />
+const Template: ComponentStory<typeof WalletRecoveryPhraseForm> = () => (
+  <WalletRecoveryPhraseForm />
 );
 
 export const WalletRecoveryPhraseStep = Template.bind({});

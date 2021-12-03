@@ -1,116 +1,67 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RecoveryPhraseView from '../RecoveryPhraseView';
-import { Grid, Header, Button, Form } from 'semantic-ui-react';
-import wordList from '../../wordLists/english.json';
+import { Grid, Form } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import _ from 'lodash';
+import { useFormikContext } from 'formik';
 
 export interface WalletRecoveryPhraseInput {
-  words: string[];
-  mneomenic: string;
+  phrase: string[];
 }
-type ErrorState = Record<keyof WalletRecoveryPhraseInput, string>;
 
-const initialState: WalletRecoveryPhraseInput = {
-  words: [],
-  mneomenic: '',
+export const walletRecoveryPhraseInitialState: WalletRecoveryPhraseInput = {
+  phrase: [],
 };
-
-const initialErrors: ErrorState = {
-  words: '',
-  mneomenic: '',
-};
-
-interface Props {
-  data?: WalletRecoveryPhraseInput;
-  onSubmit?: (values: WalletRecoveryPhraseInput) => void;
-  onCancel?: (form: WalletRecoveryPhraseInput) => void;
-}
 
 export const walletRecoveryPhraseValidationSchema = Yup.object({
-  passphrase: Yup.array()
+  phrase: Yup.array()
     .of(Yup.string())
-    .test('len', 'Passphrase must be 15 words', (v) => v.length === 15),
+    // TODO: change length to 12,15,24
+    .test('len', 'Phrase must be 15 words', (v) => v.length === 2),
 });
 
-function WalletRecoveryPhraseForm({
-  data = initialState,
-  onSubmit,
-  onCancel,
-}: Props) {
+function WalletRecoveryPhraseForm() {
   const { t } = useTranslation('wallet');
-  const [input, setInput] = useState<WalletRecoveryPhraseInput>({
-    ...data,
-  });
-  const [error, setError] = useState<ErrorState>({ ...initialErrors });
-
-  const clearErrors = () => setError(() => ({ ...initialErrors }));
+  const [mnemonic, setMnemonic] = useState('');
+  const { errors, values, setFieldValue } =
+    useFormikContext<WalletRecoveryPhraseInput>();
 
   const onInputChange = (e: any) => {
-    const { name, value } = e.target;
-
-    clearErrors();
-
-    setInput((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setMnemonic(e.target.value);
   };
 
   // TODO: only only letters to be added, no numbers or symbols
-  const addMneomenicToWords = (e: any) => {
+  const addMnemonicToWords = (e: any) => {
     const { value } = e.target;
 
     if (value) {
-      setInput((prev) => ({
-        ...prev,
-        words: [...prev.words, value],
-        mneomenic: '',
-      }));
+      setMnemonic('');
+      setFieldValue('phrase', [...values.phrase, value]);
     }
   };
 
-  const onMneomenicKeyDown = (e: any) => {
+  const onMnemonicKeyDown = (e: any) => {
     if (e.key === 'Enter') {
-      addMneomenicToWords(e);
+      addMnemonicToWords(e);
     }
   };
 
-  const onMneomenicRemoved = (idx: number) => {
-    setInput((prev) => {
-      prev.words.splice(idx, 1);
-      return {
-        ...prev,
-        words: [...prev.words],
-      };
-    });
+  const onMnemonicRemoved = (idx: number) => {
+    setFieldValue(
+      'phrase',
+      values.phrase.filter((_, i) => i !== idx),
+    );
   };
 
-  // TODO: Check words length, what other things?
-  const validate = (): boolean => true;
-
-  const onFormButtonClick = () => {
-    if (validate() && onSubmit) {
-      onSubmit({ ...input });
-    }
-  };
-
-  const onFormCancel = () => {
-    if (onCancel) {
-      onCancel({ ...input });
-    }
-  };
-
-  // TODO: section for validation errors
   return (
     <>
       <Grid columns={1}>
         <Grid.Column>
           <RecoveryPhraseView
-            value={input.words}
-            onRemove={onMneomenicRemoved}
-            error={''}
+            value={values.phrase}
+            onRemove={onMnemonicRemoved}
+            error={errors.phrase}
           />
         </Grid.Column>
         <Grid.Column>
@@ -119,13 +70,13 @@ function WalletRecoveryPhraseForm({
             <Search> is proving difficult to use but seems like the appropriate choice, come back to this */}
           <Form.Input
             fluid
-            name="mneomenic"
+            name="mnemonic"
             placeholder="Add word..."
-            value={input.mneomenic}
-            error={error.mneomenic || undefined}
+            value={mnemonic}
+            error={undefined}
             onChange={onInputChange}
-            onKeyUp={onMneomenicKeyDown}
-            onBlur={addMneomenicToWords}
+            onKeyUp={onMnemonicKeyDown}
+            onBlur={addMnemonicToWords}
           />
           {/* <Search
             loading={search.isLoading}

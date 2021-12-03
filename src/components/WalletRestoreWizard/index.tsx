@@ -2,12 +2,14 @@ import WalletDetailsForm, {
   walletDetailsInitialValues,
   walletDetailsValidationSchema,
 } from '../WalletDetailsForm';
-import WalletRecoveryPhraseForm from './WalletRecoveryPhraseForm';
+import WalletRecoveryPhraseForm, {
+  walletRecoveryPhraseInitialState,
+  walletRecoveryPhraseValidationSchema,
+} from './WalletRecoveryPhraseForm';
 import WalletRecoveryPassphraseForm, {
   walletRecoveryPassphraseInitialValues,
   walletRecoveryPassphraseValidationSchema,
 } from './WalletRecoveryPassphraseForm';
-import WalletConfirmation from '../WalletConfirmation';
 import { Step } from 'semantic-ui-react';
 
 interface Props {
@@ -32,13 +34,14 @@ const steps = [
 
 export const restoreValidations = [
   walletDetailsValidationSchema,
-  undefined,
+  walletRecoveryPhraseValidationSchema,
   walletRecoveryPassphraseValidationSchema,
 ];
 
 export const restoreInitialValues = {
   ...walletDetailsInitialValues,
   ...walletRecoveryPassphraseInitialValues,
+  ...walletRecoveryPhraseInitialState,
 };
 
 function WalletRestoreWizard({ activeStep }: Props) {

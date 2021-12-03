@@ -16,7 +16,7 @@ const initialState = {
   open: false,
 };
 
-function WalletActionViewForm({ action, totalSteps }: Props) {
+function WalletActionForm({ action, totalSteps }: Props) {
   const [state, setState] = React.useState({ ...initialState });
 
   const progressButtonText =
@@ -115,4 +115,4 @@ function WalletActionViewForm({ action, totalSteps }: Props) {
   );
 }
 
-export default WalletActionViewForm;
+export default WalletActionForm;
