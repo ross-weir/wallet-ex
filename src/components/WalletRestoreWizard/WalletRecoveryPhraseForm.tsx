@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RecoveryPhraseView from '../RecoveryPhraseView';
 import { Grid, Header, Button, Form } from 'semantic-ui-react';
+import wordList from '../../wordLists/english.json';
+import * as Yup from 'yup';
+import _ from 'lodash';
 
 export interface WalletRecoveryPhraseInput {
   words: string[];
@@ -21,16 +24,18 @@ const initialErrors: ErrorState = {
 
 interface Props {
   data?: WalletRecoveryPhraseInput;
-  confirmButtonText: string;
-  cancelButtonText: string;
   onSubmit?: (values: WalletRecoveryPhraseInput) => void;
   onCancel?: (form: WalletRecoveryPhraseInput) => void;
 }
 
+export const walletRecoveryPhraseValidationSchema = Yup.object({
+  passphrase: Yup.array()
+    .of(Yup.string())
+    .test('len', 'Passphrase must be 15 words', (v) => v.length === 15),
+});
+
 function WalletRecoveryPhraseForm({
   data = initialState,
-  confirmButtonText,
-  cancelButtonText,
   onSubmit,
   onCancel,
 }: Props) {
@@ -102,15 +107,16 @@ function WalletRecoveryPhraseForm({
     <>
       <Grid columns={1}>
         <Grid.Column>
-          <Header as="h1">Recovery Phrase</Header>
-        </Grid.Column>
-        <Grid.Column>
           <RecoveryPhraseView
-            words={input.words}
+            value={input.words}
             onRemove={onMneomenicRemoved}
+            error={''}
           />
         </Grid.Column>
         <Grid.Column>
+          {/* <Dropdown> component removes items if they've been selected, couldn't figure out how to re-add
+            and didn't handle big lists well out of the box
+            <Search> is proving difficult to use but seems like the appropriate choice, come back to this */}
           <Form.Input
             fluid
             name="mneomenic"
@@ -121,24 +127,14 @@ function WalletRecoveryPhraseForm({
             onKeyUp={onMneomenicKeyDown}
             onBlur={addMneomenicToWords}
           />
-        </Grid.Column>
-        <Grid.Column>
-          <Grid columns={2} stackable>
-            <Grid.Column>
-              <Button onClick={() => onFormCancel()}>{cancelButtonText}</Button>
-            </Grid.Column>
-            <Grid.Column>
-              {/* Add `fluid` only for mobile devices */}
-              <Button
-                type="submit"
-                floated="right"
-                primary
-                onClick={() => onFormButtonClick()}
-              >
-                {confirmButtonText}
-              </Button>
-            </Grid.Column>
-          </Grid>
+          {/* <Search
+            loading={search.isLoading}
+            results={search.results}
+            value={input.mneomenic}
+            onResultSelect={handleResultSelect}
+            onSearchChange={_.debounce(handleSearchChange, 500, {
+              leading: true,
+            })} */}
         </Grid.Column>
       </Grid>
     </>
