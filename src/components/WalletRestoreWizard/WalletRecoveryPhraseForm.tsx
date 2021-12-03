@@ -1,130 +1,93 @@
 import { useState } from 'react';
-import Stack from '@kiwicom/orbit-components/lib/Stack';
-import Heading from '@kiwicom/orbit-components/lib/Heading';
 import { useTranslation } from 'react-i18next';
-import InputField from '@kiwicom/orbit-components/lib/InputField';
 import RecoveryPhraseView from '../RecoveryPhraseView';
-import Box from '@kiwicom/orbit-components/lib/Box';
-import Button from '@kiwicom/orbit-components/lib/Button';
+import { Grid, Form } from 'semantic-ui-react';
+import * as Yup from 'yup';
+import _ from 'lodash';
+import { useFormikContext } from 'formik';
 
 export interface WalletRecoveryPhraseInput {
-  words: string[];
-  mneomenic: string;
-}
-type ErrorState = Record<keyof WalletRecoveryPhraseInput, string>;
-
-const initialState: WalletRecoveryPhraseInput = {
-  words: [],
-  mneomenic: '',
-};
-
-const initialErrors: ErrorState = {
-  words: '',
-  mneomenic: '',
-};
-
-interface Props {
-  data?: WalletRecoveryPhraseInput;
-  confirmButtonText: string;
-  cancelButtonText: string;
-  onSubmit?: (values: WalletRecoveryPhraseInput) => void;
-  onCancel?: (form: WalletRecoveryPhraseInput) => void;
+  phrase: string[];
 }
 
-function WalletRecoveryPhraseForm({
-  data = initialState,
-  confirmButtonText,
-  cancelButtonText,
-  onSubmit,
-  onCancel,
-}: Props) {
+export const walletRecoveryPhraseInitialState: WalletRecoveryPhraseInput = {
+  phrase: [],
+};
+
+export const walletRecoveryPhraseValidationSchema = Yup.object({
+  phrase: Yup.array()
+    .of(Yup.string())
+    // TODO: change length to 12,15,24
+    .test('len', 'Phrase must be 15 words', (v) => v.length === 2),
+});
+
+function WalletRecoveryPhraseForm() {
   const { t } = useTranslation('wallet');
-  const [input, setInput] = useState<WalletRecoveryPhraseInput>({
-    ...data,
-  });
-  const [error, setError] = useState<ErrorState>({ ...initialErrors });
-
-  const clearErrors = () => setError(() => ({ ...initialErrors }));
+  const [mnemonic, setMnemonic] = useState('');
+  const { errors, values, setFieldValue } =
+    useFormikContext<WalletRecoveryPhraseInput>();
 
   const onInputChange = (e: any) => {
-    const { name, value } = e.target;
-
-    clearErrors();
-
-    setInput((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setMnemonic(e.target.value);
   };
 
   // TODO: only only letters to be added, no numbers or symbols
-  const addMneomenicToWords = (e: any) => {
+  const addMnemonicToWords = (e: any) => {
     const { value } = e.target;
 
     if (value) {
-      setInput((prev) => ({
-        ...prev,
-        words: [...prev.words, value],
-        mneomenic: '',
-      }));
+      setMnemonic('');
+      setFieldValue('phrase', [...values.phrase, value]);
     }
   };
 
-  const onMneomenicKeyDown = (e: any) => {
+  const onMnemonicKeyDown = (e: any) => {
     if (e.key === 'Enter') {
-      addMneomenicToWords(e);
+      addMnemonicToWords(e);
     }
   };
 
-  const onMneomenicRemoved = (idx: number) => {
-    setInput((prev) => {
-      prev.words.splice(idx, 1);
-      return {
-        ...prev,
-        words: [...prev.words],
-      };
-    });
+  const onMnemonicRemoved = (idx: number) => {
+    setFieldValue(
+      'phrase',
+      values.phrase.filter((_, i) => i !== idx),
+    );
   };
 
-  // TODO: Check words length, what other things?
-  const validate = (): boolean => true;
-
-  const onFormButtonClick = () => {
-    if (validate() && onSubmit) {
-      onSubmit({ ...input });
-    }
-  };
-
-  const onFormCancel = () => {
-    if (onCancel) {
-      onCancel({ ...input });
-    }
-  };
-
-  // TODO: section for validation errors
   return (
     <>
-      <Stack spacing="large">
-        <Heading>Recovery Phrase</Heading>
-        <RecoveryPhraseView words={input.words} onRemove={onMneomenicRemoved} />
-        <InputField
-          name="mneomenic"
-          placeholder="Add word..."
-          value={input.mneomenic}
-          error={error.mneomenic}
-          onChange={onInputChange}
-          onKeyUp={onMneomenicKeyDown}
-          onBlur={addMneomenicToWords}
-        />
-        <Box display="flex" justify="between">
-          <Button type="secondary" onClick={() => onFormCancel()}>
-            {cancelButtonText}
-          </Button>
-          <Button onClick={() => onFormButtonClick()}>
-            {confirmButtonText}
-          </Button>
-        </Box>
-      </Stack>
+      <Grid columns={1}>
+        <Grid.Column>
+          <RecoveryPhraseView
+            value={values.phrase}
+            onRemove={onMnemonicRemoved}
+            error={errors.phrase}
+          />
+        </Grid.Column>
+        <Grid.Column>
+          {/* <Dropdown> component removes items if they've been selected, couldn't figure out how to re-add
+            and didn't handle big lists well out of the box
+            <Search> is proving difficult to use but seems like the appropriate choice, come back to this */}
+          <Form.Input
+            fluid
+            name="mnemonic"
+            placeholder="Add word..."
+            value={mnemonic}
+            error={undefined}
+            onChange={onInputChange}
+            onKeyUp={onMnemonicKeyDown}
+            onBlur={addMnemonicToWords}
+          />
+          {/* <Search
+            loading={search.isLoading}
+            results={search.results}
+            value={input.mneomenic}
+            onResultSelect={handleResultSelect}
+            onSearchChange={_.debounce(handleSearchChange, 500, {
+              leading: true,
+            })} */}
+        </Grid.Column>
+      </Grid>
     </>
   );
 }

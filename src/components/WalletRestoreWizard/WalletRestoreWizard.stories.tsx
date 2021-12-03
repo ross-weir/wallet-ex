@@ -13,12 +13,8 @@ export default {
 } as ComponentMeta<typeof WalletRestoreWizard>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof WalletRestoreWizard> = () => (
-  <WalletRestoreWizard
-    onSubmit={() => undefined}
-    onCompleted={() => undefined}
-    onCancel={() => undefined}
-  />
+const Template: ComponentStory<typeof WalletRestoreWizard> = (args) => (
+  <WalletRestoreWizard {...args} />
 );
 
 export const WizardStory = Template.bind({});

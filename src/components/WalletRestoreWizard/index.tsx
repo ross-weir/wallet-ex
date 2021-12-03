@@ -1,150 +1,75 @@
-import { useState } from 'react';
-import Box from '@kiwicom/orbit-components/lib/Box';
-import Wizard, { WizardStep } from '@kiwicom/orbit-components/lib/Wizard';
-import WalletDetailsForm, { WalletDetailsInput } from '../WalletDetailsForm';
+import WalletDetailsForm, {
+  walletDetailsInitialValues,
+  walletDetailsValidationSchema,
+} from '../WalletDetailsForm';
 import WalletRecoveryPhraseForm, {
-  WalletRecoveryPhraseInput,
+  walletRecoveryPhraseInitialState,
+  walletRecoveryPhraseValidationSchema,
 } from './WalletRecoveryPhraseForm';
 import WalletRecoveryPassphraseForm, {
-  WalletRecoveryPassphraseInput,
+  walletRecoveryPassphraseInitialValues,
+  walletRecoveryPassphraseValidationSchema,
 } from './WalletRecoveryPassphraseForm';
-import WalletConfirmation from '../WalletConfirmation';
-
-// On the last step emit the form data (the create wizard does this too so the parent component should create)
-
-interface FormData {
-  details: WalletDetailsInput;
-  phrase: WalletRecoveryPhraseInput;
-  passphrase: WalletRecoveryPassphraseInput;
-}
-type FormName = keyof FormData;
-
-const initialFormData: Partial<FormData> = {};
+import { Step } from 'semantic-ui-react';
 
 interface Props {
-  // All data needed to create the wallet has been collected
-  onSubmit: (data: FormData) => void;
-  // The user has completed all steps, the wizard is finished
-  onCompleted: () => void;
-  onCancel: () => void;
+  activeStep: number;
+  formik: any;
 }
 
-function WalletRestoreWizard({ onSubmit, onCompleted, onCancel }: Props) {
-  const [activeStep, setActiveStep] = useState(0);
-  const [formData, setFormData] = useState<Partial<FormData>>({
-    ...initialFormData,
-  });
+const steps = [
+  {
+    title: 'Wallet details',
+    description: 'Enter wallet information',
+  },
+  {
+    title: 'Recovery phrase',
+    description: 'Enter wallet recovery phrase',
+  },
+  {
+    title: 'Recovery passphrase',
+    description: 'Enter wallet recovery passphrase',
+  },
+];
 
-  const handleChangeStep = (step: number) => {
-    setActiveStep(step);
-  };
+export const restoreValidations = [
+  walletDetailsValidationSchema,
+  walletRecoveryPhraseValidationSchema,
+  walletRecoveryPassphraseValidationSchema,
+];
 
-  const onFormSubmit =
-    (formName: FormName) =>
-    (
-      data:
-        | WalletDetailsInput
-        | WalletRecoveryPhraseInput
-        | WalletRecoveryPassphraseInput,
-    ) => {
-      handleChangeStep(activeStep + 1);
+export const restoreInitialValues = {
+  ...walletDetailsInitialValues,
+  ...walletRecoveryPassphraseInitialValues,
+  ...walletRecoveryPhraseInitialState,
+};
 
-      setFormData((prev) => ({
-        ...prev,
-        [formName]: { ...data },
-      }));
-    };
-
-  const onFormCancel =
-    (formName: FormName) =>
-    (
-      data:
-        | WalletDetailsInput
-        | WalletRecoveryPhraseInput
-        | WalletRecoveryPassphraseInput,
-    ) => {
-      handleChangeStep(activeStep - 1);
-
-      setFormData((prev) => ({
-        ...prev,
-        [formName]: { ...data },
-      }));
-    };
-
-  const getBasePropsForForm = (formName: FormName) => {
-    const props = {
-      confirmButtonText: 'Continue',
-      cancelButtonText: 'Cancel',
-      onSubmit: onFormSubmit(formName),
-      onCancel: onFormCancel(formName),
-    };
-
-    if (formData[formName]) {
-      // @ts-ignore
-      props.data = formData[formName];
-    }
-
-    return props;
-  };
-
-  const renderContent = () => {
+function WalletRestoreWizard({ activeStep }: Props) {
+  const renderForm = () => {
     switch (activeStep) {
       case 0:
-        // TODO: onCancel should show the form instead of going back a step
-        return (
-          <WalletDetailsForm
-            {...getBasePropsForForm('details')}
-            onCancel={onCancel}
-          />
-        );
+        return <WalletDetailsForm />;
       case 1:
-        return (
-          <WalletRecoveryPhraseForm
-            {...getBasePropsForForm('phrase')}
-            cancelButtonText="Back"
-          />
-        );
+        return <WalletRecoveryPhraseForm />;
       case 2:
-        return (
-          <WalletRecoveryPassphraseForm
-            {...getBasePropsForForm('passphrase')}
-            cancelButtonText="Back"
-            onSubmit={(passphraseForm) => {
-              const { onSubmit: onPassphraseSubmit } =
-                getBasePropsForForm('passphrase');
-
-              onPassphraseSubmit(passphraseForm);
-              // by this point all the formdata will be present
-              // trigger the creation of the wallet
-              onSubmit(formData as FormData);
-            }}
-          />
-        );
-      case 3:
-        return <WalletConfirmation action="Restored" onConfirm={onCompleted} />;
+        return <WalletRecoveryPassphraseForm />;
     }
   };
 
   return (
     <>
-      <Wizard
-        id="wallet-restore-wizard"
-        activeStep={activeStep}
-        completedSteps={activeStep}
-        onChangeStep={handleChangeStep}
-      >
-        <WizardStep title="Wallet details" />
-        <WizardStep title="Recovery phrase" />
-        <WizardStep title="Recovery passphrase" />
-        <WizardStep title="Confirmation" />
-      </Wizard>
-      <Box
-        padding={{
-          top: 'XLarge',
-        }}
-      >
-        {renderContent()}
-      </Box>
+      <Step.Group size="small" fluid>
+        {steps.map((s, i) => (
+          <Step
+            key={s.title}
+            active={i === activeStep}
+            disabled={i > activeStep}
+            title={s.title}
+            description={s.description}
+          />
+        ))}
+      </Step.Group>
+      {renderForm()}
     </>
   );
 }
