@@ -19,24 +19,26 @@ export const walletDetailsInitialValues = {
 export type WalletDetailsInput = typeof walletDetailsInitialValues;
 
 function WalletDetailsForm() {
-  const { t } = useTranslation('wallet');
+  const { t } = useTranslation('walletCreateRestore');
   const { getFieldProps, touched, errors } =
     useFormikContext<WalletDetailsInput>();
+
+  const getT = (key: string): string => t(`detailsForm.${key}`);
 
   return (
     <>
       <Form.Input
         id="name"
-        label={t('detailsForm.label.name')}
-        placeholder={t('detailsForm.placeholder.name')}
+        label={getT('name.label')}
+        placeholder={getT('name.placeholder')}
         error={touched.name && errors.name}
         {...getFieldProps('name')}
         required
       />
       <Form.Input
         id="password"
-        label={t('detailsForm.label.password1')}
-        placeholder={t('detailsForm.placeholder.password1')}
+        label={getT('password.label')}
+        placeholder={getT('password.placeholder')}
         type="password"
         error={touched.password && errors.password}
         {...getFieldProps('password')}
@@ -44,8 +46,8 @@ function WalletDetailsForm() {
       />
       <Form.Input
         id="passwordConfirm"
-        label={t('detailsForm.label.password2')}
-        placeholder={t('detailsForm.placeholder.password2')}
+        label={getT('passwordConfirm.label')}
+        placeholder={getT('passwordConfirm.placeholder')}
         type="password"
         error={touched.passwordConfirm && errors.passwordConfirm}
         {...getFieldProps('passwordConfirm')}

@@ -1,4 +1,4 @@
-import { Formik, useFormikContext } from 'formik';
+import { Formik } from 'formik';
 import React from 'react';
 import { Button, Modal, Form } from 'semantic-ui-react';
 import WalletRestoreWizard, {
@@ -13,7 +13,7 @@ interface Props {
 
 const initialState = {
   activeStep: 0,
-  open: false,
+  open: true,
 };
 
 function WalletActionForm({ action, totalSteps }: Props) {
@@ -90,7 +90,6 @@ function WalletActionForm({ action, totalSteps }: Props) {
           onClose={() => onModalClose(formik.resetForm)}
           onOpen={() => setModalOpen(true)}
           onSubmit={formik.handleSubmit}
-          trigger={<Button>Modal</Button>}
         >
           <Modal.Header>{action} Wallet</Modal.Header>
           <Modal.Content>

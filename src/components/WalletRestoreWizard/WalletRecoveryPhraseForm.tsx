@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import RecoveryPhraseView from '../RecoveryPhraseView';
 import { Grid, Form } from 'semantic-ui-react';
 import * as Yup from 'yup';
-import _ from 'lodash';
 import { useFormikContext } from 'formik';
 
 export interface WalletRecoveryPhraseInput {
@@ -18,14 +17,16 @@ export const walletRecoveryPhraseValidationSchema = Yup.object({
   phrase: Yup.array()
     .of(Yup.string())
     // TODO: change length to 12,15,24
-    .test('len', 'Phrase must be 15 words', (v) => v.length === 2),
+    .test('len', 'Phrase must be 15 words', (v) => v!.length === 2),
 });
 
 function WalletRecoveryPhraseForm() {
-  const { t } = useTranslation('wallet');
+  const { t } = useTranslation('walletCreateRestore');
   const [mnemonic, setMnemonic] = useState('');
   const { errors, values, setFieldValue } =
     useFormikContext<WalletRecoveryPhraseInput>();
+
+  const getT = (key: string): string => t(`phraseForm.${key}`);
 
   const onInputChange = (e: any) => {
     setMnemonic(e.target.value);
@@ -61,7 +62,7 @@ function WalletRecoveryPhraseForm() {
           <RecoveryPhraseView
             value={values.phrase}
             onRemove={onMnemonicRemoved}
-            error={errors.phrase}
+            error={errors.phrase as string | undefined}
           />
         </Grid.Column>
         <Grid.Column>
@@ -71,7 +72,7 @@ function WalletRecoveryPhraseForm() {
           <Form.Input
             fluid
             name="mnemonic"
-            placeholder="Add word..."
+            placeholder={getT('mnemonic.placeholder')}
             value={mnemonic}
             error={undefined}
             onChange={onInputChange}

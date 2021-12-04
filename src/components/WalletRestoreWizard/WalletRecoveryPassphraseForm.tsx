@@ -24,9 +24,11 @@ export type WalletRecoveryPassphraseInput =
   typeof walletRecoveryPassphraseInitialValues;
 
 function WalletRecoveryPassphraseForm() {
-  const { t } = useTranslation('wallet');
+  const { t } = useTranslation('walletCreateRestore');
   const { getFieldProps, touched, errors } =
     useFormikContext<WalletRecoveryPassphraseInput>();
+
+  const getT = (key: string): string => t(`passphraseForm.${key}`);
 
   return (
     <>
@@ -36,20 +38,15 @@ function WalletRecoveryPassphraseForm() {
         header="Optional passphrase"
         content={
           <>
+            <p dangerouslySetInnerHTML={{ __html: getT('info') }} />
             <p>
-              If you set a recovery passphrase when you created your wallet you
-              must enter it here.
-              <br />
-              Otherwise skip this step.
-            </p>
-            <p>
-              For more information about recovery passphrases{' '}
+              {getT('moreInfo')}{' '}
               <a
                 rel="noopener noreferrer"
                 href="https://wiki.trezor.io/Passphrase"
                 target="_blank"
               >
-                see here. <Icon name="external" size="small" />
+                {getT('see')}. <Icon name="external" size="small" />
               </a>
             </p>
           </>
@@ -57,16 +54,16 @@ function WalletRecoveryPassphraseForm() {
       />
       <Form.Input
         id="mnemonicPassphrase"
-        label="Passphrase"
-        placeholder="Passphrase"
+        label={getT('mnemonicPassphrase.label')}
+        placeholder={getT('mnemonicPassphrase.placeholder')}
         type="password"
         error={touched.mnemonicPassphrase && errors.mnemonicPassphrase}
         {...getFieldProps('mnemonicPassphrase')}
       />
       <Form.Input
         id="mnemonicPassphrase2"
-        label="Confirm passphrase"
-        placeholder="Confirm passphrase"
+        label={getT('mnemonicPassphrase2.label')}
+        placeholder={getT('mnemonicPassphrase2.placeholder')}
         type="password"
         error={errors.mnemonicPassphrase2}
         {...getFieldProps('mnemonicPassphrase2')}

@@ -6,7 +6,7 @@ export class localWalletInterface implements WalletInterface {
     throw new Error('Method not implemented.');
   }
 
-  async sign(): Promise<void> {
+  async signTx(): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

@@ -11,26 +11,12 @@ import WalletRecoveryPassphraseForm, {
   walletRecoveryPassphraseValidationSchema,
 } from './WalletRecoveryPassphraseForm';
 import { Step } from 'semantic-ui-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   activeStep: number;
   formik: any;
 }
-
-const steps = [
-  {
-    title: 'Wallet details',
-    description: 'Enter wallet information',
-  },
-  {
-    title: 'Recovery phrase',
-    description: 'Enter wallet recovery phrase',
-  },
-  {
-    title: 'Recovery passphrase',
-    description: 'Enter wallet recovery passphrase',
-  },
-];
 
 export const restoreValidations = [
   walletDetailsValidationSchema,
@@ -45,6 +31,8 @@ export const restoreInitialValues = {
 };
 
 function WalletRestoreWizard({ activeStep }: Props) {
+  const { t } = useTranslation('walletCreateRestore');
+
   const renderForm = () => {
     switch (activeStep) {
       case 0:
@@ -56,10 +44,18 @@ function WalletRestoreWizard({ activeStep }: Props) {
     }
   };
 
+  // Looks up translations in `walletCreateRestore.json`
+  const stepDetails = ['detailsForm', 'phraseForm', 'passphraseForm'].map(
+    (f) => ({
+      title: t(`${f}.title`),
+      description: t(`${f}.description`),
+    }),
+  );
+
   return (
     <>
       <Step.Group size="small" fluid>
-        {steps.map((s, i) => (
+        {stepDetails.map((s, i) => (
           <Step
             key={s.title}
             active={i === activeStep}

@@ -1,33 +1,24 @@
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initCfg } from '../src/i18n';
 
-const ns = ['common', 'wallet'];
-const supportedLngs = ['en'];
+if (!i18n.isInitialized) {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({ ...initCfg });
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    //debug: true,
-    lng: 'en',
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false,
-    },
-    defaultNS: 'common',
-    ns,
-    supportedLngs,
+  initCfg.supportedLngs.forEach((lang) => {
+    initCfg.ns.forEach((n) => {
+      if (lang === 'cimode') return;
+      i18n.addResourceBundle(
+        lang,
+        n,
+        require(`../public/locales/${lang}/${n}.json`),
+      );
+    });
   });
-
-supportedLngs.forEach((lang) => {
-  ns.forEach((n) => {
-    i18n.addResourceBundle(
-      lang,
-      n,
-      require(`../public/locales/${lang}/${n}.json`),
-    );
-  });
-});
+}
 
 export { i18n };
