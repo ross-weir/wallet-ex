@@ -23,7 +23,13 @@ function WalletActionView() {
 
   return (
     <>
-      {action && <WalletActionForm action={action} totalSteps={totalSteps} />}
+      {action && (
+        <WalletActionForm
+          action={action}
+          totalSteps={totalSteps}
+          onCancel={() => setAction('')}
+        />
+      )}
       <Segment placeholder>
         <Grid columns={2} stackable textAlign="center">
           <Divider vertical>Or</Divider>

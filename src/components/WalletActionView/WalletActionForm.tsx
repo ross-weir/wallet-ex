@@ -1,4 +1,4 @@
-import { Formik } from 'formik';
+import { Formik, FormikValues } from 'formik';
 import React from 'react';
 import { Button, Modal, Form } from 'semantic-ui-react';
 import WalletRestoreWizard, {
@@ -9,6 +9,7 @@ import WalletRestoreWizard, {
 interface Props {
   action: 'Create' | 'Restore';
   totalSteps: number;
+  onCancel?: () => void;
 }
 
 const initialState = {
@@ -16,7 +17,7 @@ const initialState = {
   open: true,
 };
 
-function WalletActionForm({ action, totalSteps }: Props) {
+function WalletActionForm({ action, totalSteps, onCancel }: Props) {
   const [state, setState] = React.useState({ ...initialState });
 
   const progressButtonText =
@@ -28,10 +29,11 @@ function WalletActionForm({ action, totalSteps }: Props) {
     setState({ ...initialState });
   };
 
-  const onCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancel = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     if (state.activeStep === 0) {
+      if (onCancel) onCancel();
       setModalOpen(false);
 
       return;
@@ -40,9 +42,10 @@ function WalletActionForm({ action, totalSteps }: Props) {
     setActiveStep(state.activeStep - 1);
   };
 
-  const onModalClose = (resetForm) => {
+  const onModalClose = (resetForm: any) => {
     resetState();
     resetForm();
+    if (onCancel) onCancel();
   };
 
   const setModalOpen = (open: boolean) =>
@@ -65,7 +68,7 @@ function WalletActionForm({ action, totalSteps }: Props) {
 
   return (
     <Formik
-      initialValues={getInitialValues()}
+      initialValues={getInitialValues() as FormikValues}
       validationSchema={getValidationSchema()}
       onSubmit={(values, { setSubmitting, resetForm }) => {
         setSubmitting(false);
@@ -103,7 +106,7 @@ function WalletActionForm({ action, totalSteps }: Props) {
             )}
           </Modal.Content>
           <Modal.Actions>
-            <Button onClick={onCancel}>{cancelButtonText}</Button>
+            <Button onClick={handleCancel}>{cancelButtonText}</Button>
             <Button type="submit" primary>
               {progressButtonText}
             </Button>
