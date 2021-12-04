@@ -1,11 +1,13 @@
 import { Wallet } from '../entities';
 import { WalletInterfaceType } from '../walletInterfaces';
 
+// TODO add coin-type so we support multiple coins?
 export interface CreateWalletArgs {
   name: string;
+  // does this need to be stored, it's only for encrypting the file that contains the private key?
   password: string;
   walletInterface: WalletInterfaceType;
-  // Not required if we're creating a wallet with a hardware backend
+  // Not required if we're creating a wallet with a hardware interface
   mnemonic?: string;
 }
 
@@ -14,11 +16,11 @@ export interface GetWalletArgs {
   password: string;
 }
 
-export interface WalletOpErr {}
+export interface BackendOpErr {}
 
-export type WalletOpResult<T> = Promise<T | WalletOpErr>;
+export type BackendOpResult<T> = Promise<T | BackendOpErr>;
 
 export interface Backend {
-  createWallet(args: CreateWalletArgs): WalletOpResult<Wallet>;
-  getWallet(args: GetWalletArgs): WalletOpResult<Wallet>;
+  createWallet(args: CreateWalletArgs): BackendOpResult<Wallet>;
+  getWallet(args: GetWalletArgs): BackendOpResult<Wallet>;
 }
