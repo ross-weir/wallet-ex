@@ -4,15 +4,15 @@ import {
   Backend,
   CreateWalletArgs,
   GetWalletArgs,
-  WalletOpResult,
+  BackendOpResult,
 } from './backend';
 
 export class TauriBackend implements Backend {
-  createWallet(args: CreateWalletArgs): WalletOpResult<Wallet> {
+  createWallet(args: CreateWalletArgs): BackendOpResult<Wallet> {
     return invoke('create_wallet', { ...args });
   }
 
-  getWallet(args: GetWalletArgs): WalletOpResult<Wallet> {
+  getWallet(args: GetWalletArgs): BackendOpResult<Wallet> {
     return invoke('get_wallet', { ...args });
   }
 }
