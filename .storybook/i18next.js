@@ -11,7 +11,6 @@ if (!i18n.isInitialized) {
 
   initCfg.supportedLngs.forEach((lang) => {
     initCfg.ns.forEach((n) => {
-      if (lang === 'cimode') return;
       i18n.addResourceBundle(
         lang,
         n,
