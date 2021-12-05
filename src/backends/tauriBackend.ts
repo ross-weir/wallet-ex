@@ -10,12 +10,16 @@ import {
 } from './backend';
 
 export class TauriBackend implements Backend {
+  listWallets(): BackendOpResult<Wallet[]> {
+    throw new Error('Method not implemented.');
+  }
+
   createWallet(args: CreateWalletArgs): BackendOpResult<Wallet> {
-    return invoke('create_wallet', { ...args });
+    return invoke('create_wallet', { args });
   }
 
   getWallet(args: GetWalletArgs): BackendOpResult<Wallet> {
-    return invoke('get_wallet', { ...args });
+    return invoke('get_wallet', { args });
   }
 
   // Do this here, tauri has a fs module

@@ -12,8 +12,8 @@ export interface CreateWalletArgs {
 }
 
 export interface GetWalletArgs {
-  name: string;
-  interface: WalletInterfaceType;
+  id?: number;
+  name?: string;
 }
 
 //
@@ -32,7 +32,10 @@ export type BackendOpResult<T> = Promise<T | BackendOpErr>;
 
 export interface Backend {
   createWallet(args: CreateWalletArgs): BackendOpResult<Wallet>;
+  // change to find by id? not sure when we'll ever need to find by name
   getWallet(args: GetWalletArgs): BackendOpResult<Wallet>;
+  // return type should also include pagination data
+  listWallets(/** pagination */): BackendOpResult<Wallet[]>;
 
   // Not required when the Wallet interface is the type of a HW wallet
   // Should we encrypt it on the frontend? Tauri/react native/etc will all probably have ways to

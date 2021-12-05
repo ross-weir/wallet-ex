@@ -78,6 +78,9 @@ Will we need persistence? What would it be used for?
 - Caching transactions etc, probably faster to retrieve from database vs node->blockchain - Looks like this is what yoroi does, it has a option in settings that allows the wallet to resync
 
 
+Error publishing:
+https://medium.com/@vshab/create-react-app-and-sentry-cde1f15cbaa
+
 Ideas
 
 Transaction descriptions:
