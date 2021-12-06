@@ -21,9 +21,7 @@ function App() {
   };
 
   const get = async () => {
-    const ww = await backend.getWallet({
-      id: 4,
-    });
+    const ww = await backend.findWallet(4);
     setW(ww as Wallet);
   };
 

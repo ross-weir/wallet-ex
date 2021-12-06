@@ -21,6 +21,7 @@ tauri = { version = "1.0.0-beta.8", features = ["api-all"] }
 libsqlite3-sys = { version = ">=0.8.0, <0.24.0", features = ["min_sqlite_version_3_7_16", "bundled"] }
 diesel = { version = "1.4.8", features = ["sqlite"] }
 anyhow = "1.0.51"
+thiserror = "1.0.30"
 
 [features]
 default = [ "custom-protocol" ]

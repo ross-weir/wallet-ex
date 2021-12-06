@@ -11,11 +11,6 @@ export interface CreateWalletArgs {
   interface: WalletInterfaceType;
 }
 
-export interface GetWalletArgs {
-  id?: number;
-  name?: string;
-}
-
 //
 export interface StoreSecretKeyArgs {
   password: string;
@@ -32,8 +27,7 @@ export type BackendOpResult<T> = Promise<T | BackendOpErr>;
 
 export interface Backend {
   createWallet(args: CreateWalletArgs): BackendOpResult<Wallet>;
-  // change to find by id? not sure when we'll ever need to find by name
-  getWallet(args: GetWalletArgs): BackendOpResult<Wallet>;
+  findWallet(id: number): BackendOpResult<Wallet>;
   // return type should also include pagination data
   listWallets(/** pagination */): BackendOpResult<Wallet[]>;
 

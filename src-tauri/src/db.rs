@@ -11,9 +11,10 @@ use std::sync::{Arc, Mutex};
 /// Thread safe Sqlite connection
 pub type SafeConnection = Arc<Mutex<SqliteConnection>>;
 
-pub fn connect() -> Result<SqliteConnection> {
-  // TODO: get db location
-  let db_url = "db.sqlite3";
+pub fn init_and_connect(db_url: &str) -> Result<SqliteConnection> {
+  // create db if it doesn't exist
+  // run db migrations
+  // connect to db, pass db into tauri state
 
   Ok(SqliteConnection::establish(db_url)?)
 }

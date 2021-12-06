@@ -3,7 +3,6 @@ import { Wallet } from '../entities';
 import {
   Backend,
   CreateWalletArgs,
-  GetWalletArgs,
   BackendOpResult,
   GetSecretKeyArgs,
   StoreSecretKeyArgs,
@@ -11,15 +10,15 @@ import {
 
 export class TauriBackend implements Backend {
   listWallets(): BackendOpResult<Wallet[]> {
-    throw new Error('Method not implemented.');
+    return invoke('list_wallets');
   }
 
   createWallet(args: CreateWalletArgs): BackendOpResult<Wallet> {
     return invoke('create_wallet', { args });
   }
 
-  getWallet(args: GetWalletArgs): BackendOpResult<Wallet> {
-    return invoke('get_wallet', { args });
+  findWallet(id: number): BackendOpResult<Wallet> {
+    return invoke('find_wallet', { id });
   }
 
   // Do this here, tauri has a fs module
