@@ -4,4 +4,5 @@ export interface Wallet {
   id: number;
   name: string;
   interface: WalletInterfaceType;
+  createdAt: string;
 }

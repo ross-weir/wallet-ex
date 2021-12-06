@@ -11,6 +11,11 @@ export interface CreateWalletArgs {
   interface: WalletInterfaceType;
 }
 
+export interface CreateAccountArgs {
+  name: string;
+  coinType: number;
+}
+
 //
 export interface StoreSecretKeyArgs {
   password: string;

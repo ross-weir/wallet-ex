@@ -1,13 +1,16 @@
 use crate::schema::wallets;
 use anyhow::Result;
+use chrono::NaiveDateTime;
 use diesel::{dsl::sql, insert_into, prelude::*, result::Error, SqliteConnection};
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Identifiable, Serialize, PartialEq, Debug)]
+#[derive(Queryable, Identifiable, Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Wallet {
-  pub id: i32,
-  pub name: String,
-  pub interface: String,
+  id: i32,
+  name: String,
+  interface: String,
+  created_at: Option<NaiveDateTime>,
 }
 
 #[derive(Deserialize, Insertable)]

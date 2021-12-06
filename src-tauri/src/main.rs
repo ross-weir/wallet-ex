@@ -11,7 +11,6 @@ use std::sync::{Arc, Mutex};
 mod cmd;
 mod db;
 mod entities;
-mod result;
 mod schema;
 
 fn main() -> anyhow::Result<()> {
