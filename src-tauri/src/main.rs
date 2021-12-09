@@ -5,28 +5,46 @@
 
 #[macro_use]
 extern crate diesel;
+#[macro_use]
+extern crate diesel_migrations;
 
-use std::sync::{Arc, Mutex};
+use anyhow::anyhow;
+use diesel::{Connection, SqliteConnection};
+use std::{
+  fs,
+  sync::{Arc, Mutex},
+};
 
+mod app;
 mod cmd;
+mod config;
 mod db;
 mod entities;
 mod schema;
+
+embed_migrations!();
 
 fn main() -> anyhow::Result<()> {
   // Read configuration file
   // Or cli parameters
 
-  // create db if it doesn't exist
-  // run db migrations
-  // connect to db, pass db into tauri state
-  // could probably do this in another thread so we don't block app startup
-  // probably cant do in another thread, what if user tries to do stuff while
-  // we're running migrations etc?
-  let db_conn = Arc::new(Mutex::new(db::init_and_connect("db.sqlite3")?));
+  // can probably do this in another thread but will need to sync frontend with loading screen
+  // So users can't do anything that will require the database
+  // So the db connection passed as tauri state will likely need to be optional
+  let db_path = db::path().ok_or(anyhow!("Couldn't find path for database"))?;
+  if !db_path.exists() {
+    fs::create_dir_all(
+      db_path
+        .parent()
+        .ok_or(anyhow!("couldn't get db directory"))?,
+    )?;
+  }
+  let conn = SqliteConnection::establish(&db_path.to_string_lossy())?;
+  embedded_migrations::run(&conn)?;
+  let safe_db = Arc::new(Mutex::new(conn));
 
   tauri::Builder::default()
-    .manage(db_conn)
+    .manage(safe_db)
     .invoke_handler(tauri::generate_handler![
       cmd::create_wallet,
       cmd::find_wallet,
