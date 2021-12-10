@@ -87,7 +87,7 @@ acc3
 frontend routes:
 
 # the app is starting up
-/starting
+/loading
 
 # first time use?
 /welcome

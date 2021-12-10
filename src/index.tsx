@@ -4,6 +4,9 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
 import { initI18n } from './i18n';
+import 'semantic-ui-css/semantic.min.css';
+
+import './App.css';
 
 initI18n();
 
