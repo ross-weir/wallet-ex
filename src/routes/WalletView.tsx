@@ -63,10 +63,6 @@ function WalletView() {
           </Card>
         </Grid.Column>
         <Grid.Column stretched width={12}>
-          {/* <Card fluid style={{}}>
-            Test
-          </Card> */}
-          {/* <Segment> */}
           <Container text>
             <Header style={{ marginTop: 15 }} as="h2">
               Ergo account #1
@@ -75,7 +71,6 @@ function WalletView() {
             <Divider />
             <Tab menu={{ secondary: true, stackable: true }} panes={panes} />
           </Container>
-          {/* </Segment> */}
         </Grid.Column>
       </Grid>
     </>
