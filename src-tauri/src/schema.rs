@@ -3,6 +3,7 @@ table! {
         id -> Integer,
         name -> Text,
         coin_type -> Integer,
+        derive_idx -> Integer,
         created_at -> Nullable<Timestamp>,
         wallet_id -> Integer,
     }

@@ -1,14 +1,23 @@
 import { invoke } from '@tauri-apps/api';
-import { Wallet } from '../entities';
+import { Account, Wallet } from '../entities';
 import {
   Backend,
   CreateWalletArgs,
   BackendOpResult,
   GetSecretKeyArgs,
   StoreSecretKeyArgs,
+  CreateAccountArgs,
 } from './backend';
 
 export class TauriBackend implements Backend {
+  createAccount(args: CreateAccountArgs): BackendOpResult<Account> {
+    return invoke('create_account', { args });
+  }
+
+  findAccount(id: number): BackendOpResult<Account> {
+    return invoke('find_account', { id });
+  }
+
   listWallets(): BackendOpResult<Wallet[]> {
     return invoke('list_wallets');
   }

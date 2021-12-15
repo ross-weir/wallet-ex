@@ -4,7 +4,10 @@
 
 use crate::{
   db::SafeConnection,
-  entities::wallet::{CreateWalletArgs, Wallet},
+  entities::{
+    account::{Account, CreateAccountArgs},
+    wallet::{CreateWalletArgs, Wallet},
+  },
 };
 use std::string::ToString;
 
@@ -33,4 +36,15 @@ pub fn list_wallets(db_conn: tauri::State<SafeConnection>) -> Result<Vec<Wallet>
   let db = &*db_conn.lock().unwrap();
 
   Wallet::list(db).map_err(|e| format!("Failed to get list of wallets (err: {})", e))
+}
+
+/// Create account command
+#[tauri::command]
+pub fn create_account(
+  args: CreateAccountArgs,
+  db_conn: tauri::State<SafeConnection>,
+) -> Result<Account, String> {
+  let db = &*db_conn.lock().unwrap();
+
+  Account::create(args, db).map_err(|e| e.to_string())
 }

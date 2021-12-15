@@ -1,4 +1,4 @@
-import { Wallet } from '../entities';
+import { Account, Wallet } from '../entities';
 import { WalletInterfaceType } from '../walletInterfaces';
 
 // Ideally the ops that result in a new db entry should follow the naming convention of the
@@ -14,6 +14,7 @@ export interface CreateWalletArgs {
 export interface CreateAccountArgs {
   name: string;
   coinType: number;
+  walletId: number;
 }
 
 //
@@ -35,6 +36,9 @@ export interface Backend {
   findWallet(id: number): BackendOpResult<Wallet>;
   // return type should also include pagination data
   listWallets(/** pagination */): BackendOpResult<Wallet[]>;
+
+  createAccount(args: CreateAccountArgs): BackendOpResult<Account>;
+  findAccount(id: number): BackendOpResult<Account>;
 
   // Not required when the Wallet interface is the type of a HW wallet
   // Should we encrypt it on the frontend? Tauri/react native/etc will all probably have ways to

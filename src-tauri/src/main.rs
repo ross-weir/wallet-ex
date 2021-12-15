@@ -49,6 +49,7 @@ fn main() -> anyhow::Result<()> {
       cmd::create_wallet,
       cmd::find_wallet,
       cmd::list_wallets,
+      cmd::create_account,
     ])
     .run(tauri::generate_context!())
     .expect("error while running application");
