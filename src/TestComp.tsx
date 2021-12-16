@@ -41,6 +41,13 @@ export function TestComp() {
 
   const onGetAccount = () => {};
 
+  let ergo;
+
+  import('ergo-lib-wasm-browser').then((e) => {
+    console.log(e);
+    ergo = e;
+  });
+
   return (
     <>
       <Button onClick={onCreateWallet}>Create wallet</Button>
