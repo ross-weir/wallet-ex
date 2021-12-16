@@ -58,5 +58,10 @@ Also need to consider how to bundle the node with this app, we need to get the n
 Then maybe use exe as a tuari sidecar?
 
 use ergo-explorer to get data
-~~we can build it into a standalone exe with `nexe` and use it to talk to a local node~~ ergo-explorer depends on redis/postgres, if we do a light operating mode then use production ergo explorer:
-OR talk to the legit deployed ergo explorer so the wallet supports both light and full operating modes
+
+Scanning for transactions using ergo explorer:
+- generate pk addresses
+- Check for utxos at address
+- tally utxos?
+this would be one way that would send off 20~ API calls
+would probably be better than scanning the entire chain? But then how do we get transactions?

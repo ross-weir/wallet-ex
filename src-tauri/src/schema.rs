@@ -15,6 +15,7 @@ table! {
         address -> Text,
         derive_idx -> Integer,
         account_id -> Integer,
+        balance -> Nullable<Double>,
     }
 }
 

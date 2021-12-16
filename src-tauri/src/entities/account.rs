@@ -36,19 +36,19 @@ impl Account {
   pub fn create(args: CreateAccountArgs, db: &SqliteConnection) -> Result<Account> {
     use crate::schema::accounts::dsl::*;
 
-    let existing_derive_idx = accounts
-      .filter(coin_type.eq(args.coin_type))
-      .filter(wallet_id.eq(args.wallet_id))
-      .select(derive_idx)
-      .order_by(derive_idx.desc())
-      .first::<i32>(db);
-    let derive_index = match existing_derive_idx {
-      Ok(i) => i + i,
-      Err(Error::NotFound) => 0,
-      Err(e) => return Err(e)?,
-    };
-
     Ok(db.transaction::<_, Error, _>(|| {
+      let existing_derive_idx = accounts
+        .filter(coin_type.eq(args.coin_type))
+        .filter(wallet_id.eq(args.wallet_id))
+        .select(derive_idx)
+        .order_by(derive_idx.desc())
+        .first::<i32>(db);
+      let derive_index = match existing_derive_idx {
+        Ok(i) => i + 1,
+        Err(Error::NotFound) => 0,
+        Err(e) => return Err(e)?,
+      };
+
       insert_into(accounts)
         .values((&args, derive_idx.eq(derive_index)))
         .execute(db)?;

@@ -12,5 +12,6 @@ pub struct Address {
   /// Index of the path used to derive this address:
   /// m/44'/429'/0'/0/{derive_idx}
   derive_idx: i32,
+  balance: Option<u64>,
   account_id: i32,
 }

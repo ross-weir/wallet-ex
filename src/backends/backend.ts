@@ -1,3 +1,4 @@
+import { MnemonicSeed } from '../crypto';
 import { Account, Wallet } from '../entities';
 import { WalletInterfaceType } from '../walletInterfaces';
 
@@ -18,12 +19,12 @@ export interface CreateAccountArgs {
 }
 
 //
-export interface StoreSecretKeyArgs {
+export interface StoreSecretSeedArgs {
   password: string;
-  key: string;
+  seed: MnemonicSeed;
 }
 
-export interface GetSecretKeyArgs {
+export interface GetSecretSeedArgs {
   password: string;
 }
 
@@ -43,6 +44,6 @@ export interface Backend {
   // Not required when the Wallet interface is the type of a HW wallet
   // Should we encrypt it on the frontend? Tauri/react native/etc will all probably have ways to
   // store this data. Even browser based storages should work
-  storeSecretKey(args: StoreSecretKeyArgs): BackendOpResult<void>;
-  getSecretKey(args: GetSecretKeyArgs): BackendOpResult<string>;
+  storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void>;
+  getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<MnemonicSeed>;
 }

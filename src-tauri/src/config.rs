@@ -18,6 +18,7 @@ pub struct AppConfig {
 }
 
 /// Returns the configuration directory for the application
+/// based on the OS
 pub fn dir() -> Option<PathBuf> {
   let mut base_dir = config_dir()?;
   base_dir.push(App::NAME);
