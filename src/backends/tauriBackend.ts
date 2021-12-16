@@ -4,8 +4,8 @@ import {
   Backend,
   CreateWalletArgs,
   BackendOpResult,
-  GetSecretKeyArgs,
-  StoreSecretKeyArgs,
+  GetSecretSeedArgs,
+  StoreSecretSeedArgs,
   CreateAccountArgs,
 } from './backend';
 
@@ -31,12 +31,12 @@ export class TauriBackend implements Backend {
   }
 
   // Do this here, tauri has a fs module
-  storeSecretKey(args: StoreSecretKeyArgs): BackendOpResult<void> {
+  storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void> {
     throw new Error('Method not implemented.');
   }
 
   // Do this here, tauri has a fs module
-  getSecretKey(args: GetSecretKeyArgs): BackendOpResult<string> {
+  getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<string> {
     throw new Error('Method not implemented.');
   }
 }
