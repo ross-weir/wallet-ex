@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api';
+import { invoke, path, fs } from '@tauri-apps/api';
 import { Account, Address, Wallet } from '../entities';
 import {
   Backend,
@@ -9,7 +9,21 @@ import {
   CreateAccountArgs,
 } from './backend';
 
+const cfgPath = async () => {
+  const appDir = await path.appDir();
+  return `${appDir}${path.sep}.wallet-x.json`;
+};
+
 export class TauriBackend implements Backend {
+  async readConfig(): BackendOpResult<string> {
+    return fs.readTextFile(await cfgPath());
+  }
+
+  async writeConfig(cfg: string): BackendOpResult<void> {
+    const file = { contents: cfg, path: await cfgPath() };
+    return fs.writeFile(file);
+  }
+
   addressesForAccount(accountId: number): BackendOpResult<Address[]> {
     return invoke('addresses_for_account', { accountId });
   }

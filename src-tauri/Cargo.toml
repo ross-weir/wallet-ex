@@ -16,6 +16,7 @@ tauri-build = { version = "1.0.0-beta.4" }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.0.0-beta.8", features = ["api-all"] }
+tauri-api = "0.7.6"
 # So we don't have to bother with compilied sqlite libs, particularly on windows where it's not convienient
 # version is the same as the one used by the `diesel_cli` crate
 libsqlite3-sys = { version = ">=0.8.0, <0.24.0", features = ["min_sqlite_version_3_7_16", "bundled"] }
@@ -24,7 +25,6 @@ diesel_migrations = "1.4.0"
 chrono = { version = "0.4.19", features = ["serde"] }
 anyhow = "1.0.51"
 thiserror = "1.0.30"
-toml = "0.5.8"
 
 [features]
 default = [ "custom-protocol" ]

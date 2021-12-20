@@ -16,6 +16,8 @@ export function TestComp() {
   const [account, setAccount] = useState<Account | undefined>();
   const [accountErr, setAccountErr] = useState('');
 
+  // const [address]
+
   const onCreateWallet = async () => {
     try {
       const w = await backend.createWallet({

@@ -77,3 +77,10 @@ Scanning for transactions using ergo explorer:
 - repeat at offset highest derive_index with transaction + 20 until no addresses with transactions
 this would be one way that would send off 20~ API calls
 would probably be better than scanning the entire chain? Should actually less API calls 
+
+
+
+THIS WEEK:
+
+- get secret storage encrypt/decrypt working
+- Get the receive page working with address derivaiton
