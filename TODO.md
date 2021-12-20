@@ -96,3 +96,8 @@ frontend routes:
 /wallet/{walletId}/account/{accountId}/send
 /wallet/{walletId}/account/{accountId}/recv
 /wallet/{walletId}/account/{accountId}/transactions
+
+
+## Resources:
+
+- https://github.com/ErgoWallet/ergowallet-desktop

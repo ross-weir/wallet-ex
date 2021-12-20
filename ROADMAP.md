@@ -48,6 +48,17 @@ export function generateWalletRootKey(
 
 ## 2. Send ergs (future, send tokens)
 ## 3. Recv ergs (addresses and utxo sum for each)
+
+- recv ergs tab
+- shows initial address when a wallet is created
+- Derive next address button
+- Previously used address/Balance discovery by generating `n` addresses and checking for balances via chainProvider
+
+When a wallet is created/restored it should create a intial address, this will be shown when user visits
+recv tab. It will also kick off the discovery process to find used addresses and create the entities in the db
+as required. I don't think the addresses state needs to be accessible anywhere outside WalletViewReceiveTab? So
+just load it all when user navigates to the tab
+
 ## 4. Transactions list
 
 
@@ -60,8 +71,9 @@ Then maybe use exe as a tuari sidecar?
 use ergo-explorer to get data
 
 Scanning for transactions using ergo explorer:
-- generate pk addresses
-- Check for utxos at address
-- tally utxos?
+- generate 20 pk addresses
+- Check for balance/transactions at address
+- tally balances?
+- repeat at offset highest derive_index with transaction + 20 until no addresses with transactions
 this would be one way that would send off 20~ API calls
-would probably be better than scanning the entire chain? But then how do we get transactions?
+would probably be better than scanning the entire chain? Should actually less API calls 

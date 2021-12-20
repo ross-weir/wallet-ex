@@ -1,5 +1,5 @@
 import { MnemonicSeed } from '../crypto';
-import { Account, Wallet } from '../entities';
+import { Account, Address, Wallet } from '../entities';
 import { WalletInterfaceType } from '../walletInterfaces';
 
 // Ideally the ops that result in a new db entry should follow the naming convention of the
@@ -28,9 +28,7 @@ export interface GetSecretSeedArgs {
   password: string;
 }
 
-export interface BackendOpErr {}
-
-export type BackendOpResult<T> = Promise<T | BackendOpErr>;
+export type BackendOpResult<T> = Promise<T>;
 
 export interface Backend {
   createWallet(args: CreateWalletArgs): BackendOpResult<Wallet>;
@@ -40,6 +38,11 @@ export interface Backend {
 
   createAccount(args: CreateAccountArgs): BackendOpResult<Account>;
   findAccount(id: number): BackendOpResult<Account>;
+
+  // would prefer this to be a filter on `listAddresses` but not sure how to do dynamic queries yet
+  addressesForAccount(
+    accountId: number /**, pagination */,
+  ): BackendOpResult<Address[]>;
 
   // Not required when the Wallet interface is the type of a HW wallet
   // Should we encrypt it on the frontend? Tauri/react native/etc will all probably have ways to

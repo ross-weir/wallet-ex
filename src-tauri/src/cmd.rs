@@ -6,6 +6,7 @@ use crate::{
   db::SafeConnection,
   entities::{
     account::{Account, CreateAccountArgs},
+    address::{Address, CreateAddressArgs},
     wallet::{CreateWalletArgs, Wallet},
   },
 };
@@ -47,4 +48,24 @@ pub fn create_account(
   let db = &*db_conn.lock().unwrap();
 
   Account::create(args, db).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn addresses_for_account(
+  account_id: i32,
+  db_conn: tauri::State<SafeConnection>,
+) -> Result<Vec<Address>, String> {
+  let db = &*db_conn.lock().unwrap();
+
+  Address::by_account_id(account_id, db).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn create_address(
+  args: CreateAddressArgs,
+  db_conn: tauri::State<SafeConnection>,
+) -> Result<Address, String> {
+  let db = &*db_conn.lock().unwrap();
+
+  Address::create(args, db).map_err(|e| e.to_string())
 }

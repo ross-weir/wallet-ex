@@ -1,1 +1,4 @@
-export interface Address {}
+export interface Address {
+  address: string;
+  deriveIdx: number;
+}

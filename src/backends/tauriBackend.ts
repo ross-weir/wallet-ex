@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api';
-import { Account, Wallet } from '../entities';
+import { Account, Address, Wallet } from '../entities';
 import {
   Backend,
   CreateWalletArgs,
@@ -10,6 +10,10 @@ import {
 } from './backend';
 
 export class TauriBackend implements Backend {
+  addressesForAccount(accountId: number): BackendOpResult<Address[]> {
+    return invoke('addresses_for_account', { accountId });
+  }
+
   createAccount(args: CreateAccountArgs): BackendOpResult<Account> {
     return invoke('create_account', { args });
   }

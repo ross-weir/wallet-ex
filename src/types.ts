@@ -5,3 +5,5 @@
 // spv = SPV mode, likely won't be supported for a while, mostly useful for mobile clients
 // the rust SPV library is currently WIP
 export type OpMode = 'full' | 'light' | 'spv';
+
+export type AddressBase58 = string;

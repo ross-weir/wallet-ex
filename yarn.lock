@@ -6989,10 +6989,10 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
-ergo-lib-wasm-browser@^0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/ergo-lib-wasm-browser/-/ergo-lib-wasm-browser-0.14.0.tgz#0fe0758ba8591f28a38776bef1f8c3837b188361"
-  integrity sha512-hJILi6lhz224nDEj0ajJDteU4D08npo3FoFoheOJBRCI6c/ZifuD4dso9uOfQyEWdvhPfRPGcILrR74W9xMaTw==
+ergo-lib-wasm-browser@0.15.0-alpha-7eb12d6:
+  version "0.15.0-alpha-7eb12d6"
+  resolved "https://registry.yarnpkg.com/ergo-lib-wasm-browser/-/ergo-lib-wasm-browser-0.15.0-alpha-7eb12d6.tgz#50470db475e6db2e02d492630a632a442d0b5da3"
+  integrity sha512-5hh+4dglI2opD9HHOmVzLH9DGCGIu4gcqyULLxsbBnsdloOkhme9O4a69FisJc6ITK4V3lJFLhREiM/aVCATwQ==
 
 errno@^0.1.3, errno@~0.1.7:
   version "0.1.8"

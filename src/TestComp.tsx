@@ -2,8 +2,12 @@ import { useState } from 'react';
 import { Button } from 'semantic-ui-react';
 import { getBackend } from './backends';
 import { Account, Wallet } from './entities';
+import * as ergo from 'ergo-lib-wasm-browser';
 
 const backend = getBackend();
+
+const mnemonic =
+  'talent mind narrow jaguar wink quantum work scrub pony apart label labor';
 
 // For experimentation/testing integration with tauri backend
 export function TestComp() {
@@ -40,13 +44,6 @@ export function TestComp() {
   };
 
   const onGetAccount = () => {};
-
-  let ergo;
-
-  import('ergo-lib-wasm-browser').then((e) => {
-    console.log(e);
-    ergo = e;
-  });
 
   return (
     <>
