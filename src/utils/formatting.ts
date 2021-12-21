@@ -16,7 +16,7 @@ export const capitalize = (word: string): string =>
  * @returns base16 string
  */
 export const toBase16 = (buf: Uint8Array): string =>
-  Array.from(buf, (byte) => byte.toString(16)).join('');
+  Array.from(buf, (byte) => byte.toString(16).padStart(2, '0')).join('');
 
 /**
  * Convert a string to a bytes buffer
