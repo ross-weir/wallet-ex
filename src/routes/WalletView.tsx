@@ -36,20 +36,29 @@ const panes = [
 
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}
+  // the code that directs to WalletView should also have the id of it's first ever accountId
+  // If we're creating/restoring we will have the accountId because that creator/restoring will create
+  // the initial account.
+  // If we're coming from a wallet list then I guess that will also need to have details about the wallets
+  // accounts including the first wallet accounts Id - the wallet list page could list account count etc
+
   // There should always be a selected account, not sure when we wouldn't want that to be the case
-  // Default to the first account for the wallet, there should always be one created when the wallet
-  // is created
+  // Default to the first account for the wallet, there should always be one when creating wallet
   const { walletId, accountId } = useParams();
   const backend = useBackend();
   const [wallet, setWallet] = useState<Wallet | undefined>();
+  // what do we need a single account for?
+  // tabs could get the info they need using the accountId url param
+  // we need accountList to populate `Accounts` sidebar
   const [account, setAccount] = useState<Account | undefined>();
 
   // TODO: loading indicator/state
   // TODO: we probably actually need to fetch a list of accounts
-  // TODO: could be done in 1 request
+  // TODO: could be done in 1 request - don't bother until there's actual perf issues
   useEffect(() => {
     const fetchEntities = async () => {
       const walletReq = backend.findWallet(parseInt(walletId as string, 10));
+      // need to get a list of accounts
       const accountReq = backend.findAccount(parseInt(accountId as string, 10));
       const [walletResp, accountResp] = await Promise.allSettled([
         walletReq,
@@ -81,15 +90,16 @@ function WalletView() {
             <Card onClick={() => null} fluid>
               <Card.Content>
                 <Image src={walletImg} size="mini" floated="left" />
-                <Card.Header>My ergo wallet</Card.Header>
+                <Card.Header>{wallet?.name}</Card.Header>
                 <Card.Meta>3 Accounts · $1,000.00</Card.Meta>
               </Card.Content>
             </Card>
             <Card fluid>
               <Card.Content>
-                <Card.Header>My accounts</Card.Header>
+                <Card.Header>My Accounts</Card.Header>
                 <Icon name="add" link href="www.google.com" />
               </Card.Content>
+              {/* List of accounts with ERG balance / fiat conversion */}
               <Card.Content>Coming soon</Card.Content>
             </Card>
           </Grid.Column>

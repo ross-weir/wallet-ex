@@ -19,6 +19,8 @@ function WalletViewReceiveTab() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Only trigger reload if accountId changes
+  // When creating a new address we will add it to the state locally on success
   useEffect(() => {
     setIsLoading(true);
 
@@ -28,7 +30,7 @@ function WalletViewReceiveTab() {
       .catch((err) => console.log(`handle this m8: ${err}`));
 
     setIsLoading(false);
-  }, []);
+  }, [accountId]);
 
   // Latest address is the highest derive index
   const latestAddress = () =>
@@ -39,6 +41,7 @@ function WalletViewReceiveTab() {
   // Generate new address action, needs access to address index and coin type
   // Need a `useAccount` hook so we have access to the coin type?
   // Could likely just be passed in from parent as a prop
+  // Need Account/Wallet as props
   const onNewAddress = () => {
     const newIdx = latestAddress().deriveIdx + 1;
     const coinType = ''; // get coin type
@@ -63,7 +66,7 @@ function WalletViewReceiveTab() {
             <Segment
               style={{ cursor: 'pointer', fontFamily: 'Fira Code, monospace' }}
               size="large"
-              onClick={() => console.log('test')}
+              onClick={() => console.log('TODO: copy address text')}
             >
               {/* 9fHqrP7wvx7MRpzbaH73kaMw8YSRMYwuMqvtJVMVNx1LzkrfTfp */}
               {latestAddress().address}

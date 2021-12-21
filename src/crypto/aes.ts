@@ -8,6 +8,8 @@
  * TODO: WebCrypto has a `wrapKey` method that is used to store keys encrypted, could try using that.
  * Low priority though because this works and matches ergo.
  *
+ * TODO: add all the configuration parameters to the config file
+ *
  * Note: WebCrypto differs to Java in that Java crypto formats the cipher as authTag + cipherText (reverse compared to web)
  * We don't handle the authTag here, leave it up to WebCrypto.
  */
@@ -49,6 +51,11 @@ export class AesCrypto {
 
   constructor(private iterations: number, private hashAlgo: string) {}
 
+  /**
+   * Creates an AesCrypto instance using the default configuration in ergo node
+   *
+   * @returns AesCrypto instance
+   */
   public static default(): AesCrypto {
     return new AesCrypto(128000, 'SHA-256');
   }
