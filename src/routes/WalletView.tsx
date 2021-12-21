@@ -1,6 +1,8 @@
 // nested routes:
 // - send, recv, transactions inside <Outlet />
 
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import {
   Card,
   Container,
@@ -14,15 +16,8 @@ import {
 import AppBarTop from '../components/AppBarTop';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
-import { Wallet } from '../entities';
-import { BackendProvider } from '../hooks';
-
-const mockWallet: Wallet = {
-  createdAt: '2021-12-06T03:04:43',
-  id: 2,
-  interface: 'local',
-  name: 'Ergo Wallet',
-};
+import { Account, Wallet } from '../entities';
+import { BackendProvider, useBackend } from '../hooks';
 
 const panes = [
   {
@@ -42,6 +37,40 @@ const panes = [
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}
   // There should always be a selected account, not sure when we wouldn't want that to be the case
+  // Default to the first account for the wallet, there should always be one created when the wallet
+  // is created
+  const { walletId, accountId } = useParams();
+  const backend = useBackend();
+  const [wallet, setWallet] = useState<Wallet | undefined>();
+  const [account, setAccount] = useState<Account | undefined>();
+
+  // TODO: loading indicator/state
+  // TODO: we probably actually need to fetch a list of accounts
+  // TODO: could be done in 1 request
+  useEffect(() => {
+    const fetchEntities = async () => {
+      const walletReq = backend.findWallet(parseInt(walletId as string, 10));
+      const accountReq = backend.findAccount(parseInt(accountId as string, 10));
+      const [walletResp, accountResp] = await Promise.allSettled([
+        walletReq,
+        accountReq,
+      ]);
+
+      if (walletResp.status === 'fulfilled') {
+        setWallet(walletResp.value);
+      } else {
+        // TODO: handle failure
+      }
+
+      if (accountResp.status === 'fulfilled') {
+        setAccount(accountResp.value);
+      } else {
+        // TODO: handle failure
+      }
+    };
+
+    fetchEntities();
+  }, [walletId, accountId]);
 
   return (
     <>
