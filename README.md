@@ -62,3 +62,5 @@ Run the app like so:
 ```
 ./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json
 ```
+
+_Note to self: this could also be used for a import/export feature?_

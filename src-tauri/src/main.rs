@@ -12,9 +12,7 @@ use diesel::{Connection, SqliteConnection};
 use std::sync::{Arc, Mutex};
 use tauri::api::cli::get_matches;
 
-mod app;
 mod cmd;
-mod config;
 mod db;
 mod entities;
 mod schema;
