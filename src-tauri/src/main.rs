@@ -29,8 +29,8 @@ fn main() -> anyhow::Result<()> {
   let cfg_path = tauri::api::path::app_dir(&cfg).unwrap();
 
   // can probably do this in another thread but will need to sync frontend with loading screen
+  // so users can't do anything that will require the database, db connection in tauri state will become optional
   // At the moment it blocks the UI, the user just sees a blank window
-  // So users can't do anything that will require the database
   // So the db connection passed as tauri state will likely need to be optional
   let db_path = db::get_and_ensure_path(cfg_path).unwrap();
   let conn = SqliteConnection::establish(&db_path.to_string_lossy()).unwrap();

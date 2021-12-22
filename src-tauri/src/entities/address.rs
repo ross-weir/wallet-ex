@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Queryable, Identifiable, Insertable, Serialize, Deserialize, Associations)]
 #[belongs_to(Account)]
-#[table_name(addresses)]
+#[table_name = "addresses"]
 #[serde(rename_all = "camelCase")]
 pub struct Address {
   id: i32,
@@ -20,7 +20,7 @@ pub struct Address {
 
 /// Form for creating a new address
 #[derive(Deserialize, Insertable)]
-#[table_name(addresses)]
+#[table_name = "addresses"]
 #[serde(rename_all = "camelCase")]
 pub struct CreateAddressArgs {
   address: String,

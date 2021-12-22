@@ -1,10 +1,10 @@
-import { Button, Menu, Segment } from 'semantic-ui-react';
+import { Menu, Segment } from 'semantic-ui-react';
 import { useSensitiveMode } from '../../hooks';
 
 // placeholder
 const getSettings = () => ({
   network: 'Testnet',
-  operatingMode: 'Light',
+  operatingMode: 'Light client',
 });
 
 export interface AppBarTopProps {
@@ -14,9 +14,6 @@ export interface AppBarTopProps {
 function AppBarTop({ attached }: AppBarTopProps) {
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const { network, operatingMode } = getSettings();
-
-  console.log(useSensitiveMode());
-  console.log(sensitiveModeEnabled, setSensitiveMode);
 
   return (
     <>

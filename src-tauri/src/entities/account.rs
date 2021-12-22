@@ -22,7 +22,7 @@ pub struct Account {
 
 /// Form for creating a new wallet account
 #[derive(Deserialize, Insertable)]
-#[table_name(accounts)]
+#[table_name = "accounts"]
 #[serde(rename_all = "camelCase")]
 pub struct CreateAccountArgs<'a> {
   name: &'a str,

@@ -9,17 +9,22 @@ import {
   Segment,
   Table,
 } from 'semantic-ui-react';
-import { Address } from '../../entities';
+import { Account, Address, Wallet } from '../../entities';
 import { useBackend } from '../../hooks';
 import CopyIcon from '../CopyIcon';
 import SensitiveComponent from '../SensitiveComponent';
 
 const copyIconStyle = { paddingLeft: 5 };
 
+export interface WalletViewReceiveTabProps {
+  wallet: Wallet;
+  account: Account;
+}
+
 // TODO: paginate addresses?
-function WalletViewReceiveTab() {
+// TODO: display "create address" snackbar: https://www.npmjs.com/package/react-simple-snackbar
+function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
   const { t } = useTranslation('walletReceiveTab');
-  const { accountId } = useParams();
   const backend = useBackend();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,12 +35,12 @@ function WalletViewReceiveTab() {
     setIsLoading(true);
 
     backend
-      .addressesForAccount(parseInt(accountId as string, 10))
+      .addressesForAccount(account.id)
       .then((addresses) => setAddresses(addresses))
       .catch((err) => console.log(`handle this m8: ${err}`));
 
     setIsLoading(false);
-  }, [accountId]);
+  }, [account.id]);
 
   // Latest address is the highest derive index
   const latestAddress = () =>

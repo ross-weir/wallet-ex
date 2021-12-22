@@ -13,7 +13,6 @@ interface SensitiveModeProviderProps {
 
 function SensitiveModeProvider({ children }: SensitiveModeProviderProps) {
   const [sensitiveModeEnabled, setSensitiveMode] = React.useState(false);
-  console.log('from hook', sensitiveModeEnabled, setSensitiveMode);
 
   return (
     <SensitiveModeContext.Provider

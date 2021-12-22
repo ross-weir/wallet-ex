@@ -14,25 +14,11 @@ import {
   Tab,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
+import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, Wallet } from '../entities';
 import { BackendProvider, SensitiveModeProvider, useBackend } from '../hooks';
-
-const panes = [
-  {
-    menuItem: { key: 'overview', icon: 'dashboard', content: 'Overview' },
-    render: () => <Tab.Pane attached={false}>Tab 3 Content</Tab.Pane>,
-  },
-  {
-    menuItem: { key: 'send', icon: 'arrow up', content: 'Send' },
-    render: () => <Tab.Pane attached={false}>Tab 1 Content</Tab.Pane>,
-  },
-  {
-    menuItem: { key: 'receive', icon: 'arrow down', content: 'Receive' },
-    render: () => <WalletViewReceiveTab />,
-  },
-];
 
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}
@@ -81,6 +67,27 @@ function WalletView() {
     fetchEntities();
   }, [walletId, accountId]);
 
+  const panes = () => [
+    {
+      menuItem: { key: 'overview', icon: 'dashboard', content: 'Overview' },
+      render: () => <Tab.Pane attached={false}>Tab 3 Content</Tab.Pane>,
+    },
+    {
+      menuItem: { key: 'send', icon: 'arrow up', content: 'Send' },
+      render: () => <Tab.Pane attached={false}>Tab 1 Content</Tab.Pane>,
+    },
+    {
+      menuItem: { key: 'receive', icon: 'arrow down', content: 'Receive' },
+      // typecasting until we have type gaurds ensuring the entities aren't undefined
+      render: () => (
+        <WalletViewReceiveTab
+          account={account as Account}
+          wallet={wallet as Wallet}
+        />
+      ),
+    },
+  ];
+
   return (
     <>
       <BackendProvider>
@@ -92,7 +99,11 @@ function WalletView() {
                 <Card.Content>
                   <Image src={walletImg} size="mini" floated="left" />
                   <Card.Header>{wallet?.name}</Card.Header>
-                  <Card.Meta>3 Accounts · $1,000.00</Card.Meta>
+                  <Card.Meta>
+                    <SensitiveComponent>
+                      3 Accounts · $1,000.00
+                    </SensitiveComponent>
+                  </Card.Meta>
                 </Card.Content>
               </Card>
               <Card fluid>
@@ -109,11 +120,13 @@ function WalletView() {
                 <Header style={{ marginTop: 15 }} as="h2">
                   {account && `${account.name} - Account #${account.deriveIdx}`}
                 </Header>
-                <p>0.02484236 BTC ≈ A$1,672.36</p>
+                <SensitiveComponent>
+                  <p>0.02484236 BTC ≈ A$1,672.36</p>
+                </SensitiveComponent>
                 <Divider />
                 <Tab
                   menu={{ secondary: true, stackable: true }}
-                  panes={panes}
+                  panes={panes()}
                 />
               </Container>
             </Grid.Column>

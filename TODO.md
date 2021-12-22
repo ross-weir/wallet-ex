@@ -41,6 +41,12 @@ Transactions:
 Currency converter:
 - Show erg converted to USD (or any other currency)
 
+QR codes:
+Desktop
+Capture region of screen: https://github.com/quadrupleslap/scrap
+Feed buffer to QR code parser
+Create a transaction from result: https://github.com/ergoplatform/eips/pull/37/files
+
 
 Nice to have:
 - splash screen while node is starting/loading chain, show useful tips, maybe with https://www.npmjs.com/package/react-responsive-carousel or https://github.com/express-labs/pure-react-carousel

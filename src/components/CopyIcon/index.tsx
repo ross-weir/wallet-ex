@@ -8,10 +8,15 @@ type TimeoutHandle = ReturnType<typeof setTimeout>;
 export interface CopyIconProps {
   textToCopy: string;
   iconStyle?: React.CSSProperties;
+  copyText?: string;
 }
 
 // Copy icon with a popup signalling the text was copied
-function CopyIcon({ textToCopy, iconStyle = {} }: CopyIconProps) {
+function CopyIcon({
+  textToCopy,
+  iconStyle = {},
+  copyText = 'Copied to clipboard!',
+}: CopyIconProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [timeoutHandle, setTimeoutHandle] = useState<
     undefined | TimeoutHandle
@@ -39,7 +44,7 @@ function CopyIcon({ textToCopy, iconStyle = {} }: CopyIconProps) {
   return (
     <Popup
       trigger={<Icon name="copy outline" link style={iconStyle} />}
-      content="Copied to clipboard!"
+      content={copyText}
       on="click"
       open={isOpen}
       onOpen={handleOpen}

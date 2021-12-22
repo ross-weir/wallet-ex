@@ -5,8 +5,6 @@
  * https://github.com/ergoplatform/ergo/blob/master/ergo-wallet/src/main/scala/org/ergoplatform/wallet/crypto/AES.scala
  * PBKDF2+SHA-256+AES-GCM
  *
- * TODO: WebCrypto has a `wrapKey` method that is used to store keys encrypted, could try using that.
- * Low priority though because this works and matches ergo.
  * TODO: add all the configuration parameters to the config file
  *
  * Note: WebCrypto differs to Java in that Java crypto formats the cipher as authTag + cipherText (reverse compared to web)
