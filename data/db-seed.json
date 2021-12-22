@@ -1,0 +1,58 @@
+{
+  "wallets": [
+    {
+      "id": 1,
+      "name": "Bobs Wallet",
+      "interface": "local",
+      "createdAt": "2021-12-15T23:02:36"
+    },
+    {
+      "id": 2,
+      "name": "Alice",
+      "interface": "ledger",
+      "createdAt": "2021-12-18T23:02:36"
+    }
+  ],
+  "accounts": [
+    {
+      "id": 1,
+      "name": "Main",
+      "coinType": 429,
+      "deriveIdx": 0,
+      "createdAt": "2021-12-15T23:02:43",
+      "walletId": 1
+    },
+    {
+      "id": 2,
+      "name": "Utilities",
+      "coinType": 429,
+      "deriveIdx": 1,
+      "createdAt": "2021-12-15T23:02:50",
+      "walletId": 1
+    },
+    {
+      "id": 3,
+      "name": "Main",
+      "coinType": 429,
+      "deriveIdx": 0,
+      "createdAt": "2021-12-15T23:02:56",
+      "walletId": 2
+    }
+  ],
+  "addresses": [
+    {
+      "id": 1,
+      "address": "9fHqrP7wvx7MRpzbaH73kaMw8YSRMYwuMqvtJVMVNx1LzkrfTfp",
+      "deriveIdx": 0,
+      "accountId": 1,
+      "balance": 10
+    },
+    {
+      "id": 2,
+      "address": "9eogBTbv8tZo66n3bQNFJGeiX6zdvPPxTNYFZ9y7EtR42pUifES",
+      "deriveIdx": 1,
+      "accountId": 1,
+      "balance": 4
+    }
+  ]
+}
