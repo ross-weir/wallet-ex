@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 /// Represents a wallet account.
 /// Contains the coin_type derivation path as it made the most sense to me to include it at the account level
 /// m/44'/{coin_type}'/{derive_idx}'/0/0
-#[derive(Queryable, Identifiable, Serialize, Associations)]
-#[belongs_to(Wallet)]
+#[derive(Queryable, Identifiable, Insertable, Serialize, Deserialize, Associations)]
 #[serde(rename_all = "camelCase")]
+#[belongs_to(Wallet)]
 pub struct Account {
   id: i32,
   name: String,

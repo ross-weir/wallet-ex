@@ -4,7 +4,7 @@ use anyhow::Result;
 use diesel::{dsl::sql, insert_into, prelude::*, result::Error, QueryDsl, SqliteConnection};
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Identifiable, Serialize, Associations)]
+#[derive(Queryable, Identifiable, Insertable, Serialize, Deserialize, Associations)]
 #[belongs_to(Account)]
 #[table_name(addresses)]
 #[serde(rename_all = "camelCase")]

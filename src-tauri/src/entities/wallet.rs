@@ -4,7 +4,7 @@ use chrono::NaiveDateTime;
 use diesel::{dsl::sql, insert_into, prelude::*, result::Error, SqliteConnection};
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Identifiable, Serialize, Debug)]
+#[derive(Queryable, Identifiable, Serialize, Deserialize, Debug, Insertable)]
 #[serde(rename_all = "camelCase")]
 pub struct Wallet {
   id: i32,
