@@ -5,13 +5,18 @@ import {
   Button,
   Dimmer,
   Header,
-  Icon,
   Loader,
   Segment,
+  Table,
 } from 'semantic-ui-react';
 import { Address } from '../../entities';
 import { useBackend } from '../../hooks';
+import CopyIcon from '../CopyIcon';
+import SensitiveComponent from '../SensitiveComponent';
 
+const copyIconStyle = { paddingLeft: 5 };
+
+// TODO: paginate addresses?
 function WalletViewReceiveTab() {
   const { t } = useTranslation('walletReceiveTab');
   const { accountId } = useParams();
@@ -41,7 +46,7 @@ function WalletViewReceiveTab() {
   // Generate new address action, needs access to address index and coin type
   // Need a `useAccount` hook so we have access to the coin type?
   // Could likely just be passed in from parent as a prop
-  // Need Account/Wallet as props
+  // Need Account/Wallet as props - why do we need wallet?
   const onNewAddress = () => {
     const newIdx = latestAddress().deriveIdx + 1;
     const coinType = ''; // get coin type
@@ -63,16 +68,64 @@ function WalletViewReceiveTab() {
               {t('header')}
               <Header.Subheader>{t('headerSubheader')}</Header.Subheader>
             </Header>
-            <Segment
-              style={{ cursor: 'pointer', fontFamily: 'Fira Code, monospace' }}
-              size="large"
-              onClick={() => console.log('TODO: copy address text')}
-            >
-              {/* 9fHqrP7wvx7MRpzbaH73kaMw8YSRMYwuMqvtJVMVNx1LzkrfTfp */}
-              {latestAddress().address}
-              <Icon style={{ paddingLeft: 5 }} name="copy outline" link />
+            <Segment size="large">
+              {addresses.length && (
+                <SensitiveComponent>
+                  <div style={{ fontFamily: 'Fira Code, monospace' }}>
+                    {latestAddress().address}
+                    <CopyIcon
+                      textToCopy={latestAddress().address}
+                      iconStyle={copyIconStyle}
+                    />
+                  </div>
+                </SensitiveComponent>
+              )}
             </Segment>
             <Button onClick={onNewAddress}>{t('newAddressButton')}</Button>
+          </>
+        )}
+      </Segment>
+
+      <Segment padded="very">
+        {isLoading ? (
+          <Dimmer active inverted>
+            <Loader inverted content="Loading" />
+          </Dimmer>
+        ) : (
+          <>
+            <Header dividing>
+              {t('previousAddressesHeader')}
+              <Header.Subheader>
+                {t('previousAddressesSubheader')}
+              </Header.Subheader>
+            </Header>
+            <Table striped>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Address</Table.HeaderCell>
+                  <Table.HeaderCell>Balance</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {[...addresses].reverse().map((addr) => (
+                  <Table.Row key={addr.id}>
+                    <Table.Cell style={{ fontFamily: 'Fira Code, monospace' }}>
+                      <SensitiveComponent>
+                        {addr.address}
+                        <CopyIcon
+                          textToCopy={addr.address}
+                          iconStyle={copyIconStyle}
+                        />
+                      </SensitiveComponent>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <SensitiveComponent>{addr.balance}</SensitiveComponent>
+                    </Table.Cell>
+                    {/* <Table.Cell>QR code button</Table.Cell> */}
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
           </>
         )}
       </Segment>

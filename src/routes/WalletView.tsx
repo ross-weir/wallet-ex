@@ -17,7 +17,7 @@ import AppBarTop from '../components/AppBarTop';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, Wallet } from '../entities';
-import { BackendProvider, useBackend } from '../hooks';
+import { BackendProvider, SensitiveModeProvider, useBackend } from '../hooks';
 
 const panes = [
   {
@@ -84,36 +84,41 @@ function WalletView() {
   return (
     <>
       <BackendProvider>
-        <AppBarTop />
-        <Grid stackable padded>
-          <Grid.Column width={4}>
-            <Card onClick={() => null} fluid>
-              <Card.Content>
-                <Image src={walletImg} size="mini" floated="left" />
-                <Card.Header>{wallet?.name}</Card.Header>
-                <Card.Meta>3 Accounts · $1,000.00</Card.Meta>
-              </Card.Content>
-            </Card>
-            <Card fluid>
-              <Card.Content>
-                <Card.Header>My Accounts</Card.Header>
-                <Icon name="add" link href="www.google.com" />
-              </Card.Content>
-              {/* List of accounts with ERG balance / fiat conversion */}
-              <Card.Content>Coming soon</Card.Content>
-            </Card>
-          </Grid.Column>
-          <Grid.Column stretched width={12}>
-            <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
-              <Header style={{ marginTop: 15 }} as="h2">
-                Ergo account #1
-              </Header>
-              <p>0.02484236 BTC ≈ A$1,672.36</p>
-              <Divider />
-              <Tab menu={{ secondary: true, stackable: true }} panes={panes} />
-            </Container>
-          </Grid.Column>
-        </Grid>
+        <SensitiveModeProvider>
+          <AppBarTop />
+          <Grid stackable padded>
+            <Grid.Column width={4}>
+              <Card onClick={() => null} fluid>
+                <Card.Content>
+                  <Image src={walletImg} size="mini" floated="left" />
+                  <Card.Header>{wallet?.name}</Card.Header>
+                  <Card.Meta>3 Accounts · $1,000.00</Card.Meta>
+                </Card.Content>
+              </Card>
+              <Card fluid>
+                <Card.Content>
+                  <Card.Header>My Accounts</Card.Header>
+                  <Icon name="add" link href="www.google.com" />
+                </Card.Content>
+                {/* List of accounts with ERG balance / fiat conversion */}
+                <Card.Content>Coming soon</Card.Content>
+              </Card>
+            </Grid.Column>
+            <Grid.Column stretched width={12}>
+              <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
+                <Header style={{ marginTop: 15 }} as="h2">
+                  {account && `${account.name} - Account #${account.deriveIdx}`}
+                </Header>
+                <p>0.02484236 BTC ≈ A$1,672.36</p>
+                <Divider />
+                <Tab
+                  menu={{ secondary: true, stackable: true }}
+                  panes={panes}
+                />
+              </Container>
+            </Grid.Column>
+          </Grid>
+        </SensitiveModeProvider>
       </BackendProvider>
     </>
   );

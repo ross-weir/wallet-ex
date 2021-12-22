@@ -51,6 +51,13 @@ pub fn create_account(
 }
 
 #[tauri::command]
+pub fn find_account(id: i32, db_conn: tauri::State<SafeConnection>) -> Result<Account, String> {
+  let db = &*db_conn.lock().unwrap();
+
+  Account::find(id, db).map_err(|e| format!("Failed to find account: (id: {}, err: {})", id, e))
+}
+
+#[tauri::command]
 pub fn addresses_for_account(
   account_id: i32,
   db_conn: tauri::State<SafeConnection>,

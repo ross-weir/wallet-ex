@@ -55,6 +55,7 @@ fn main() -> anyhow::Result<()> {
       cmd::find_wallet,
       cmd::list_wallets,
       cmd::create_account,
+      cmd::find_account,
       cmd::addresses_for_account,
       cmd::create_address,
     ])

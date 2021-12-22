@@ -54,4 +54,8 @@ impl Account {
       Ok(accounts.find(sql("last_insert_rowid()")).get_result(db)?)
     })?)
   }
+
+  pub fn find(id: i32, db: &SqliteConnection) -> Result<Account> {
+    Ok(accounts::table.find(id).first(db)?)
+  }
 }
