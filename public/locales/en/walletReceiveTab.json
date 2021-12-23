@@ -1,0 +1,7 @@
+{
+  "header": "Your Address",
+  "headerSubheader": "Share this wallet address to receive funds",
+  "newAddressButton": "New address",
+  "previousAddressesHeader": "Previous Addresses",
+  "previousAddressesSubheader": "Previously generated addresses or addresses that wallet-x detected to possess funds"
+}

@@ -1,0 +1,47 @@
+{
+  "createWallet": "Create Wallet",
+  "restoreWallet": "Restore Wallet",
+  "detailsForm": {
+    "title": "Wallet details",
+    "description": "Enter wallet information",
+    "name": {
+      "label": "Wallet name",
+      "placeholder": "Wallet name",
+      "error": ""
+    },
+    "password": {
+      "label": "Wallet Password",
+      "placeholder": "Wallet Password",
+      "error": ""
+    },
+    "passwordConfirm": {
+      "label": "Confirm wallet password",
+      "placeholder": "Confirm wallet password",
+      "error": ""
+    }
+  },
+  "phraseForm": {
+    "title": "Recovery phrase",
+    "description": "Enter wallet recovery phrase",
+    "mnemonic": {
+      "placeholder": "Add word..."
+    }
+  },
+  "passphraseForm": {
+    "title": "Recovery passphrase",
+    "description": "Enter wallet recovery passphrase",
+    "mnemonicPassphrase": {
+      "label": "Passphrase",
+      "placeholder": "Passphrase",
+      "error": ""
+    },
+    "mnemonicPassphrase2": {
+      "label": "Confirm passphrase",
+      "placeholder": "Confirm passphrase",
+      "error": ""
+    },
+    "info": "If you set a recovery passphrase when you created your wallet you must enter it here.<br />Otherwise skip this step.",
+    "moreInfo": "For more information about recovery passphrases",
+    "see": "see here"
+  }
+}
