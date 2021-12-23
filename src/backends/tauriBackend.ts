@@ -11,6 +11,7 @@ import {
   GetSecretSeedArgs,
   StoreSecretSeedArgs,
   CreateAccountArgs,
+  CreateAddressArgs,
 } from './backend';
 
 const cfgPath = async () => {
@@ -36,6 +37,9 @@ export class TauriBackend implements Backend {
     const file = { contents: cfg, path: await cfgPath() };
     return fs.writeFile(file);
   }
+  createAddress(args: CreateAddressArgs): BackendOpResult<Address> {
+    return invoke('create_address', { args });
+  }
 
   addressesForAccount(accountId: number): BackendOpResult<Address[]> {
     return invoke('addresses_for_account', { accountId });
@@ -47,6 +51,10 @@ export class TauriBackend implements Backend {
 
   findAccount(id: number): BackendOpResult<Account> {
     return invoke('find_account', { id });
+  }
+
+  accountsForWallet(walletId: number): BackendOpResult<Account[]> {
+    return invoke('accounts_for_wallet', { walletId });
   }
 
   listWallets(): BackendOpResult<Wallet[]> {
@@ -68,7 +76,7 @@ export class TauriBackend implements Backend {
   }: StoreSecretSeedArgs): BackendOpResult<void> {
     const storageKey = await storageKeyForWallet(wallet);
     const encryptedSeedResult = await this.aes.encrypt({
-      password: password,
+      password,
       data: seed,
     });
 
@@ -83,7 +91,7 @@ export class TauriBackend implements Backend {
     const decryptParams = await localforage.getItem<EncryptResult>(storageKey);
 
     if (!decryptParams) {
-      throw new Error('backend: failed to find secret seed data for wallet');
+      throw new Error('backend: failed to find encrypted seed data for wallet');
     }
 
     return await this.aes.decrypt({

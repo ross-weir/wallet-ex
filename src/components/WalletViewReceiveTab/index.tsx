@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import {
   Button,
   Dimmer,
@@ -11,6 +10,7 @@ import {
 } from 'semantic-ui-react';
 import { Account, Address, Wallet } from '../../entities';
 import { useBackend } from '../../hooks';
+import { getInterfaceForWallet } from '../../walletInterfaces';
 import CopyIcon from '../CopyIcon';
 import SensitiveComponent from '../SensitiveComponent';
 
@@ -28,6 +28,7 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
   const backend = useBackend();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  let latestAddress!: Address;
 
   // Only trigger reload if accountId changes
   // When creating a new address we will add it to the state locally on success
@@ -42,23 +43,35 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
     setIsLoading(false);
   }, [account.id]);
 
-  // Latest address is the highest derive index
-  const latestAddress = () =>
-    addresses.reduce((prev, current) =>
+  const onNewAddress = async () => {
+    const addressIdx = latestAddress.deriveIdx + 1;
+    const accountIdx = account.deriveIdx;
+
+    // TODO: is this even needed? deriving a new address is just a softpath derivaiton
+    // could avoid needing password?
+    const seedBytes = await backend.getSecretSeed({
+      password: 'testing123',
+      wallet,
+    });
+    const walletInterface = getInterfaceForWallet(wallet);
+    const ergoAddr = await walletInterface.deriveAddress({
+      seedBytes,
+      hdStandardArgs: { addressIdx, accountIdx },
+    });
+    const newAddr = await backend.createAddress({
+      address: ergoAddr,
+      deriveIdx: addressIdx,
+      accountId: account.id,
+    });
+
+    setAddresses((addrs) => [...addrs, newAddr]);
+  };
+
+  if (addresses.length) {
+    latestAddress = addresses.reduce((prev, current) =>
       prev.deriveIdx > current.deriveIdx ? prev : current,
     );
-
-  // Generate new address action, needs access to address index and coin type
-  // Need a `useAccount` hook so we have access to the coin type?
-  // Could likely just be passed in from parent as a prop
-  // Need Account/Wallet as props - why do we need wallet?
-  const onNewAddress = () => {
-    const newIdx = latestAddress().deriveIdx + 1;
-    const coinType = ''; // get coin type
-    // do derivation and get address
-    // send to backend
-    // add to local addresses state OR force refresh if adding to local state causes a reload anyway
-  };
+  }
 
   return (
     <>
@@ -77,9 +90,9 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
               {addresses.length && (
                 <SensitiveComponent>
                   <div style={{ fontFamily: 'Fira Code, monospace' }}>
-                    {latestAddress().address}
+                    {latestAddress.address}
                     <CopyIcon
-                      textToCopy={latestAddress().address}
+                      textToCopy={latestAddress.address}
                       iconStyle={copyIconStyle}
                     />
                   </div>
@@ -124,7 +137,9 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
                       </SensitiveComponent>
                     </Table.Cell>
                     <Table.Cell>
-                      <SensitiveComponent>{addr.balance}</SensitiveComponent>
+                      <SensitiveComponent>
+                        {addr.balance || '-'}
+                      </SensitiveComponent>
                     </Table.Cell>
                     {/* <Table.Cell>QR code button</Table.Cell> */}
                   </Table.Row>

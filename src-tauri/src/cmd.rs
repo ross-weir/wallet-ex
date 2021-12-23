@@ -58,6 +58,16 @@ pub fn find_account(id: i32, db_conn: tauri::State<SafeConnection>) -> Result<Ac
 }
 
 #[tauri::command]
+pub fn accounts_for_wallet(
+  wallet_id: i32,
+  db_conn: tauri::State<SafeConnection>,
+) -> Result<Vec<Account>, String> {
+  let db = &*db_conn.lock().unwrap();
+
+  Account::by_wallet_id(wallet_id, db).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub fn addresses_for_account(
   account_id: i32,
   db_conn: tauri::State<SafeConnection>,

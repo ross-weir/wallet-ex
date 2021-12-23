@@ -2,6 +2,7 @@
 // - send, recv, transactions inside <Outlet />
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import {
   Card,
@@ -11,6 +12,7 @@ import {
   Header,
   Icon,
   Image,
+  Menu,
   Tab,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
@@ -18,8 +20,8 @@ import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, Wallet } from '../entities';
-import { getErgo } from '../ergo';
 import { BackendProvider, SensitiveModeProvider, useBackend } from '../hooks';
+import { capitalize } from '../utils/formatting';
 
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}
@@ -31,16 +33,13 @@ function WalletView() {
 
   // There should always be a selected account, not sure when we wouldn't want that to be the case
   // Default to the first account for the wallet, there should always be one when creating wallet
-  const { walletId, accountId } = useParams();
+  const { t } = useTranslation(['common', 'walletView']);
+  const { walletId: walletIdParam, accountId: accountIdParam } = useParams();
   const backend = useBackend();
   const [isLoading, setIsLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | undefined>();
-  // what do we need a single account for?
-  // tabs could get the info they need using the accountId url param
-  // we need accountList to populate `Accounts` sidebar
-  const [account, setAccount] = useState<Account | undefined>();
-
-  const ergo = getErgo();
+  const [accountList, setAccountList] = useState<Account[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
 
   // TODO: loading indicator/state
   // TODO: we probably actually need to fetch a list of accounts
@@ -49,64 +48,85 @@ function WalletView() {
     const fetchEntities = async () => {
       setIsLoading(true);
 
-      const walletReq = backend.findWallet(parseInt(walletId as string, 10));
+      const walletId = parseInt(walletIdParam as string, 10);
+      const walletReq = backend.findWallet(walletId);
       // need to get a list of accounts
-      const accountReq = backend.findAccount(parseInt(accountId as string, 10));
-      const [walletResp, accountResp] = await Promise.allSettled([
+      const accountsReq = backend.accountsForWallet(walletId);
+      // const accountReq = backend.findAccount(parseInt(accountId as string, 10));
+      const [walletResp, accountsResp] = await Promise.allSettled([
         walletReq,
-        accountReq,
+        accountsReq,
       ]);
 
       if (walletResp.status === 'fulfilled') {
         setWallet(walletResp.value);
-
-        // const seed = ergo.Mnemonic.to_seed(
-        //   'change me do not use me change me do not use me',
-        //   '',
-        // );
-        // backend.storeSecretSeed({
-        //   password: 'testing123',
-        //   seed,
-        //   wallet: walletResp.value,
-        // });
       } else {
         // TODO: handle failure
         console.log(walletResp.reason);
       }
 
-      if (accountResp.status === 'fulfilled') {
-        setAccount(accountResp.value);
+      if (accountsResp.status === 'fulfilled') {
+        setAccountList(accountsResp.value);
+        const account = accountsResp.value.find(
+          (account) => account.id === parseInt(accountIdParam as string, 10),
+        );
+        setSelectedAccount(account);
       } else {
         // TODO: handle failure
-        console.log(accountResp.reason);
+        console.log(accountsResp.reason);
       }
 
       setIsLoading(false);
     };
 
     fetchEntities();
-  }, [walletId, accountId]);
+  }, [walletIdParam, accountIdParam]);
 
   const panes = () => [
     {
-      menuItem: { key: 'overview', icon: 'dashboard', content: 'Overview' },
+      menuItem: {
+        key: 'overview',
+        icon: 'dashboard',
+        content: capitalize(t('common:overview')),
+      },
       render: () => <Tab.Pane attached={false}>Tab 3 Content</Tab.Pane>,
     },
     {
-      menuItem: { key: 'send', icon: 'arrow up', content: 'Send' },
+      menuItem: {
+        key: 'send',
+        icon: 'arrow up',
+        content: capitalize(t('common:send')),
+      },
       render: () => <Tab.Pane attached={false}>Tab 1 Content</Tab.Pane>,
     },
     {
-      menuItem: { key: 'receive', icon: 'arrow down', content: 'Receive' },
+      menuItem: {
+        key: 'receive',
+        icon: 'arrow down',
+        content: capitalize(t('common:receive')),
+      },
       // typecasting until we have type gaurds ensuring the entities aren't undefined
       render: () => (
         <WalletViewReceiveTab
-          account={account as Account}
+          account={selectedAccount as Account}
           wallet={wallet as Wallet}
         />
       ),
     },
   ];
+
+  const walletSubtitle = () => {
+    const acctCount = `${accountList.length} Account${
+      accountList.length > 1 ? 's' : ''
+    }`;
+    const walletBalance = '$1,000';
+
+    return `${acctCount} · ${walletBalance}`;
+  };
+
+  const handleAccountSelected = (accountListIdx: number) => () => {
+    setSelectedAccount(accountList[accountListIdx]);
+  };
 
   return (
     <>
@@ -126,7 +146,7 @@ function WalletView() {
                       <Card.Header>{wallet?.name}</Card.Header>
                       <Card.Meta>
                         <SensitiveComponent>
-                          3 Accounts · $1,000.00
+                          {walletSubtitle()}
                         </SensitiveComponent>
                       </Card.Meta>
                     </>
@@ -135,17 +155,35 @@ function WalletView() {
               </Card>
               <Card fluid>
                 <Card.Content>
-                  <Card.Header>My Accounts</Card.Header>
+                  <Card.Header>{t('walletView:myAccounts')}</Card.Header>
                   <Icon name="add" link href="www.google.com" />
                 </Card.Content>
-                {/* List of accounts with ERG balance / fiat conversion */}
-                <Card.Content>Coming soon</Card.Content>
+                <Menu vertical fluid>
+                  {accountList.length &&
+                    accountList.map((account, idx) => (
+                      <Menu.Item
+                        key={account.id}
+                        active={selectedAccount?.id === account.id}
+                        onClick={() => setSelectedAccount(accountList[idx])}
+                      >
+                        <SensitiveComponent>
+                          <Header as="h4">
+                            {account.name}
+                            <Header.Subheader>$999.00</Header.Subheader>
+                          </Header>
+                        </SensitiveComponent>
+                      </Menu.Item>
+                    ))}
+                </Menu>
               </Card>
             </Grid.Column>
             <Grid.Column stretched width={12}>
               <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
                 <Header style={{ marginTop: 15 }} as="h2">
-                  {account && `${account.name} - Account #${account.deriveIdx}`}
+                  {selectedAccount &&
+                    `${selectedAccount.name} - ${capitalize(
+                      t('common:account'),
+                    )} #${selectedAccount.deriveIdx}`}
                 </Header>
                 <SensitiveComponent>
                   <p>0.02484236 BTC ≈ A$1,672.36</p>

@@ -1,11 +1,7 @@
 import { DeriveAddressArgs, WalletInterface } from './walletInterface';
-import {
-  DerivationPath,
-  ExtSecretKey,
-  Address as ErgoAddress,
-} from 'ergo-lib-wasm-browser';
 import { Wallet } from '../entities';
 import { getHdStandardForWallet, HdStandard } from './hdStandard';
+import { Ergo, getErgo } from '../ergo';
 
 /**
  * App-local wallet interface
@@ -14,25 +10,28 @@ import { getHdStandardForWallet, HdStandard } from './hdStandard';
  * operations to the hardware device
  */
 export class LocalWalletInterface implements WalletInterface {
+  private readonly ergo: Ergo;
   private readonly hdStandard: HdStandard;
 
   constructor(wallet: Wallet) {
     this.hdStandard = getHdStandardForWallet(wallet);
+    this.ergo = getErgo();
   }
 
-  async deriveAddress(args: DeriveAddressArgs): Promise<ErgoAddress> {
+  async deriveAddress(args: DeriveAddressArgs): Promise<string> {
     if (!args.seedBytes) {
       throw new Error(
         'deriveAddress: Seed bytes are required for software wallets',
       );
     }
 
-    const rootSk = ExtSecretKey.derive_master(args.seedBytes);
+    const rootSk = this.ergo.ExtSecretKey.derive_master(args.seedBytes);
     const hdPathStr = this.hdStandard.deriviationPath(args.hdStandardArgs);
-    const path = DerivationPath.from_string(hdPathStr);
+    const path = this.ergo.DerivationPath.from_string(hdPathStr);
     const addr = rootSk.derive(path);
 
-    return addr.public_key().to_address();
+    // TODO: base58 param is the network byte (mainnet vs testnet)
+    return addr.public_key().to_address().to_base58(0);
   }
 
   signTx(): Promise<void> {

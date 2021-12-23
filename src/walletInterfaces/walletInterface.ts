@@ -1,4 +1,3 @@
-import { Address as ErgoAddress } from 'ergo-lib-wasm-browser';
 import { HdArgs } from './hdStandard';
 
 export type WalletInterfaceType = 'local' | 'ledger';
@@ -21,7 +20,7 @@ export interface WalletInterface {
    *
    * @param args derive address arguments
    */
-  deriveAddress(args: DeriveAddressArgs): Promise<ErgoAddress>;
+  deriveAddress(args: DeriveAddressArgs): Promise<string>;
 
   signTx(): Promise<void>;
 }

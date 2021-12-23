@@ -60,4 +60,14 @@ impl Account {
   pub fn find(id: i32, db: &SqliteConnection) -> Result<Account> {
     Ok(accounts::table.find(id).first(db)?)
   }
+
+  pub fn by_wallet_id(related_wallet_id: i32, db: &SqliteConnection) -> Result<Vec<Account>> {
+    use crate::schema::accounts::dsl::*;
+
+    Ok(
+      accounts
+        .filter(wallet_id.eq(related_wallet_id))
+        .load::<Account>(db)?,
+    )
+  }
 }
