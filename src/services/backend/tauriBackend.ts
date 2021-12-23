@@ -101,4 +101,14 @@ export class TauriBackend implements BackendService {
       salt: decryptParams.salt,
     });
   }
+
+  async storeData<T>(descriptor: string, data: T): BackendOpResult<T> {
+    return localforage.setItem(descriptor, data);
+  }
+
+  async getStoredData<T>(
+    descriptor: string,
+  ): BackendOpResult<T | undefined | null> {
+    return localforage.getItem(descriptor);
+  }
 }

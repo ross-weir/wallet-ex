@@ -58,4 +58,7 @@ export interface BackendService {
   // store this data. Even browser based storages should work
   storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void>;
   getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<Uint8Array>;
+
+  storeData<T>(descriptor: string, data: T): BackendOpResult<T>;
+  getStoredData<T>(descriptor: string): BackendOpResult<T | undefined | null>;
 }

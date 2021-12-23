@@ -6,6 +6,7 @@
  * PBKDF2+SHA-256+AES-GCM
  *
  * TODO: add all the configuration parameters to the config file
+ * TODO: could use wrappedKeys instead of saving encryption iv/salt
  *
  * Note: WebCrypto differs to Java in that Java crypto formats the cipher as authTag + cipherText (reverse compared to web)
  * We don't handle the authTag here, leave it up to WebCrypto.
