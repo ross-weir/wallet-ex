@@ -12,9 +12,8 @@ import { Account, Address, Wallet } from '../../entities';
 import { useBackend } from '../../hooks';
 import { getInterfaceForWallet } from '../../services';
 import CopyIcon from '../CopyIcon';
+import QrIconPopup from '../QrIconPopup';
 import SensitiveComponent from '../SensitiveComponent';
-
-const copyIconStyle = { paddingLeft: 5 };
 
 export interface WalletViewReceiveTabProps {
   wallet: Wallet;
@@ -93,7 +92,11 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
                     {latestAddress.address}
                     <CopyIcon
                       textToCopy={latestAddress.address}
-                      iconStyle={copyIconStyle}
+                      iconStyle={{ marginLeft: 5 }}
+                    />
+                    <QrIconPopup
+                      value={latestAddress.address}
+                      coinType={account.coinType}
                     />
                   </div>
                 </SensitiveComponent>
@@ -134,7 +137,11 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
                         {addr.address}
                         <CopyIcon
                           textToCopy={addr.address}
-                          iconStyle={copyIconStyle}
+                          iconStyle={{ marginLeft: 15 }}
+                        />
+                        <QrIconPopup
+                          value={addr.address}
+                          coinType={account.coinType}
                         />
                       </SensitiveComponent>
                     </Table.Cell>
@@ -143,7 +150,6 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
                         {addr.balance || '-'}
                       </SensitiveComponent>
                     </Table.Cell>
-                    {/* <Table.Cell>QR code button</Table.Cell> */}
                   </Table.Row>
                 ))}
               </Table.Body>
