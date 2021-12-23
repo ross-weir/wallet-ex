@@ -1,5 +1,9 @@
 import { invoke, path, fs } from '@tauri-apps/api';
+import localforage from 'localforage';
+import { AesCrypto } from '../crypto';
+import { EncryptResult } from '../crypto/aes';
 import { Account, Address, Wallet } from '../entities';
+import { toBase16 } from '../utils/formatting';
 import {
   Backend,
   CreateWalletArgs,
@@ -14,7 +18,16 @@ const cfgPath = async () => {
   return `${appDir}${path.sep}.wallet-x.json`;
 };
 
+const storageKeyForWallet = async (wallet: Wallet): Promise<string> => {
+  const key = new TextEncoder().encode(`${wallet.id}-${wallet.createdAt}`);
+  const hashedKey = await crypto.subtle.digest('SHA-256', key);
+
+  return toBase16(new Uint8Array(hashedKey));
+};
+
 export class TauriBackend implements Backend {
+  private readonly aes = AesCrypto.default();
+
   async readConfig(): BackendOpResult<string> {
     return fs.readTextFile(await cfgPath());
   }
@@ -48,13 +61,36 @@ export class TauriBackend implements Backend {
     return invoke('find_wallet', { id });
   }
 
-  // Do this here, tauri has a fs module
-  storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void> {
-    throw new Error('Method not implemented.');
+  async storeSecretSeed({
+    wallet,
+    password,
+    seed,
+  }: StoreSecretSeedArgs): BackendOpResult<void> {
+    const storageKey = await storageKeyForWallet(wallet);
+    const encryptedSeedResult = await this.aes.encrypt({
+      password: password,
+      data: seed,
+    });
+
+    localforage.setItem(storageKey, encryptedSeedResult);
   }
 
-  // Do this here, tauri has a fs module
-  getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<string> {
-    throw new Error('Method not implemented.');
+  async getSecretSeed({
+    wallet,
+    password,
+  }: GetSecretSeedArgs): BackendOpResult<Uint8Array> {
+    const storageKey = await storageKeyForWallet(wallet);
+    const decryptParams = await localforage.getItem<EncryptResult>(storageKey);
+
+    if (!decryptParams) {
+      throw new Error('backend: failed to find secret seed data for wallet');
+    }
+
+    return await this.aes.decrypt({
+      password,
+      data: decryptParams.cipherText,
+      iv: decryptParams.iv,
+      salt: decryptParams.salt,
+    });
   }
 }

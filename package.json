@@ -15,11 +15,13 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-i18next": "^8.1.0",
     "ergo-lib-wasm-browser": "0.15.0-alpha-3392017",
+    "ergo-lib-wasm-nodejs": "0.15.0-alpha-fdf4ef3",
     "formik": "^2.2.9",
     "history": "^5.1.0",
     "i18next": "^21.5.3",
     "i18next-browser-languagedetector": "^6.1.2",
     "i18next-http-backend": "^1.3.1",
+    "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -44,7 +46,8 @@
     "tauri": "tauri",
     "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006 -s public",
     "build-storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider build-storybook -s public",
-    "test:manual": "ts-node -O '{\"module\": \"commonjs\"}' scripts/testing.ts"
+    "schema:update": "cd src-tauri && diesel migration run --database-url schema.sqlite3 && rm schema.sqlite3",
+    "db:seed": "./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json"
   },
   "eslintConfig": {
     "extends": [

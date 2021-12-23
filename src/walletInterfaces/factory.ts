@@ -5,7 +5,7 @@ import { WalletInterface } from './walletInterface';
 export const getInterfaceForWallet = (wallet: Wallet): WalletInterface => {
   switch (wallet.interface) {
     case 'local':
-      return new LocalWalletInterface();
+      return new LocalWalletInterface(wallet);
     case 'ledger':
       throw new Error('WalletInterface: Ledger not supported yet');
   }

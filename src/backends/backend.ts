@@ -20,11 +20,14 @@ export interface CreateAccountArgs {
 //
 export interface StoreSecretSeedArgs {
   password: string;
-  seed: string;
+  seed: Uint8Array;
+  // used to calculate where to store the key
+  wallet: Wallet;
 }
 
 export interface GetSecretSeedArgs {
   password: string;
+  wallet: Wallet;
 }
 
 export type BackendOpResult<T> = Promise<T>;
@@ -50,5 +53,5 @@ export interface Backend {
   // Should we encrypt it on the frontend? Tauri/react native/etc will all probably have ways to
   // store this data. Even browser based storages should work
   storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void>;
-  getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<string>;
+  getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<Uint8Array>;
 }

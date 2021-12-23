@@ -10,6 +10,9 @@ pub struct Wallet {
   id: i32,
   name: String,
   interface: String,
+  // Describes the standard to use for HD wallets
+  // For example: https://github.com/ergoplatform/eips/blob/master/eip-0003.md
+  hd_standard: String,
   created_at: Option<NaiveDateTime>,
 }
 

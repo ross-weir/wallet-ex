@@ -1,15 +1,21 @@
-import WalletActionView from './components/WalletActionView';
-import { BackendProvider } from './hooks';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Menu, Segment } from 'semantic-ui-react';
-import AppBarTop from './components/AppBarTop';
-import WalletView from './routes/WalletView';
+import { Button } from 'semantic-ui-react';
+import { initErgo } from './ergo';
 import { TestComp } from './TestComp';
-import { path, tauri } from '@tauri-apps/api';
 
 function App() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    initErgo().then(() => setIsLoading(false));
+  }, []);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <>

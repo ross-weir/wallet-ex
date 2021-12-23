@@ -1,12 +1,13 @@
 import { Address as ErgoAddress } from 'ergo-lib-wasm-browser';
+import { HdArgs } from './hdStandard';
 
 export type WalletInterfaceType = 'local' | 'ledger';
 
 export interface DeriveAddressArgs {
   // Not required for hardware wallets
   seedBytes?: Uint8Array;
-  // Path in the format of "m/44'/429'/0'/0/1"
-  derivationPath: string;
+  // Object of key/values relevant to the particular hd standard set for the wallet
+  hdStandardArgs: HdArgs;
 }
 
 // TODO: handle fail paths

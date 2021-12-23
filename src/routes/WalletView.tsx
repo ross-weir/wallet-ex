@@ -18,6 +18,7 @@ import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, Wallet } from '../entities';
+import { getErgo } from '../ergo';
 import { BackendProvider, SensitiveModeProvider, useBackend } from '../hooks';
 
 function WalletView() {
@@ -32,17 +33,22 @@ function WalletView() {
   // Default to the first account for the wallet, there should always be one when creating wallet
   const { walletId, accountId } = useParams();
   const backend = useBackend();
+  const [isLoading, setIsLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | undefined>();
   // what do we need a single account for?
   // tabs could get the info they need using the accountId url param
   // we need accountList to populate `Accounts` sidebar
   const [account, setAccount] = useState<Account | undefined>();
 
+  const ergo = getErgo();
+
   // TODO: loading indicator/state
   // TODO: we probably actually need to fetch a list of accounts
   // TODO: could be done in 1 request - don't bother until there's actual perf issues
   useEffect(() => {
     const fetchEntities = async () => {
+      setIsLoading(true);
+
       const walletReq = backend.findWallet(parseInt(walletId as string, 10));
       // need to get a list of accounts
       const accountReq = backend.findAccount(parseInt(accountId as string, 10));
@@ -53,15 +59,29 @@ function WalletView() {
 
       if (walletResp.status === 'fulfilled') {
         setWallet(walletResp.value);
+
+        // const seed = ergo.Mnemonic.to_seed(
+        //   'change me do not use me change me do not use me',
+        //   '',
+        // );
+        // backend.storeSecretSeed({
+        //   password: 'testing123',
+        //   seed,
+        //   wallet: walletResp.value,
+        // });
       } else {
         // TODO: handle failure
+        console.log(walletResp.reason);
       }
 
       if (accountResp.status === 'fulfilled') {
         setAccount(accountResp.value);
       } else {
         // TODO: handle failure
+        console.log(accountResp.reason);
       }
+
+      setIsLoading(false);
     };
 
     fetchEntities();
@@ -93,17 +113,24 @@ function WalletView() {
       <BackendProvider>
         <SensitiveModeProvider>
           <AppBarTop />
+
           <Grid stackable padded>
             <Grid.Column width={4}>
               <Card onClick={() => null} fluid>
                 <Card.Content>
-                  <Image src={walletImg} size="mini" floated="left" />
-                  <Card.Header>{wallet?.name}</Card.Header>
-                  <Card.Meta>
-                    <SensitiveComponent>
-                      3 Accounts · $1,000.00
-                    </SensitiveComponent>
-                  </Card.Meta>
+                  {isLoading ? (
+                    <p>loading..</p>
+                  ) : (
+                    <>
+                      <Image src={walletImg} size="mini" floated="left" />
+                      <Card.Header>{wallet?.name}</Card.Header>
+                      <Card.Meta>
+                        <SensitiveComponent>
+                          3 Accounts · $1,000.00
+                        </SensitiveComponent>
+                      </Card.Meta>
+                    </>
+                  )}
                 </Card.Content>
               </Card>
               <Card fluid>

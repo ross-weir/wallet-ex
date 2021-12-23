@@ -24,6 +24,7 @@ const mockWallet: Wallet = {
   createdAt: '2021-12-06T03:04:43',
   id: 2,
   interface: 'local',
+  hdStandard: 'eip3',
   name: 'Ergo Wallet',
 };
 

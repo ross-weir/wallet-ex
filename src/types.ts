@@ -1,6 +1,6 @@
 // Operating mode of the wallet
 // Determines how blockchain data is queried, etc
-// full = full node, data provided by a node
+// full = full node, data provided by a local node
 // light = light wallet, data provided by ergo-explorer for example
 // spv = SPV mode, likely won't be supported for a while, mostly useful for mobile clients
 // the rust SPV library is currently WIP

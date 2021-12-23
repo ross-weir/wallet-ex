@@ -15,6 +15,8 @@ pub struct Account {
   id: i32,
   name: String,
   coin_type: i32,
+  // TODO: should this be a string so we can represent hardended vs soft indices?
+  // In EIP3 this is always hardened but we want to be flexible.
   derive_idx: i32,
   created_at: Option<NaiveDateTime>,
   wallet_id: i32,
