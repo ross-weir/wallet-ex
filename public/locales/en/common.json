@@ -1,0 +1,10 @@
+{
+  "password": "password",
+  "create": "create",
+  "restore": "restore",
+  "overview": "overview",
+  "send": "send",
+  "receive": "receive",
+  "account": "account",
+  "loading": "loading"
+}
