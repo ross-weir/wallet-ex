@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Button } from 'semantic-ui-react';
-import { getBackend } from './backends';
+import { getBackendService } from './services/backend';
 import { Account, Wallet } from './entities';
-import * as ergo from 'ergo-lib-wasm-browser';
 
-const backend = getBackend();
+const backend = getBackendService();
 
 const mnemonic =
   'talent mind narrow jaguar wink quantum work scrub pony apart label labor';

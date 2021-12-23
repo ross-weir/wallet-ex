@@ -1,4 +1,4 @@
-import { Wallet } from '../entities';
+import { Wallet } from '../../entities';
 
 // Allow arbitrary args
 // HD standards could evolve and require all sorts of params

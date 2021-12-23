@@ -10,7 +10,7 @@ import {
 } from 'semantic-ui-react';
 import { Account, Address, Wallet } from '../../entities';
 import { useBackend } from '../../hooks';
-import { getInterfaceForWallet } from '../../walletInterfaces';
+import { getInterfaceForWallet } from '../../services';
 import CopyIcon from '../CopyIcon';
 import SensitiveComponent from '../SensitiveComponent';
 

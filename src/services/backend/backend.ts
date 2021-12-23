@@ -1,5 +1,5 @@
-import { Account, Address, Wallet } from '../entities';
-import { WalletInterfaceType } from '../walletInterfaces';
+import { Account, Address, Wallet } from '../../entities';
+import { WalletInterfaceType } from '../wallet';
 
 export interface CreateWalletArgs {
   name: string;
@@ -32,7 +32,7 @@ export interface GetSecretSeedArgs {
 
 export type BackendOpResult<T> = Promise<T>;
 
-export interface Backend {
+export interface BackendService {
   createWallet(args: CreateWalletArgs): BackendOpResult<Wallet>;
   findWallet(id: number): BackendOpResult<Wallet>;
   // return type should also include pagination data

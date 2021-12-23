@@ -1,7 +1,7 @@
 import React from 'react';
-import { getBackend } from '../backends';
+import { getBackendService } from '../services';
 
-const backend = getBackend();
+const backend = getBackendService();
 const BackendContext = React.createContext(backend);
 
 interface BackendProviderProps {

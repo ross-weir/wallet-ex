@@ -1,4 +1,4 @@
-import { Wallet } from '../entities';
+import { Wallet } from '../../entities';
 import { LocalWalletInterface } from './localWalletInterface';
 import { WalletInterface } from './walletInterface';
 

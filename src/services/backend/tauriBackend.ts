@@ -1,11 +1,11 @@
 import { invoke, path, fs } from '@tauri-apps/api';
 import localforage from 'localforage';
-import { AesCrypto } from '../crypto';
-import { EncryptResult } from '../crypto/aes';
-import { Account, Address, Wallet } from '../entities';
-import { toBase16 } from '../utils/formatting';
+import { AesCrypto } from '../../crypto';
+import { EncryptResult } from '../../crypto/aes';
+import { Account, Address, Wallet } from '../../entities';
+import { toBase16 } from '../../utils/formatting';
 import {
-  Backend,
+  BackendService,
   CreateWalletArgs,
   BackendOpResult,
   GetSecretSeedArgs,
@@ -26,7 +26,7 @@ const storageKeyForWallet = async (wallet: Wallet): Promise<string> => {
   return toBase16(new Uint8Array(hashedKey));
 };
 
-export class TauriBackend implements Backend {
+export class TauriBackend implements BackendService {
   private readonly aes = AesCrypto.default();
 
   async readConfig(): BackendOpResult<string> {
