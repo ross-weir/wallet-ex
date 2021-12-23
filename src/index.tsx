@@ -8,6 +8,7 @@ import { initI18n } from './i18n';
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 import { WalletView } from './routes';
+import WalletsList from './routes/WalletsList';
 
 initI18n();
 
@@ -17,6 +18,7 @@ ReactDOM.render(
       <Suspense fallback="loading">
         <Routes>
           <Route path="/" element={<App />} />
+          <Route path="/wallets" element={<WalletsList />} />
           <Route
             path="wallets/:walletId/accounts/:accountId"
             element={<WalletView />}

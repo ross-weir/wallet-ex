@@ -5,7 +5,13 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { capitalize } from './utils/formatting';
 
 export const initCfg = {
-  ns: ['common', 'walletCreateRestore', 'walletReceiveTab', 'walletView'],
+  ns: [
+    'common',
+    'walletCreateRestore',
+    'walletReceiveTab',
+    'walletView',
+    'walletsList',
+  ],
   defaultNS: 'common',
   fallbackLng: 'en',
   supportedLngs: ['en'],

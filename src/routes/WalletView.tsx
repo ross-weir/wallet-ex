@@ -160,7 +160,6 @@ function WalletView() {
                   >
                     {t('walletView:myAccounts')}
                   </Card.Header>
-                  {/* <Icon name="add" /> */}
                   <Button floated="right" icon="add" size="tiny" />
                 </Card.Content>
                 <Menu vertical fluid>
