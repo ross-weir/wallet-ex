@@ -1,9 +1,9 @@
-import { Backend } from './backend';
+import { BackendService } from './backend';
 import { TauriBackend } from './tauriBackend';
 
-let _backend: Backend;
+let _backend: BackendService;
 
-export const getBackend = (): Backend => {
+export const getBackendService = (): BackendService => {
   // if env == tauri
   // const mod = await import('./tauriBackend.ts')
   // _backend = new mod.TauriBackend();
