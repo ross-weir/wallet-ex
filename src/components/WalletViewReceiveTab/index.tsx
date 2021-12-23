@@ -99,7 +99,9 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
                 </SensitiveComponent>
               )}
             </Segment>
-            <Button onClick={onNewAddress}>{t('newAddressButton')}</Button>
+            <Button primary onClick={onNewAddress}>
+              {t('newAddressButton')}
+            </Button>
           </>
         )}
       </Segment>

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import {
+  Button,
   Card,
   Container,
   Divider,
@@ -124,10 +125,6 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
-  const handleAccountSelected = (accountListIdx: number) => () => {
-    setSelectedAccount(accountList[accountListIdx]);
-  };
-
   return (
     <>
       <BackendProvider>
@@ -155,8 +152,17 @@ function WalletView() {
               </Card>
               <Card fluid>
                 <Card.Content>
-                  <Card.Header>{t('walletView:myAccounts')}</Card.Header>
-                  <Icon name="add" link href="www.google.com" />
+                  <Card.Header
+                    style={{
+                      lineHeight: 2,
+                      display: 'inline-block',
+                      verticalAlign: 'middle',
+                    }}
+                  >
+                    {t('walletView:myAccounts')}
+                  </Card.Header>
+                  {/* <Icon name="add" /> */}
+                  <Button floated="right" icon="add" size="tiny" />
                 </Card.Content>
                 <Menu vertical fluid>
                   {accountList.length &&
