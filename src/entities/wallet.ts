@@ -1,4 +1,4 @@
-import { WalletInterfaceType } from '../walletInterfaces';
+import { WalletInterfaceType } from '../services';
 
 export interface Wallet {
   id: number;

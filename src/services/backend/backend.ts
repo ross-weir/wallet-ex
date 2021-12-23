@@ -1,5 +1,5 @@
 import { Account, Address, Wallet } from '../../entities';
-import { WalletInterfaceType } from '../../walletInterfaces';
+import { WalletInterfaceType } from '../wallet';
 
 export interface CreateWalletArgs {
   name: string;

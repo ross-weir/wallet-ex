@@ -11,7 +11,6 @@ import {
   Divider,
   Grid,
   Header,
-  Icon,
   Image,
   Menu,
   Tab,
