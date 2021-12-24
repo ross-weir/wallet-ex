@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import {
   Button,
   Card,
@@ -34,12 +34,14 @@ function WalletView() {
   // There should always be a selected account, not sure when we wouldn't want that to be the case
   // Default to the first account for the wallet, there should always be one when creating wallet
   const { t } = useTranslation(['common', 'walletView']);
-  const { walletId: walletIdParam, accountId: accountIdParam } = useParams();
+  const { walletId: walletIdParam } = useParams();
   const backend = useBackend();
   const [isLoading, setIsLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | undefined>();
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
+  const { state } = useLocation();
+  const walletSeed: Uint8Array = state.seed;
 
   // TODO: loading indicator/state
   // TODO: we probably actually need to fetch a list of accounts
@@ -50,9 +52,7 @@ function WalletView() {
 
       const walletId = parseInt(walletIdParam as string, 10);
       const walletReq = backend.findWallet(walletId);
-      // need to get a list of accounts
       const accountsReq = backend.accountsForWallet(walletId);
-      // const accountReq = backend.findAccount(parseInt(accountId as string, 10));
       const [walletResp, accountsResp] = await Promise.allSettled([
         walletReq,
         accountsReq,
@@ -67,10 +67,7 @@ function WalletView() {
 
       if (accountsResp.status === 'fulfilled') {
         setAccountList(accountsResp.value);
-        const account = accountsResp.value.find(
-          (account) => account.id === parseInt(accountIdParam as string, 10),
-        );
-        setSelectedAccount(account);
+        setSelectedAccount(accountsResp.value[0]);
       } else {
         // TODO: handle failure
         console.log(accountsResp.reason);
@@ -80,7 +77,7 @@ function WalletView() {
     };
 
     fetchEntities();
-  }, [walletIdParam, accountIdParam, backend]);
+  }, [walletIdParam, backend]);
 
   const panes = () => [
     {
@@ -110,6 +107,7 @@ function WalletView() {
         <WalletViewReceiveTab
           account={selectedAccount as Account}
           wallet={wallet as Wallet}
+          seed={walletSeed}
         />
       ),
     },

@@ -19,10 +19,7 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/wallets" element={<WalletsList />} />
-          <Route
-            path="wallets/:walletId/accounts/:accountId"
-            element={<WalletView />}
-          />
+          <Route path="/wallets/:walletId" element={<WalletView />} />
           <Route path="*" element={<p>How did you get hur?</p>} />
         </Routes>
       </Suspense>

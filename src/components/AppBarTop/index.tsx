@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { Dropdown, Icon, Menu, Segment } from 'semantic-ui-react';
 import { useSensitiveMode } from '../../hooks';
 
@@ -16,10 +16,10 @@ function AppBarTop({ attached }: AppBarTopProps) {
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const { network, operatingMode } = getSettings();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = () => {
-    // remove seed - is this needed? Navigating route would remove from component state
-    // it is needed, navigating backwards move back to an authenticated wallet
+    // TODO: Be sure to clear wallet seed from state
     navigate('/wallets');
   };
 

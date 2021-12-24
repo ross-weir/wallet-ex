@@ -8,8 +8,11 @@ import {
   Loader,
   Segment,
   Image,
+  Form,
+  Modal,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
+import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
 import { Wallet } from '../entities';
 import { BackendProvider, SensitiveModeProvider, useBackend } from '../hooks';
 import { capitalize } from '../utils/formatting';
@@ -23,6 +26,9 @@ function WalletsList() {
   const { t } = useTranslation(['walletsList', 'common']);
   const [isLoading, setIsLoading] = useState(true);
   const [wallets, setWallets] = useState<WalletWithSummary[]>([]);
+  const [selectedWallet, setSelectedWallet] = useState<
+    WalletWithSummary | undefined
+  >();
   const backend = useBackend();
 
   useEffect(() => {
@@ -64,16 +70,27 @@ function WalletsList() {
             </Header>
             {!isLoading ? (
               // TODO: is it possible to be here with no wallets?
-              <Card.Group centered itemsPerRow={1}>
-                {wallets.map((wallet) => (
-                  <Card key={wallet.id}>
-                    <Card.Content>
-                      <Card.Header>{wallet.name}</Card.Header>
-                      <Card.Description>wallet stuff</Card.Description>
-                    </Card.Content>
-                  </Card>
-                ))}
-              </Card.Group>
+              <>
+                <Card.Group centered itemsPerRow={1}>
+                  {wallets.map((wallet) => (
+                    <Card
+                      key={wallet.id}
+                      onClick={() => setSelectedWallet(wallet)}
+                    >
+                      <Card.Content>
+                        <Card.Header>{wallet.name}</Card.Header>
+                        <Card.Description>wallet stuff</Card.Description>
+                      </Card.Content>
+                    </Card>
+                  ))}
+                </Card.Group>
+                {!!selectedWallet && (
+                  <WalletsListPasswordModal
+                    wallet={selectedWallet}
+                    onCancel={() => setSelectedWallet(undefined)}
+                  />
+                )}
+              </>
             ) : (
               <Segment>
                 <Dimmer active={isLoading} inverted>
