@@ -44,6 +44,8 @@ pub fn get_wallet_password(
   wallet_id: i32,
   db_conn: tauri::State<SafeConnection>,
 ) -> Result<String, String> {
+  let db = &*db_conn.lock().unwrap();
+
   Wallet::get_password(wallet_id, db)
     .map_err(|e| format!("Failed to get password for wallet (err: {})", e))
 }
