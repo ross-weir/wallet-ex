@@ -9,6 +9,9 @@ use serde::{Deserialize, Serialize};
 pub struct Wallet {
   id: i32,
   name: String,
+  // Don't return password by default when querying a full wallet row
+  #[serde(skip_serializing)]
+  password: String,
   interface: String,
   // Describes the standard to use for HD wallets
   // For example: https://github.com/ergoplatform/eips/blob/master/eip-0003.md
@@ -42,5 +45,14 @@ impl Wallet {
 
   pub fn list(db: &SqliteConnection) -> Result<Vec<Wallet>> {
     Ok(wallets::table.load::<Wallet>(db)?)
+  }
+
+  pub fn get_password(id: i32, db: &SqliteConnection) -> Result<String> {
+    Ok(
+      wallets::table
+        .select(wallets::password)
+        .find(id)
+        .first(db)?,
+    )
   }
 }

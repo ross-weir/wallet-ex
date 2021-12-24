@@ -40,7 +40,7 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
       .catch((err) => console.log(`handle this m8: ${err}`));
 
     setIsLoading(false);
-  }, [account.id]);
+  }, [account.id, backend]);
 
   const onNewAddress = async () => {
     const addressIdx = latestAddress.deriveIdx + 1;

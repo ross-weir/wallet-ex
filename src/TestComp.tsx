@@ -5,9 +5,6 @@ import { Account, Wallet } from './entities';
 
 const backend = getBackendService();
 
-const mnemonic =
-  'talent mind narrow jaguar wink quantum work scrub pony apart label labor';
-
 // For experimentation/testing integration with tauri backend
 export function TestComp() {
   const [wallet, setWallet] = useState<Wallet | undefined>();

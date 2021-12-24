@@ -80,7 +80,7 @@ function WalletView() {
     };
 
     fetchEntities();
-  }, [walletIdParam, accountIdParam]);
+  }, [walletIdParam, accountIdParam, backend]);
 
   const panes = () => [
     {

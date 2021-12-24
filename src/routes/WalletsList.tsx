@@ -65,10 +65,10 @@ function WalletsList() {
             {!isLoading ? (
               // TODO: is it possible to be here with no wallets?
               <Card.Group centered itemsPerRow={1}>
-                {wallets.map((w) => (
-                  <Card>
+                {wallets.map((wallet) => (
+                  <Card key={wallet.id}>
                     <Card.Content>
-                      <Card.Header>{w.name}</Card.Header>
+                      <Card.Header>{wallet.name}</Card.Header>
                       <Card.Description>wallet stuff</Card.Description>
                     </Card.Content>
                   </Card>

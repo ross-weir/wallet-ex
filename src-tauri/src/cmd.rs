@@ -39,6 +39,15 @@ pub fn list_wallets(db_conn: tauri::State<SafeConnection>) -> Result<Vec<Wallet>
   Wallet::list(db).map_err(|e| format!("Failed to get list of wallets (err: {})", e))
 }
 
+#[tauri::command]
+pub fn get_wallet_password(
+  wallet_id: i32,
+  db_conn: tauri::State<SafeConnection>,
+) -> Result<String, String> {
+  Wallet::get_password(wallet_id, db)
+    .map_err(|e| format!("Failed to get password for wallet (err: {})", e))
+}
+
 /// Create account command
 #[tauri::command]
 pub fn create_account(
