@@ -18,7 +18,9 @@ export function TestComp() {
     try {
       const w = await backend.createWallet({
         name: 'testWallet',
+        password: 'testing123',
         interface: 'local',
+        hdStandard: 'eip3',
       });
       setWallet(w as Wallet);
     } catch (e) {

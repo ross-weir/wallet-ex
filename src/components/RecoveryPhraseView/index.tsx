@@ -27,7 +27,7 @@ function RecoveryPhraseView({
       >
         <Label.Group color={removable ? 'blue' : undefined} size="large">
           {value.map((word, i) => (
-            <Label key={word}>
+            <Label key={`${word}-${i}`}>
               {word}
               {removable && (
                 <Icon link name="close" onClick={onRemoveFactory(i)} />

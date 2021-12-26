@@ -1,9 +1,12 @@
+import { HashedPassword } from '../../crypto';
 import { Account, Address, Wallet } from '../../entities';
 import { WalletInterfaceType } from '../wallet';
 
 export interface CreateWalletArgs {
   name: string;
+  password: HashedPassword;
   interface: WalletInterfaceType;
+  hdStandard: string;
 }
 
 export interface CreateAccountArgs {

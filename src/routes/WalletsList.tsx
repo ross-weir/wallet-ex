@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import {
   Card,
   Container,
@@ -8,6 +9,10 @@ import {
   Loader,
   Segment,
   Image,
+  Button,
+  Divider,
+  Grid,
+  Icon,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
@@ -28,6 +33,7 @@ function WalletsList() {
     WalletWithSummary | undefined
   >();
   const backend = useBackend();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // perf: possible performance hotspot
@@ -62,9 +68,25 @@ function WalletsList() {
       <BackendProvider>
         <AppBarTop />
         <Container text style={{ marginTop: 30 }}>
-          <Header dividing as="h2">
-            {t('walletsList:walletsListTitle')}
-          </Header>
+          <Grid columns={2}>
+            <Grid.Column verticalAlign="middle">
+              <Header as="h2">{t('walletsList:walletsListTitle')}</Header>
+            </Grid.Column>
+            <Grid.Column>
+              <Button
+                icon
+                labelPosition="left"
+                primary
+                size="tiny"
+                floated="right"
+                onClick={() => navigate('/wallets/add')}
+              >
+                <Icon name="add" />
+                {t('common:addWallet')}
+              </Button>
+            </Grid.Column>
+          </Grid>
+          <Divider />
           {!isLoading ? (
             // TODO: is it possible to be here with no wallets?
             <>
