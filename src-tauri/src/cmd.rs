@@ -1,6 +1,6 @@
 //! Tauri commands
 //! Any commands added should be thin wrappers around other functions
-//! This makes them more easily unit testable
+//! This makes them more easily unit testable and reusable
 
 use crate::{
   db::SafeConnection,

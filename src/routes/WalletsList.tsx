@@ -12,7 +12,7 @@ import {
 import AppBarTop from '../components/AppBarTop';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
 import { Wallet } from '../entities';
-import { BackendProvider, SensitiveModeProvider, useBackend } from '../hooks';
+import { BackendProvider, useBackend } from '../hooks';
 import { capitalize } from '../utils/formatting';
 
 interface WalletWithSummary extends Wallet {
@@ -60,45 +60,43 @@ function WalletsList() {
   return (
     <>
       <BackendProvider>
-        <SensitiveModeProvider>
-          <AppBarTop />
-          <Container text style={{ marginTop: 30 }}>
-            <Header dividing as="h2">
-              {t('walletsList:walletsListTitle')}
-            </Header>
-            {!isLoading ? (
-              // TODO: is it possible to be here with no wallets?
-              <>
-                <Card.Group centered itemsPerRow={1}>
-                  {wallets.map((wallet) => (
-                    <Card
-                      key={wallet.id}
-                      onClick={() => setSelectedWallet(wallet)}
-                    >
-                      <Card.Content>
-                        <Card.Header>{wallet.name}</Card.Header>
-                        <Card.Description>wallet stuff</Card.Description>
-                      </Card.Content>
-                    </Card>
-                  ))}
-                </Card.Group>
-                {!!selectedWallet && (
-                  <WalletsListPasswordModal
-                    wallet={selectedWallet}
-                    onCancel={() => setSelectedWallet(undefined)}
-                  />
-                )}
-              </>
-            ) : (
-              <Segment>
-                <Dimmer active={isLoading} inverted>
-                  <Loader inverted content={capitalize(t('common:loading'))} />
-                </Dimmer>
-                <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-              </Segment>
-            )}
-          </Container>
-        </SensitiveModeProvider>
+        <AppBarTop />
+        <Container text style={{ marginTop: 30 }}>
+          <Header dividing as="h2">
+            {t('walletsList:walletsListTitle')}
+          </Header>
+          {!isLoading ? (
+            // TODO: is it possible to be here with no wallets?
+            <>
+              <Card.Group centered itemsPerRow={1}>
+                {wallets.map((wallet) => (
+                  <Card
+                    key={wallet.id}
+                    onClick={() => setSelectedWallet(wallet)}
+                  >
+                    <Card.Content>
+                      <Card.Header>{wallet.name}</Card.Header>
+                      <Card.Description>wallet stuff</Card.Description>
+                    </Card.Content>
+                  </Card>
+                ))}
+              </Card.Group>
+              {!!selectedWallet && (
+                <WalletsListPasswordModal
+                  wallet={selectedWallet}
+                  onCancel={() => setSelectedWallet(undefined)}
+                />
+              )}
+            </>
+          ) : (
+            <Segment>
+              <Dimmer active={isLoading} inverted>
+                <Loader inverted content={capitalize(t('common:loading'))} />
+              </Dimmer>
+              <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+            </Segment>
+          )}
+        </Container>
       </BackendProvider>
     </>
   );

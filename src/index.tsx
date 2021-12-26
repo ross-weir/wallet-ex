@@ -9,21 +9,24 @@ import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 import { WalletView } from './routes';
 import WalletsList from './routes/WalletsList';
+import { SensitiveModeProvider } from './hooks';
 
 initI18n();
 
 ReactDOM.render(
   <BrowserRouter>
-    <React.StrictMode>
-      <Suspense fallback="loading">
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/wallets" element={<WalletsList />} />
-          <Route path="/wallets/:walletId" element={<WalletView />} />
-          <Route path="*" element={<p>How did you get hur?</p>} />
-        </Routes>
-      </Suspense>
-    </React.StrictMode>
+    <SensitiveModeProvider>
+      <React.StrictMode>
+        <Suspense fallback="loading">
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/wallets" element={<WalletsList />} />
+            <Route path="/wallets/:walletId" element={<WalletView />} />
+            <Route path="*" element={<p>How did you get hur?</p>} />
+          </Routes>
+        </Suspense>
+      </React.StrictMode>
+    </SensitiveModeProvider>
   </BrowserRouter>,
   document.getElementById('root'),
 );
