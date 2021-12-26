@@ -1,20 +1,37 @@
 // Generate a new recovery phrase for the user to write down
-
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Message } from 'semantic-ui-react';
 import { capitalize } from '../../utils/formatting';
 import RecoveryPhraseView from '../RecoveryPhraseView';
+import { generateMnemonic } from 'bip39';
+import { useFormikContext } from 'formik';
+
+// 15 words
+// TODO: make this configurable
+const MNEMONIC_ENTROPHY = 160;
+
+export interface WalletRecoveryPhraseRecordInput {
+  phrase: string[];
+}
+
+export const walletRecoveryPhraseRecordInitialState: WalletRecoveryPhraseRecordInput =
+  {
+    phrase: [],
+  };
 
 function WalletRecoveryPhraseRecord() {
   const { t } = useTranslation(['common', 'walletCreateRestore']);
   const [isLoading, setIsLoading] = useState(true);
   const [isHidden, setIsHidden] = useState(true);
+  const { values, setFieldValue } =
+    useFormikContext<WalletRecoveryPhraseRecordInput>();
 
-  // Generate mnemonic
   useEffect(() => {
+    // TODO: support different languages
+    setFieldValue('phrase', generateMnemonic(MNEMONIC_ENTROPHY).split(' '));
     setIsLoading(false);
-  }, []);
+  }, [setFieldValue]);
 
   const getT = (key: string): string =>
     t(`walletCreateRestore:phraseRecordForm.${key}`);
@@ -38,10 +55,11 @@ function WalletRecoveryPhraseRecord() {
           </>
         }
       />
-      <RecoveryPhraseView
-        value={['test', 'hide', 'word', 'word1']}
-        hidden={isHidden}
-      />
+      {isLoading ? (
+        <p>Loading..</p>
+      ) : (
+        <RecoveryPhraseView value={values.phrase} hidden={isHidden} />
+      )}
       <Button
         type="button"
         disabled={isLoading}
