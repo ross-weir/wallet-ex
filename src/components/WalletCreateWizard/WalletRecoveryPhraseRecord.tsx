@@ -6,7 +6,6 @@ import { Button, Message } from 'semantic-ui-react';
 import { capitalize } from '../../utils/formatting';
 import RecoveryPhraseView from '../RecoveryPhraseView';
 
-// TODO: toggle visibility of phrase
 function WalletRecoveryPhraseRecord() {
   const { t } = useTranslation(['common', 'walletCreateRestore']);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +40,7 @@ function WalletRecoveryPhraseRecord() {
       />
       <RecoveryPhraseView
         value={['test', 'hide', 'word', 'word1']}
-        hide={isHidden}
+        hidden={isHidden}
       />
       <Button
         type="button"
