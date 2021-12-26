@@ -14,6 +14,8 @@
   "submit": "submit",
   "back": "back",
   "cancel": "cancel",
+  "reveal": "reveal",
+  "hide": "hide",
   "incorrectPassword": "Incorrect password",
   "walletPassword": "Wallet password",
   "addWallet": "Add Wallet"

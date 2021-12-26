@@ -17,7 +17,7 @@ export const walletRecoveryPhraseValidationSchema = Yup.object({
   phrase: Yup.array()
     .of(Yup.string())
     // TODO: change length to 12,15,24
-    .test('len', 'Phrase must be 15 words', (v) => v!.length === 2),
+    .test('len', 'Phrase must be 12, 15 or 24 words', (v) => v!.length === 2),
 });
 
 function WalletRecoveryPhraseForm() {

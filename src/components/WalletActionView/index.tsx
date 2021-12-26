@@ -116,7 +116,9 @@ function WalletActionView() {
                 <Icon name="currency" />
                 {t('walletCreateRestore:createWallet')}
               </Header>
-              <Button primary>{capitalize(t('common:create'))}</Button>
+              <Button primary onClick={() => setAction('Create')}>
+                {capitalize(t('common:create'))}
+              </Button>
             </Grid.Column>
           </Grid.Row>
         </Grid>

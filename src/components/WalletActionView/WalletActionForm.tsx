@@ -3,6 +3,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, Form } from 'semantic-ui-react';
 import { capitalize } from '../../utils/formatting';
+import WalletCreateWizard, {
+  createInitialValues,
+  createValidations,
+} from '../WalletCreateWizard';
 import WalletRestoreWizard, {
   restoreInitialValues,
   restoreValidations,
@@ -67,12 +71,16 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
     if (action === 'Restore') {
       return restoreValidations[state.activeStep];
     }
+
+    return createValidations[state.activeStep];
   };
 
   const getInitialValues = () => {
     if (action === 'Restore') {
       return { ...restoreInitialValues };
     }
+
+    return { ...createInitialValues };
   };
 
   return (
@@ -105,12 +113,9 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
           <Modal.Header>{action} Wallet</Modal.Header>
           <Modal.Content>
             {action === 'Restore' ? (
-              <WalletRestoreWizard
-                activeStep={state.activeStep}
-                formik={formik}
-              />
+              <WalletRestoreWizard activeStep={state.activeStep} />
             ) : (
-              <p>nun</p>
+              <WalletCreateWizard activeStep={state.activeStep} />
             )}
           </Modal.Content>
           <Modal.Actions>

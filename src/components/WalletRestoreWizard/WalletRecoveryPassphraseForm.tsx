@@ -35,7 +35,7 @@ function WalletRecoveryPassphraseForm() {
       <Message
         info
         icon="info circle"
-        header="Optional passphrase"
+        header={getT('infoHeader')}
         content={
           <>
             <p dangerouslySetInnerHTML={{ __html: getT('info') }} />

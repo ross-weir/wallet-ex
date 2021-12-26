@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
   activeStep: number;
-  formik: any;
 }
 
 export const restoreValidations = [
