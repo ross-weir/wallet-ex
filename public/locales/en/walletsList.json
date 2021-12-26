@@ -1,3 +1,4 @@
 {
-  "walletsListTitle": "Select Wallet"
+  "walletsListTitle": "Select Wallet",
+  "walletPasswordTitle": "Enter password for {{walletName}}"
 }

@@ -40,8 +40,20 @@ function WalletView() {
   const [wallet, setWallet] = useState<Wallet | undefined>();
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
+  const [walletSeed, setWalletSeed] = useState<Uint8Array | undefined>();
   const { state } = useLocation();
-  const walletSeed: Uint8Array = state.seed;
+
+  if (!walletSeed && state.seed) {
+    setWalletSeed(state.seed);
+  }
+
+  const onLogoutWallet = () => {
+    // Remove the seed from browser history state so users can't
+    // navigate backwards and preserve access to wallet seed
+    const usr = { ...window.history.state.usr, seed: undefined };
+    window.history.replaceState({ ...window.history.state, usr }, '');
+    setWalletSeed(undefined);
+  };
 
   // TODO: loading indicator/state
   // TODO: we probably actually need to fetch a list of accounts
@@ -107,7 +119,7 @@ function WalletView() {
         <WalletViewReceiveTab
           account={selectedAccount as Account}
           wallet={wallet as Wallet}
-          seed={walletSeed}
+          seed={walletSeed as Uint8Array}
         />
       ),
     },
@@ -126,8 +138,7 @@ function WalletView() {
     <>
       <BackendProvider>
         <SensitiveModeProvider>
-          <AppBarTop />
-
+          <AppBarTop onLogout={onLogoutWallet} />
           <Grid stackable padded>
             <Grid.Column width={4}>
               <Card onClick={() => null} fluid>

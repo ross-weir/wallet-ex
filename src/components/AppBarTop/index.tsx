@@ -10,16 +10,19 @@ const getSettings = () => ({
 
 export interface AppBarTopProps {
   attached?: boolean | 'top' | 'bottom' | undefined;
+  onLogout?: () => void;
 }
 
-function AppBarTop({ attached }: AppBarTopProps) {
+function AppBarTop({ attached, onLogout }: AppBarTopProps) {
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const { network, operatingMode } = getSettings();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const handleSignOut = () => {
-    // TODO: Be sure to clear wallet seed from state
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+
     navigate('/wallets');
   };
 
@@ -42,7 +45,7 @@ function AppBarTop({ attached }: AppBarTopProps) {
                   <span className="text">Settings</span>
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={handleSignOut}>
+                <Dropdown.Item onClick={handleLogout}>
                   <Icon name="sign-out" />
                   <span className="text">Sign out of wallet</span>
                 </Dropdown.Item>

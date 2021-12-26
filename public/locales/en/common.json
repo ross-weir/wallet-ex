@@ -6,5 +6,9 @@
   "send": "send",
   "receive": "receive",
   "account": "account",
-  "loading": "loading"
+  "loading": "loading",
+  "submit": "submit",
+  "cancel": "cancel",
+  "incorrectPassword": "Incorrect password",
+  "walletPassword": "Wallet password"
 }

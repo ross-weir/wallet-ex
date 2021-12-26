@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Button, Form, Modal } from 'semantic-ui-react';
 import { Wallet } from '../../entities';
+import { capitalize } from '../../utils/formatting';
 import { useBackend } from '../../hooks';
 
 export interface WalletsListPasswordProps {
@@ -15,7 +16,7 @@ function WalletsListPasswordModal({
   wallet,
   onCancel,
 }: WalletsListPasswordProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'walletsList']);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +29,7 @@ function WalletsListPasswordModal({
       .checkCredentialsForWallet(wallet.id, { password })
       .then(async (isValid) => {
         if (!isValid) {
-          setPasswordError('Incorrect password');
+          setPasswordError(t('common:incorrectPassword'));
           return;
         }
 
@@ -56,7 +57,9 @@ function WalletsListPasswordModal({
 
   return (
     <Modal size="small" open>
-      <Modal.Header>Enter password for {wallet.name}</Modal.Header>
+      <Modal.Header>
+        {t('walletsList:walletPasswordTitle', { walletName: wallet.name })}
+      </Modal.Header>
       <Modal.Content>
         <Form style={{ display: 'inline-block', minWidth: 350 }}>
           <Form.Input
@@ -64,24 +67,24 @@ function WalletsListPasswordModal({
             value={password}
             icon="lock"
             iconPosition="left"
-            label="Wallet password"
+            label={t('common:walletPassword')}
             type="password"
             error={passwordError}
-            placeholder="My password..."
+            placeholder={t('common:walletPassword')}
             onChange={handleInput}
             onKeyUp={handleKeyUp}
           />
         </Form>
       </Modal.Content>
       <Modal.Actions>
-        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={onCancel}>{capitalize(t('common:cancel'))}</Button>
         <Button
           primary
           onClick={handleSubmit}
           loading={isLoading}
           disabled={isLoading}
         >
-          Submit
+          {capitalize(t('common:submit'))}
         </Button>
       </Modal.Actions>
     </Modal>

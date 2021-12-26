@@ -8,8 +8,6 @@ import {
   Loader,
   Segment,
   Image,
-  Form,
-  Modal,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
