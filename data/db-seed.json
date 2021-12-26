@@ -3,6 +3,7 @@
     {
       "id": 1,
       "name": "Bobs Wallet",
+      "password": "$2a$10$zbC6jBSsdUHBlXAgz.IlX.W73tXrz3RRvHx5Gl7zTuqWHia/Q6Tra",
       "interface": "local",
       "hdStandard": "eip3",
       "createdAt": "2021-12-15T23:02:36"
@@ -10,6 +11,7 @@
     {
       "id": 2,
       "name": "Alice",
+      "password": "$2a$10$zbC6jBSsdUHBlXAgz.IlX.W73tXrz3RRvHx5Gl7zTuqWHia/Q6Tra",
       "interface": "ledger",
       "hdStandard": "eip3",
       "createdAt": "2021-12-18T23:02:36"

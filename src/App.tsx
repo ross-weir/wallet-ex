@@ -20,9 +20,7 @@ function App() {
   return (
     <>
       <div>
-        <Button onClick={() => navigate('/wallets/1/accounts/1')}>
-          Go to wallet view
-        </Button>
+        <Button onClick={() => navigate('/wallets')}>Go to wallet list</Button>
       </div>
       <TestComp></TestComp>
     </>

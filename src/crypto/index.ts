@@ -1,1 +1,2 @@
-export { AesCrypto } from './aes';
+export * from './aes';
+export * from './password';

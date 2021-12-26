@@ -58,6 +58,18 @@ export interface BackendService {
   getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<Uint8Array>;
 
   /**
+   * Check credentials used to access a wallet
+   *
+   * @param walletId the wallet to authenticate against
+   * @param args args required to check credentials, for tauri this will be a password
+   * but for mobile devices, maybe biometrics or something else? Not sure
+   */
+  checkCredentialsForWallet(
+    walletId: number,
+    args: Record<string, any>,
+  ): BackendOpResult<boolean>;
+
+  /**
    * Store arbitrary data using the method of the backends choosing
    * For example using tauri this could be indexdb, websql or localstorage
    *

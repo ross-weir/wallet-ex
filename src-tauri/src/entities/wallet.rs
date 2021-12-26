@@ -9,6 +9,9 @@ use serde::{Deserialize, Serialize};
 pub struct Wallet {
   id: i32,
   name: String,
+  // Don't return password by default when querying a full wallet row
+  #[serde(skip_serializing)]
+  password: String,
   interface: String,
   // Describes the standard to use for HD wallets
   // For example: https://github.com/ergoplatform/eips/blob/master/eip-0003.md
@@ -25,14 +28,14 @@ pub struct CreateWalletArgs<'a> {
 
 impl Wallet {
   pub fn create(args: CreateWalletArgs, db: &SqliteConnection) -> Result<Wallet> {
-    use crate::schema::wallets::dsl::*;
-
-    // Diesel sqlite doesn't support returning:
-    // https://github.com/diesel-rs/diesel/discussions/2684
     Ok(db.transaction::<_, Error, _>(|| {
-      insert_into(wallets).values(&args).execute(db)?;
+      insert_into(wallets::table).values(&args).execute(db)?;
 
-      Ok(wallets.find(sql("last_insert_rowid()")).get_result(db)?)
+      Ok(
+        wallets::table
+          .find(sql("last_insert_rowid()"))
+          .get_result(db)?,
+      )
     })?)
   }
 
@@ -40,15 +43,16 @@ impl Wallet {
     Ok(wallets::table.find(id).first(db)?)
   }
 
-  // TODO: pagination
-  // aggregrate balances
   pub fn list(db: &SqliteConnection) -> Result<Vec<Wallet>> {
-    use crate::schema::wallets::dsl::*;
+    Ok(wallets::table.load::<Wallet>(db)?)
+  }
 
-    // get balance of each account belonging to the wallet
-    // and tally them
-    // Should account balance be a denormalized field? with the tally of all transactions?
-    // Maybe start non-denormalized
-    todo!()
+  pub fn get_password(id: i32, db: &SqliteConnection) -> Result<String> {
+    Ok(
+      wallets::table
+        .select(wallets::password)
+        .find(id)
+        .first(db)?,
+    )
   }
 }

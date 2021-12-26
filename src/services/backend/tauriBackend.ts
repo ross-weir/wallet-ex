@@ -1,7 +1,6 @@
 import { invoke, path, fs } from '@tauri-apps/api';
 import localforage from 'localforage';
-import { AesCrypto } from '../../crypto';
-import { EncryptResult } from '../../crypto/aes';
+import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
 import { Account, Address, Wallet } from '../../entities';
 import { toBase16 } from '../../utils/formatting';
 import {
@@ -101,6 +100,25 @@ export class TauriBackend implements BackendService {
       iv: decryptParams.iv,
       salt: decryptParams.salt,
     });
+  }
+
+  async checkCredentialsForWallet(
+    walletId: number,
+    args: Record<string, any>,
+  ): BackendOpResult<boolean> {
+    if (!args.password) {
+      console.warn(
+        'TauriBackend: "password" field is required to check wallet credentials',
+      );
+
+      return false;
+    }
+
+    const walletPassword = await invoke<string>('get_wallet_password', {
+      walletId,
+    });
+
+    return checkPassword(args.password, walletPassword);
   }
 
   async storeData<T>(descriptor: string, data: T): BackendOpResult<T> {

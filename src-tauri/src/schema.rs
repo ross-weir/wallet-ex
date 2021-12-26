@@ -23,6 +23,7 @@ table! {
     wallets (id) {
         id -> Integer,
         name -> Text,
+        password -> Text,
         interface -> Text,
         hd_standard -> Text,
         created_at -> Nullable<Timestamp>,
@@ -32,4 +33,8 @@ table! {
 joinable!(accounts -> wallets (wallet_id));
 joinable!(addresses -> accounts (account_id));
 
-allow_tables_to_appear_in_same_query!(accounts, addresses, wallets,);
+allow_tables_to_appear_in_same_query!(
+    accounts,
+    addresses,
+    wallets,
+);

@@ -12,6 +12,8 @@ The entities in the seed data have all been derived using the following mnemonic
 change me do not use me change me do not use me
 ```
 
+The wallet passwords are `testing123`.
+
 Run the app like so:
 
 ```

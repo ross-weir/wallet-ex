@@ -18,11 +18,16 @@ import SensitiveComponent from '../SensitiveComponent';
 export interface WalletViewReceiveTabProps {
   wallet: Wallet;
   account: Account;
+  seed: Uint8Array;
 }
 
 // TODO: paginate addresses?
 // TODO: display "create address" snackbar: https://www.npmjs.com/package/react-simple-snackbar
-function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
+function WalletViewReceiveTab({
+  wallet,
+  account,
+  seed,
+}: WalletViewReceiveTabProps) {
   const { t } = useTranslation('walletReceiveTab');
   const backend = useBackend();
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -40,21 +45,14 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
       .catch((err) => console.log(`handle this m8: ${err}`));
 
     setIsLoading(false);
-  }, [account.id]);
+  }, [account.id, backend]);
 
   const onNewAddress = async () => {
     const addressIdx = latestAddress.deriveIdx + 1;
     const accountIdx = account.deriveIdx;
-
-    // TODO: is this even needed? deriving a new address is just a softpath derivaiton
-    // could avoid needing password?
-    const seedBytes = await backend.getSecretSeed({
-      password: 'testing123',
-      wallet,
-    });
     const walletInterface = getInterfaceForWallet(wallet);
     const ergoAddr = await walletInterface.deriveAddress({
-      seedBytes,
+      seedBytes: seed,
       hdStandardArgs: { addressIdx, accountIdx },
     });
     const newAddr = await backend.createAddress({

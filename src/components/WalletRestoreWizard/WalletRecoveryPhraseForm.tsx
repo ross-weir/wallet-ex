@@ -42,7 +42,7 @@ function WalletRecoveryPhraseForm() {
     }
   };
 
-  const onMnemonicKeyDown = (e: any) => {
+  const onMnemonicKeyUp = (e: any) => {
     if (e.key === 'Enter') {
       addMnemonicToWords(e);
     }
@@ -76,7 +76,7 @@ function WalletRecoveryPhraseForm() {
             value={mnemonic}
             error={undefined}
             onChange={onInputChange}
-            onKeyUp={onMnemonicKeyDown}
+            onKeyUp={onMnemonicKeyUp}
             onBlur={addMnemonicToWords}
           />
           {/* <Search
