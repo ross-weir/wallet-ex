@@ -16,11 +16,13 @@ import {
   Tab,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
+import CreateAccountModal from '../components/CreateAccountModal';
 import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, Wallet } from '../entities';
 import { BackendProvider, useBackend } from '../hooks';
+import { getInterfaceForWallet } from '../services';
 import { capitalize } from '../utils/formatting';
 
 function WalletView() {
@@ -134,6 +136,20 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
+  const onAccountCreated = async (account: Account): Promise<void> => {
+    const walletInterface = getInterfaceForWallet(wallet!);
+    const ergAddr = await walletInterface.deriveAddress({
+      seedBytes: walletSeed,
+      hdStandardArgs: { addressIdx: 0, accountIdx: account.deriveIdx },
+    });
+    await backend.createAddress({
+      address: ergAddr,
+      deriveIdx: 0,
+      accountId: account.id,
+    });
+    setAccountList((accts) => [...accts, account]);
+  };
+
   return (
     <>
       <BackendProvider>
@@ -168,7 +184,11 @@ function WalletView() {
                 >
                   {t('walletView:myAccounts')}
                 </Card.Header>
-                <Button floated="right" icon="add" size="tiny" />
+                <CreateAccountModal
+                  wallet={wallet!}
+                  onAccountCreated={onAccountCreated}
+                  trigger={<Button floated="right" icon="add" size="tiny" />}
+                />
               </Card.Content>
               <Menu vertical fluid>
                 {accountList.length &&
