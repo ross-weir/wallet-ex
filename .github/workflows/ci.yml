@@ -32,6 +32,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - uses: Swatinem/rust-cache@v1
       - run: yarn
       # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
       # https://github.com/webpack/webpack/issues/8826
