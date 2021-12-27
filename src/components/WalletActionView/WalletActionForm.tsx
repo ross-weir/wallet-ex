@@ -103,7 +103,7 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
       {(formik) => (
         <Modal
           as={Form}
-          size="small"
+          size="large"
           open={state.open}
           closeIcon
           onClose={() => onModalClose(formik.resetForm)}
@@ -119,7 +119,10 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
             )}
           </Modal.Content>
           <Modal.Actions>
-            <Button onClick={handleCancel}>{cancelButtonText}</Button>
+            {/* Hack: Tab index to force cancel button tabbed after submit button */}
+            <Button tabIndex={100} onClick={handleCancel}>
+              {cancelButtonText}
+            </Button>
             <Button type="submit" primary>
               {progressButtonText}
             </Button>

@@ -9,7 +9,7 @@ import WalletRecoveryPhraseForm, {
 import WalletRecoveryPassphraseForm, {
   walletRecoveryPassphraseInitialValues,
   walletRecoveryPassphraseValidationSchema,
-} from './WalletRecoveryPassphraseForm';
+} from '../WalletRecoveryPassphraseForm';
 import { Step } from 'semantic-ui-react';
 import { useTranslation } from 'react-i18next';
 

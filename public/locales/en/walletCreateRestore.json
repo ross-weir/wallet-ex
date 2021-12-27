@@ -10,8 +10,8 @@
       "error": ""
     },
     "password": {
-      "label": "Wallet Password",
-      "placeholder": "Wallet Password",
+      "label": "Wallet password",
+      "placeholder": "Wallet password",
       "error": ""
     },
     "passwordConfirm": {

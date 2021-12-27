@@ -1,6 +1,6 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import WalletRecoveryPassphraseForm from './WalletRecoveryPassphraseForm';
+import WalletRecoveryPassphraseForm from '.';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
