@@ -15,17 +15,15 @@ jobs:
       - name: ubuntu deps
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt update && sudo apt install libwebkit2gtk-4.0-dev \
-                build-essential \
-                curl \
-                wget \
-                libssl-dev \
-                libgtk-3-dev \
-                libappindicator3-dev \
-                patchelf \
-                librsvg2-dev
-          fi
+          sudo apt update && sudo apt install libwebkit2gtk-4.0-dev \
+              build-essential \
+              curl \
+              wget \
+              libssl-dev \
+              libgtk-3-dev \
+              libappindicator3-dev \
+              patchelf \
+              librsvg2-dev
       - uses: actions/setup-node@v2
         with:
           node-version: '17'
@@ -40,7 +38,9 @@ jobs:
       # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
       # https://github.com/webpack/webpack/issues/8826
       # CI=false causes the build to not fail on warnings, fix this
-      - run: CI=false yarn tauri build
+      - run: yarn tauri build
+        env:
+          CI: false
   unit-tests:
     runs-on: ubuntu-20.04
     steps:
