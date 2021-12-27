@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         # TODO: windows build
-        os: [ubuntu-20.04, macos-latest]
+        os: [ubuntu-20.04, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
       - name: deps
