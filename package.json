@@ -15,6 +15,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-i18next": "^8.1.0",
     "bcryptjs": "^2.4.3",
+    "bip39": "^3.0.4",
     "ergo-lib-wasm-browser": "0.15.0-alpha-3392017",
     "ergo-lib-wasm-nodejs": "0.15.0-alpha-fdf4ef3",
     "formik": "^2.2.9",

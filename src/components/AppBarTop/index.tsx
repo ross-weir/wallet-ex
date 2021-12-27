@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Dropdown, Icon, Menu, Segment } from 'semantic-ui-react';
 import { useSensitiveMode } from '../../hooks';
 

@@ -56,12 +56,12 @@ function WalletsListPasswordModal({
   };
 
   return (
-    <Modal size="small" open>
+    <Modal size="mini" open>
       <Modal.Header>
         {t('walletsList:walletPasswordTitle', { walletName: wallet.name })}
       </Modal.Header>
       <Modal.Content>
-        <Form style={{ display: 'inline-block', minWidth: 350 }}>
+        <Form>
           <Form.Input
             name="password"
             value={password}

@@ -21,9 +21,12 @@ pub struct Wallet {
 
 #[derive(Deserialize, Insertable)]
 #[table_name = "wallets"]
+#[serde(rename_all = "camelCase")]
 pub struct CreateWalletArgs<'a> {
   name: &'a str,
+  password: &'a str,
   interface: &'a str,
+  hd_standard: &'a str,
 }
 
 impl Wallet {

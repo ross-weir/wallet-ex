@@ -10,8 +10,8 @@
       "error": ""
     },
     "password": {
-      "label": "Wallet Password",
-      "placeholder": "Wallet Password",
+      "label": "Wallet password",
+      "placeholder": "Wallet password",
       "error": ""
     },
     "passwordConfirm": {
@@ -27,6 +27,18 @@
       "placeholder": "Add word..."
     }
   },
+  "phraseRecordForm": {
+    "title": "Recovery phrase",
+    "description": "Record wallet recovery phrase",
+    "infoHeader": "Wallet recovery phrase",
+    "info": "By clicking 'Reveal' below you will be able to view a set of random words.<br />This is your wallet recovery phrase, write it down and keep it in a safe place. You will be required to repeat it during the next step.<br /><strong>Anyone with this phrase will have access to your funds.</strong>"
+  },
+  "phraseConfirmForm": {
+    "title": "Confirm recovery phrase",
+    "description": "Confirm wallet recovery phrase",
+    "label": "Word {{index}}",
+    "error": "Word doesn't match recovery phrase"
+  },
   "passphraseForm": {
     "title": "Recovery passphrase",
     "description": "Enter wallet recovery passphrase",
@@ -40,6 +52,7 @@
       "placeholder": "Confirm passphrase",
       "error": ""
     },
+    "infoHeader": "Optional passphrase",
     "info": "If you set a recovery passphrase when you created your wallet you must enter it here.<br />Otherwise skip this step.",
     "moreInfo": "For more information about recovery passphrases",
     "see": "see here"

@@ -1,6 +1,12 @@
 import { Formik, FormikValues } from 'formik';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Modal, Form } from 'semantic-ui-react';
+import { capitalize } from '../../utils/formatting';
+import WalletCreateWizard, {
+  createInitialValues,
+  createValidations,
+} from '../WalletCreateWizard';
 import WalletRestoreWizard, {
   restoreInitialValues,
   restoreValidations,
@@ -10,6 +16,7 @@ interface Props {
   action: 'Create' | 'Restore';
   totalSteps: number;
   onCancel?: () => void;
+  onSubmit?: (values: Record<string, any>) => void;
 }
 
 const initialState = {
@@ -17,13 +24,19 @@ const initialState = {
   open: true,
 };
 
-function WalletActionForm({ action, totalSteps, onCancel }: Props) {
+function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
+  const { t } = useTranslation(['common']);
   const [state, setState] = React.useState({ ...initialState });
 
   const progressButtonText =
-    state.activeStep === totalSteps - 1 ? 'Finish' : 'Continue';
+    state.activeStep === totalSteps - 1
+      ? capitalize(t('common:finish'))
+      : capitalize(t('common:continue'));
 
-  const cancelButtonText = state.activeStep === 0 ? 'Cancel' : 'Back';
+  const cancelButtonText =
+    state.activeStep === 0
+      ? capitalize(t('common:cancel'))
+      : capitalize(t('common:back'));
 
   const resetState = () => {
     setState({ ...initialState });
@@ -58,12 +71,16 @@ function WalletActionForm({ action, totalSteps, onCancel }: Props) {
     if (action === 'Restore') {
       return restoreValidations[state.activeStep];
     }
+
+    return createValidations[state.activeStep];
   };
 
   const getInitialValues = () => {
     if (action === 'Restore') {
       return { ...restoreInitialValues };
     }
+
+    return { ...createInitialValues };
   };
 
   return (
@@ -76,8 +93,7 @@ function WalletActionForm({ action, totalSteps, onCancel }: Props) {
 
         // last form submit
         if (state.activeStep === totalSteps - 1) {
-          // do stuff with `values`
-          console.log(values);
+          if (onSubmit) onSubmit(values);
 
           resetState();
           resetForm();
@@ -87,7 +103,7 @@ function WalletActionForm({ action, totalSteps, onCancel }: Props) {
       {(formik) => (
         <Modal
           as={Form}
-          size="small"
+          size="large"
           open={state.open}
           closeIcon
           onClose={() => onModalClose(formik.resetForm)}
@@ -97,16 +113,16 @@ function WalletActionForm({ action, totalSteps, onCancel }: Props) {
           <Modal.Header>{action} Wallet</Modal.Header>
           <Modal.Content>
             {action === 'Restore' ? (
-              <WalletRestoreWizard
-                activeStep={state.activeStep}
-                formik={formik}
-              />
+              <WalletRestoreWizard activeStep={state.activeStep} />
             ) : (
-              <p>nun</p>
+              <WalletCreateWizard activeStep={state.activeStep} />
             )}
           </Modal.Content>
           <Modal.Actions>
-            <Button onClick={handleCancel}>{cancelButtonText}</Button>
+            {/* Hack: Tab index to force cancel button tabbed after submit button */}
+            <Button tabIndex={100} onClick={handleCancel}>
+              {cancelButtonText}
+            </Button>
             <Button type="submit" primary>
               {progressButtonText}
             </Button>
