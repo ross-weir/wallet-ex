@@ -12,8 +12,8 @@ jobs:
         os: [ubuntu-20.04, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: deps
-        # macOS deps are already installed
+      - name: ubuntu deps
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt update && sudo apt install libwebkit2gtk-4.0-dev \
