@@ -6,6 +6,7 @@ interface Props {
   onRemove?: (idx: number) => void;
   error?: string;
   hidden?: boolean;
+  numbered?: boolean;
 }
 
 // If onRemove is supplied then the words are editable/removable.
@@ -15,6 +16,7 @@ function RecoveryPhraseView({
   height = '150px',
   error,
   hidden = false,
+  numbered = true,
 }: Props) {
   const removable = !!onRemove;
 
@@ -32,7 +34,7 @@ function RecoveryPhraseView({
           <Label.Group color={removable ? 'blue' : undefined} size="large">
             {value.map((word, i) => (
               <Label key={`${word}-${i}`}>
-                {word}
+                {(numbered ? `${i + 1}. ` : '') + word}
                 {removable && (
                   <Icon link name="close" onClick={onRemoveFactory(i)} />
                 )}

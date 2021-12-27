@@ -29,9 +29,12 @@ function WalletRecoveryPhraseRecord() {
 
   useEffect(() => {
     // TODO: support different languages
-    setFieldValue('phrase', generateMnemonic(MNEMONIC_ENTROPHY).split(' '));
+    // If the user navigates backwards don't regenerate the mnemonic
+    if (!values.phrase.length) {
+      setFieldValue('phrase', generateMnemonic(MNEMONIC_ENTROPHY).split(' '));
+    }
     setIsLoading(false);
-  }, [setFieldValue]);
+  }, [setFieldValue, values.phrase.length]);
 
   const getT = (key: string): string =>
     t(`walletCreateRestore:phraseRecordForm.${key}`);

@@ -4,12 +4,23 @@ import WalletDetailsForm, {
   walletDetailsInitialValues,
   walletDetailsValidationSchema,
 } from '../WalletDetailsForm';
-import WalletRecoveryPhraseRecord from './WalletRecoveryPhraseRecord';
+import WalletRecoveryPhraseConfirm, {
+  walletRecoveryPhraseConfirmInitialState,
+} from './WalletRecoveryPhraseConfirm';
+import WalletRecoveryPhraseRecord, {
+  walletRecoveryPhraseRecordInitialState,
+} from './WalletRecoveryPhraseRecord';
 
-export const createValidations = [walletDetailsValidationSchema];
+export const createValidations = [
+  walletDetailsValidationSchema,
+  undefined, // no validation needed for record phrase step
+  undefined, // phrase confirmation validation done in-component
+];
 
 export const createInitialValues = {
   ...walletDetailsInitialValues,
+  ...walletRecoveryPhraseRecordInitialState,
+  ...walletRecoveryPhraseConfirmInitialState,
 };
 
 export interface WalletCreateWizardProps {
@@ -25,10 +36,16 @@ function WalletCreateWizard({ activeStep }: WalletCreateWizardProps) {
         return <WalletDetailsForm />;
       case 1:
         return <WalletRecoveryPhraseRecord />;
+      case 2:
+        return <WalletRecoveryPhraseConfirm />;
     }
   };
 
-  const stepDetails = ['detailsForm', 'phraseRecordForm'].map((f) => ({
+  const stepDetails = [
+    'detailsForm',
+    'phraseRecordForm',
+    'phraseConfirmForm',
+  ].map((f) => ({
     title: t(`${f}.title`),
     description: t(`${f}.description`),
   }));

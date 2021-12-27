@@ -85,7 +85,7 @@ function WalletActionView() {
 
   const totalSteps = {
     Restore: 3,
-    Create: 2,
+    Create: 3,
     '': 0,
   }[action];
 

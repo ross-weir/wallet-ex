@@ -28,10 +28,16 @@
     }
   },
   "phraseRecordForm": {
-    "title": "Recovery Phrase",
+    "title": "Recovery phrase",
     "description": "Record wallet recovery phrase",
     "infoHeader": "Wallet recovery phrase",
     "info": "By clicking 'Reveal' below you will be able to view a set of random words.<br />This is your wallet recovery phrase, write it down and keep it in a safe place. You will be required to repeat it during the next step.<br /><strong>Anyone with this phrase will have access to your funds.</strong>"
+  },
+  "phraseConfirmForm": {
+    "title": "Confirm recovery phrase",
+    "description": "Confirm wallet recovery phrase",
+    "label": "Word {{index}}",
+    "error": "Word doesn't match recovery phrase"
   },
   "passphraseForm": {
     "title": "Recovery passphrase",
