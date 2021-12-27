@@ -36,7 +36,7 @@ jobs:
       - uses: Swatinem/rust-cache@v1
         with:
           working-directory: src-tauri
-      - run: yarn
+      - run: yarn --frozen-lockfile --ignore-scripts
       # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
       # https://github.com/webpack/webpack/issues/8826
       # CI=false causes the build to not fail on warnings, fix this
@@ -49,5 +49,5 @@ jobs:
         with:
           node-version: '17'
           cache: yarn
-      - run: yarn
+      - run: yarn --frozen-lockfile --ignore-scripts
       - run: yarn test
