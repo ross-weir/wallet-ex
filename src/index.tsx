@@ -7,8 +7,7 @@ import { initI18n } from './i18n';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
-import { AddWallet, WalletView } from './routes';
-import WalletsList from './routes/WalletsList';
+import { AddWallet, WalletsList, WalletView } from './routes';
 import { SensitiveModeProvider } from './hooks';
 
 initI18n();
