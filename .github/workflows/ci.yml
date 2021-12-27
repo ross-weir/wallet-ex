@@ -33,7 +33,10 @@ jobs:
         with:
           toolchain: stable
       - run: yarn
-      - run: yarn tauri build
+      # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
+      # https://github.com/webpack/webpack/issues/8826
+      # CI=false causes the build to not fail on warnings, fix this
+      - run: CI=false yarn tauri build
   unit-tests:
     runs-on: ubuntu-20.04
     steps:
