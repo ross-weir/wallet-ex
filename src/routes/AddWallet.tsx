@@ -9,7 +9,7 @@ import {
   Divider,
 } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
-import WalletActionView from '../components/WalletActionView';
+import InitWalletView from '../components/InitWalletView';
 import { capitalize } from '../utils/formatting';
 
 function AddWallet() {
@@ -38,7 +38,7 @@ function AddWallet() {
           </Grid.Column>
         </Grid>
         <Divider />
-        <WalletActionView />
+        <InitWalletView />
       </Container>
     </>
   );

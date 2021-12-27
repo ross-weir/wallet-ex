@@ -17,7 +17,7 @@ import { capitalize } from '../../utils/formatting';
 import ledgerImg from '../../img/ledger.svg';
 import WalletActionForm from './WalletActionForm';
 
-function WalletActionView() {
+function InitWalletView() {
   const { t } = useTranslation(['common', 'walletCreateRestore']);
   const [action, setAction] = useState<'Restore' | 'Create' | ''>('');
   const backend = getBackendService();
@@ -148,4 +148,4 @@ function WalletActionView() {
   );
 }
 
-export default WalletActionView;
+export default InitWalletView;
