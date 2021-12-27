@@ -77,7 +77,9 @@ function WalletsListPasswordModal({
         </Form>
       </Modal.Content>
       <Modal.Actions>
-        <Button onClick={onCancel}>{capitalize(t('common:cancel'))}</Button>
+        <Button tabIndex={100} onClick={onCancel}>
+          {capitalize(t('common:cancel'))}
+        </Button>
         <Button
           primary
           onClick={handleSubmit}

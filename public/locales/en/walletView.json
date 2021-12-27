@@ -1,3 +1,10 @@
 {
-  "myAccounts": "My Accounts"
+  "myAccounts": "My Accounts",
+  "createAccount": {
+    "title": "Create Account",
+    "nameLabel": "Account name",
+    "namePlaceholder": "Enter account name...",
+    "nameRequiredErr": "Account name is required",
+    "nameCharacterLimitErr": "Account name cannot be more than 20 characters"
+  }
 }
