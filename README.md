@@ -1,5 +1,7 @@
 # Wallet X
 
+[![.github/workflows/ci](https://github.com/ross-weir/wallet-x/actions/workflows/ci.yml/badge.svg)](https://github.com/ross-weir/wallet-x/actions/workflows/ci.yml)
+
 Everything about this project is WIP, including this very readme
 
 ## Seeding database with test data
