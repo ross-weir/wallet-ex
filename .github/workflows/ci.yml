@@ -1,0 +1,45 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # TODO: windows build
+        os: [ubuntu-20.04, macos-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: deps
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt update && sudo apt install libwebkit2gtk-4.0-dev \
+                build-essential \
+                curl \
+                wget \
+                libssl-dev \
+                libgtk-3-dev \
+                libappindicator3-dev \
+                patchelf \
+                librsvg2-dev
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+               brew install gcc
+               xcode-select --install
+          fi
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - uses: actions-rs/toolchain@v1
+      - run: yarn
+      - run: yarn tauri build
+  unit-tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: yarn
+      - run: yarn test
