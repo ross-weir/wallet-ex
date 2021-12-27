@@ -30,6 +30,8 @@ jobs:
         with:
           node-version: '17'
       - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
       - run: yarn
       - run: yarn tauri build
   unit-tests:
