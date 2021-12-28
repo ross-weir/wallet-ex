@@ -63,7 +63,7 @@ function InitWalletView() {
 
     // Create initial account/address
     // TODO: extract out into a 'service layer'
-    // TODO: kick off job to retrieve balances
+    // TODO: kick off job to retrieve balances using a stopgap
     const acct = await backend.createAccount({
       name: 'Main',
       coinType: 429,

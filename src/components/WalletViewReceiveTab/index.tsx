@@ -10,8 +10,9 @@ import {
 } from 'semantic-ui-react';
 import { Account, Address, Wallet } from '../../entities';
 import { useBackend } from '../../hooks';
-import { getInterfaceForWallet } from '../../services';
+import { getChainProvider, getInterfaceForWallet } from '../../services';
 import CopyIcon from '../CopyIcon';
+import ErgDisplay from '../ErgDisplay';
 import QrIconPopup from '../QrIconPopup';
 import SensitiveComponent from '../SensitiveComponent';
 
@@ -30,8 +31,10 @@ function WalletViewReceiveTab({
 }: WalletViewReceiveTabProps) {
   const { t } = useTranslation('walletReceiveTab');
   const backend = useBackend();
+  const chain = getChainProvider();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeriving, setIsDeriving] = useState(false);
   let latestAddress!: Address;
 
   // Only trigger reload if accountId changes
@@ -48,20 +51,28 @@ function WalletViewReceiveTab({
   }, [account.id, backend]);
 
   const onNewAddress = async () => {
-    const addressIdx = latestAddress.deriveIdx + 1;
-    const accountIdx = account.deriveIdx;
-    const walletInterface = getInterfaceForWallet(wallet);
-    const ergoAddr = await walletInterface.deriveAddress({
-      seedBytes: seed,
-      hdStandardArgs: { addressIdx, accountIdx },
-    });
-    const newAddr = await backend.createAddress({
-      address: ergoAddr,
-      deriveIdx: addressIdx,
-      accountId: account.id,
-    });
+    setIsDeriving(true);
+    try {
+      const addressIdx = latestAddress.deriveIdx + 1;
+      const accountIdx = account.deriveIdx;
+      const walletInterface = getInterfaceForWallet(wallet);
+      const ergoAddr = await walletInterface.deriveAddress({
+        seedBytes: seed,
+        hdStandardArgs: { addressIdx, accountIdx },
+      });
+      const balance = await chain.balanceForAddress(ergoAddr);
+      const newAddr = await backend.createAddress({
+        address: ergoAddr,
+        deriveIdx: addressIdx,
+        accountId: account.id,
+        balance,
+      });
 
-    setAddresses((addrs) => [...addrs, newAddr]);
+      setAddresses((addrs) => [...addrs, newAddr]);
+      // TODO: handle err
+    } finally {
+      setIsDeriving(false);
+    }
   };
 
   if (addresses.length) {
@@ -100,7 +111,12 @@ function WalletViewReceiveTab({
                 </SensitiveComponent>
               )}
             </Segment>
-            <Button primary onClick={onNewAddress}>
+            <Button
+              primary
+              onClick={onNewAddress}
+              loading={isDeriving}
+              disabled={isDeriving}
+            >
               {t('newAddressButton')}
             </Button>
           </>
@@ -144,9 +160,7 @@ function WalletViewReceiveTab({
                       </SensitiveComponent>
                     </Table.Cell>
                     <Table.Cell>
-                      <SensitiveComponent>
-                        {addr.balance || '-'}
-                      </SensitiveComponent>
+                      <ErgDisplay balance={addr.balance} />
                     </Table.Cell>
                   </Table.Row>
                 ))}

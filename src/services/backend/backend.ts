@@ -19,6 +19,7 @@ export interface CreateAddressArgs {
   address: string;
   deriveIdx: number;
   accountId: number;
+  balance?: number;
 }
 
 export interface StoreSecretSeedArgs {

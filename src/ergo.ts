@@ -1,5 +1,7 @@
 export type Ergo = typeof import('ergo-lib-wasm-browser');
 
+export const ERG_DECIMAL_PLACES = 9;
+
 let ergo: Ergo;
 
 export const getErgo = (): Ergo => {

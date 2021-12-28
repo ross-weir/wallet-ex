@@ -31,7 +31,10 @@ export class LocalWalletInterface implements WalletInterface {
     const addr = rootSk.derive(path);
 
     // TODO: base58 param is the network byte (mainnet vs testnet)
-    return addr.public_key().to_address().to_base58(0);
+    return addr
+      .public_key()
+      .to_address()
+      .to_base58(this.ergo.NetworkPrefix.Mainnet);
   }
 
   signTx(): Promise<void> {
