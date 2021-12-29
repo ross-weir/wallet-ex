@@ -297,7 +297,7 @@ export const config: WebdriverIO.Config = {
       mkdirSync(failDir);
     }
 
-    const ports = execSync('netstat -lntu');
+    const ports = execSync('netstat -lntup');
     writeFileSync(resolve(failDir, 'ports.txt'), ports);
 
     browser.saveScreenshot(resolve(failDir, 'test.png'));

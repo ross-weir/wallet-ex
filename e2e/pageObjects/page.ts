@@ -9,6 +9,6 @@ export default class Page {
    */
   public open(path: string): Promise<string> {
     // TODO: we can set the port when running `tauri-driver`, maybe pass this in instead of hardcoding
-    return browser.url(`localhost:3000/${path}`);
+    return browser.url(`localhost:4444/${path}`);
   }
 }
