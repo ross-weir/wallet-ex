@@ -1,7 +1,7 @@
 import { homedir, platform } from 'os';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, basename } from 'path';
-import { exec, spawn, spawnSync } from 'child_process';
+import { exec, execSync, spawn, spawnSync } from 'child_process';
 
 let tauriDriver;
 
@@ -297,12 +297,8 @@ export const config: WebdriverIO.Config = {
       mkdirSync(failDir);
     }
 
-    exec('netstat -lntup', (err, stdout, stderr) => {
-      writeFileSync(
-        resolve(failDir, 'ports.txt'),
-        stdout + '\n\n\n\n' + stderr,
-      );
-    });
+    const ports = execSync('netstat -lntu');
+    writeFileSync(resolve(failDir, 'ports.txt'), ports);
 
     browser.saveScreenshot(resolve(failDir, 'test.png'));
     writeFileSync(resolve(failDir, 'dom.html'), await browser.getPageSource());
