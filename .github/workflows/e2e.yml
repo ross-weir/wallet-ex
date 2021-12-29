@@ -49,3 +49,10 @@ jobs:
           CI: false
       - name: Run tests
         run: xvfb-run yarn wdio
+      - name: Upload failure artifacts
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: e2e-failures
+          path: .e2e-failure
+          retention-days: 3

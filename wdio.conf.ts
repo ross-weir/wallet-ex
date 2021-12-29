@@ -1,8 +1,13 @@
-import { homedir } from 'os';
-import { resolve } from 'path';
+import { homedir, platform } from 'os';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { resolve, basename } from 'path';
 import { spawn, spawnSync } from 'child_process';
 
 let tauriDriver;
+
+const failedRunsDir = resolve(__dirname, '.e2e-failure');
+const isWindows = platform() === 'win32';
+const appExt = isWindows ? '.exe' : '';
 
 export const config: WebdriverIO.Config = {
   //
@@ -66,7 +71,7 @@ export const config: WebdriverIO.Config = {
       // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
       // excludeDriverLogs: ['bugreport', 'server'],
       'tauri:options': {
-        application: './src-tauri/target/release/wallet-x',
+        application: `./src-tauri/target/release/wallet-x${appExt}`,
       },
     },
   ],
@@ -204,6 +209,10 @@ export const config: WebdriverIO.Config = {
    * @param {String} cid worker id (e.g. 0-0)
    */
   beforeSession: function (config, capabilities, specs, cid) {
+    if (!existsSync(failedRunsDir)) {
+      mkdirSync(failedRunsDir);
+    }
+
     tauriDriver = spawn(
       resolve(homedir(), '.cargo', 'bin', 'tauri-driver'),
       [],
@@ -275,8 +284,23 @@ export const config: WebdriverIO.Config = {
    * @param {number}                 result.duration  duration of scenario in milliseconds
    * @param {Object}                 context          Cucumber World object
    */
-  // afterScenario: function (world, result, context) {
-  // },
+  afterScenario: async function (world, result, context) {
+    const fileSlug = basename(world.gherkinDocument.uri);
+    const nameSlug = world.gherkinDocument.feature?.name.replaceAll(' ', '-');
+    const failDir = resolve(failedRunsDir, `${fileSlug}-${nameSlug}`);
+
+    if (!existsSync(failDir)) {
+      mkdirSync(failDir);
+    }
+
+    if (!result.passed) {
+      browser.saveScreenshot(resolve(failDir, 'test.png'));
+      writeFileSync(
+        resolve(failDir, 'dom.html'),
+        await browser.getPageSource(),
+      );
+    }
+  },
   /**
    *
    * Runs after a Cucumber Feature.

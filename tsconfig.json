@@ -27,6 +27,7 @@
     ]
   },
   "include": [
+    "wdio.conf.ts",
     "src",
     "e2e"
   ],
