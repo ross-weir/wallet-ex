@@ -14,19 +14,14 @@ export class ExplorerChainProvider implements ChainProvider {
   }
 
   private async doRequest(endpoint: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.baseEndpoint}/${endpoint}`);
+    // Just bubble up any errors for now
+    const response = await fetch(`${this.baseEndpoint}/${endpoint}`);
 
-      if (!response.ok) {
-        throw new Error(
-          `Explorer API request failed: ${await response.text()}`,
-        );
-      }
-
-      return response.json();
-    } catch (e) {
-      // Just bubble the error for now
+    if (!response.ok) {
+      throw new Error(`Explorer API request failed: ${await response.text()}`);
     }
+
+    return response.json();
   }
 
   private getBaseEndpoint(network: number): string {
