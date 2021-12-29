@@ -40,7 +40,12 @@ jobs:
           command: install
           args: tauri-driver
       - run: yarn --frozen-lockfile --ignore-scripts
+      # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
+      # https://github.com/webpack/webpack/issues/8826
+      # CI=false causes the build to not fail on warnings, fix this
       - name: Build application
         run: yarn tauri build
+        env:
+          CI: false
       - name: Run tests
         run: xvfb-run yarn wdio
