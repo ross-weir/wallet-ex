@@ -26,6 +26,7 @@ pub struct CreateAddressArgs {
   address: String,
   derive_idx: i32,
   account_id: i32,
+  balance: Option<f64>,
 }
 
 impl Address {

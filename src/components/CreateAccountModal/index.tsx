@@ -77,6 +77,7 @@ function CreateAccountModal({
     <Modal
       open={isOpen}
       trigger={trigger}
+      size="small"
       onClose={() => setIsOpen(false)}
       onOpen={() => setIsOpen(true)}
     >

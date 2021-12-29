@@ -31,3 +31,27 @@ export const fromBase16 = (hex: string): Uint8Array => {
   }
   return bytes;
 };
+
+/**
+ * Format a number with the specified decimals/zeros.
+ *
+ * @param n the number to add a decimal to
+ * @param decimalCount How many trailing decimals there should be
+ * @param trimTrailingZero remove any trailing zeros
+ * @returns the number as a string with the decimal/zero formatting
+ */
+export const insertDecimal = (
+  n: number | string,
+  decimalCount: number,
+  trimTrailingZero?: boolean,
+): string => {
+  const nStr = n.toString();
+  const decimalIdx = nStr.length - decimalCount;
+  let formatted = nStr.slice(0, decimalIdx) + '.' + nStr.slice(decimalIdx);
+
+  if (trimTrailingZero) {
+    formatted = formatted.replace(/0+$/, '');
+  }
+
+  return formatted;
+};
