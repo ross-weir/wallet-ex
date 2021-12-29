@@ -23,7 +23,8 @@
       "node",
       "webdriverio/async",
       "@wdio/cucumber-framework",
-      "@wdio/devtools-service"    
+      "@wdio/devtools-service",
+      "expect-webdriverio/jest"
     ]
   },
   "include": [

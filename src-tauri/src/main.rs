@@ -9,7 +9,11 @@ extern crate diesel;
 extern crate diesel_migrations;
 
 use diesel::{Connection, SqliteConnection};
-use std::sync::{Arc, Mutex};
+use std::{
+  env,
+  path::PathBuf,
+  sync::{Arc, Mutex},
+};
 use tauri::api::cli::get_matches;
 
 mod cmd;
@@ -32,7 +36,11 @@ fn main() -> anyhow::Result<()> {
   // so users can't do anything that will require the database, db connection in tauri state will become optional
   // At the moment it blocks the UI, the user just sees a blank window
   // So the db connection passed as tauri state will likely need to be optional
-  let db_path = db::get_and_ensure_path(cfg_path).unwrap();
+  let db_path: PathBuf = match env::var("WALLET_X_DB_URL") {
+    Ok(path) => path.into(),
+    Err(_) => db::get_and_ensure_path(cfg_path).unwrap(),
+  };
+
   let conn = SqliteConnection::establish(&db_path.to_string_lossy()).unwrap();
   embedded_migrations::run(&conn).unwrap();
 

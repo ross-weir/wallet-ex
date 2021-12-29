@@ -2,11 +2,11 @@ import { Given, Then } from '@wdio/cucumber-framework';
 
 import WalletsListPage from '../pageObjects/walletsList.page';
 
-const pages = {
+const pages: Record<string, any> = {
   walletsList: WalletsListPage,
 };
 
-Given(/^I am on the (\w+) page$/, async (page) => {
+Given(/^I am on the (\w+) page$/, async (page: string) => {
   await pages[page].open();
 });
 
