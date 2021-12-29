@@ -50,7 +50,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "schema:update": "cd src-tauri && diesel migration run --database-url schema.sqlite3 && rm schema.sqlite3",
-    "db:seed": "./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json"
+    "db:seed": "./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json",
+    "wdio": "wdio run wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.e2e.json"
   },
   "eslintConfig": {
     "extends": [
@@ -95,12 +96,19 @@
     "@types/react-router-dom": "^5.3.2",
     "@types/styled-components": "^5.1.15",
     "@types/yup": "^0.29.13",
+    "@wdio/cli": "^7.16.12",
+    "@wdio/cucumber-framework": "^7.16.12",
+    "@wdio/devtools-service": "^7.16.12",
+    "@wdio/local-runner": "^7.16.12",
+    "@wdio/spec-reporter": "^7.16.11",
     "babel-loader": "8.1.0",
+    "chromedriver": "^96.0.0",
     "cross-env": "^7.0.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.2",
     "prettier": "^2.4.1",
     "storybook-react-i18next": "^1.0.13",
-    "ts-node": "^10.4.0"
+    "ts-node": "^10.4.0",
+    "wdio-chromedriver-service": "^7.2.2"
   }
 }
