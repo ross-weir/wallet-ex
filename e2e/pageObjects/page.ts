@@ -8,6 +8,7 @@ export default class Page {
    * @param path path of the sub page (e.g. /path/to/page.html)
    */
   public open(path: string): Promise<string> {
-    return browser.url(`localhost:3000/${path}`);
+    // TODO: we can set the port when running `tauri-driver`, maybe pass this in instead of hardcoding
+    return browser.url(`http://localhost:3000/${path}`);
   }
 }

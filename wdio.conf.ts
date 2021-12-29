@@ -1,7 +1,7 @@
 import { homedir, platform } from 'os';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, basename } from 'path';
-import { spawn, spawnSync } from 'child_process';
+import { exec, spawn, spawnSync } from 'child_process';
 
 let tauriDriver;
 
@@ -285,6 +285,10 @@ export const config: WebdriverIO.Config = {
    * @param {Object}                 context          Cucumber World object
    */
   afterScenario: async function (world, result, context) {
+    if (result.passed) {
+      return;
+    }
+
     const fileSlug = basename(world.gherkinDocument.uri);
     const nameSlug = world.gherkinDocument.feature?.name.replaceAll(' ', '-');
     const failDir = resolve(failedRunsDir, `${fileSlug}-${nameSlug}`);
@@ -293,13 +297,15 @@ export const config: WebdriverIO.Config = {
       mkdirSync(failDir);
     }
 
-    if (!result.passed) {
-      browser.saveScreenshot(resolve(failDir, 'test.png'));
+    exec('netstat -lntup', (err, stdout, stderr) => {
       writeFileSync(
-        resolve(failDir, 'dom.html'),
-        await browser.getPageSource(),
+        resolve(failDir, 'ports.txt'),
+        stdout + '\n\n\n\n' + stderr,
       );
-    }
+    });
+
+    browser.saveScreenshot(resolve(failDir, 'test.png'));
+    writeFileSync(resolve(failDir, 'dom.html'), await browser.getPageSource());
   },
   /**
    *
