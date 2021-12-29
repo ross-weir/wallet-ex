@@ -2,8 +2,6 @@
 // Used to query data, etc
 // For example: explorer vs node etc
 
-import { Address } from '../../entities';
-
 export interface ChainProvider {
   /**
    * Get the CONFIRMED balance of an address.

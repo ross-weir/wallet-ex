@@ -19,13 +19,13 @@ export class ExplorerChainProvider implements ChainProvider {
 
       if (!response.ok) {
         throw new Error(
-          `Bad network response from: ${this.baseEndpoint}/${endpoint}`,
+          `Explorer API request failed: ${await response.text()}`,
         );
       }
 
       return response.json();
     } catch (e) {
-      console.error(e);
+      // Just bubble the error for now
     }
   }
 
