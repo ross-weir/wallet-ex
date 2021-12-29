@@ -47,8 +47,8 @@
     "eject": "react-scripts eject",
     "prepare": "husky install",
     "tauri": "tauri",
-    "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006 -s public",
-    "build-storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider build-storybook -s public",
+    "storybook": "cross-env start-storybook -p 6006 -s public",
+    "build-storybook": "cross-env build-storybook -s public",
     "schema:update": "cd src-tauri && diesel migration run --database-url schema.sqlite3 && rm schema.sqlite3",
     "db:seed": "./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json"
   },
