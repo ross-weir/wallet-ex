@@ -66,7 +66,7 @@ export const config: WebdriverIO.Config = {
       // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
       // excludeDriverLogs: ['bugreport', 'server'],
       'tauri:options': {
-        application: './src-tauri/target/release/wallet-x.exe',
+        application: './src-tauri/target/release/wallet-x',
       },
     },
   ],
