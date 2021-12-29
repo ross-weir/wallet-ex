@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { Button } from 'semantic-ui-react';
+import React from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { initErgo } from './ergo';
-import { TestComp } from './TestComp';
+import { SensitiveModeProvider } from './hooks';
+import { WalletsList, AddWallet, WalletView } from './routes';
 
 function App() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,12 +17,21 @@ function App() {
   }
 
   return (
-    <>
-      <div>
-        <Button onClick={() => navigate('/wallets')}>Go to wallet list</Button>
-      </div>
-      <TestComp></TestComp>
-    </>
+    <BrowserRouter>
+      <SensitiveModeProvider>
+        <React.StrictMode>
+          <Suspense fallback="loading">
+            <Routes>
+              <Route path="/" element={<Navigate to="/wallets" />} />
+              <Route path="/wallets" element={<WalletsList />} />
+              <Route path="/wallets/add" element={<AddWallet />} />
+              <Route path="/wallets/:walletId" element={<WalletView />} />
+              <Route path="*" element={<p>How did you get hur?</p>} />
+            </Routes>
+          </Suspense>
+        </React.StrictMode>
+      </SensitiveModeProvider>
+    </BrowserRouter>
   );
 }
 

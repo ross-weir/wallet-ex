@@ -41,10 +41,10 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "craco --openssl-legacy-provider start",
-    "build": "craco --openssl-legacy-provider build",
-    "test": "craco --openssl-legacy-provider test",
-    "eject": "react-scripts --openssl-legacy-provider eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
     "prepare": "husky install",
     "tauri": "tauri",
     "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006 -s public",
