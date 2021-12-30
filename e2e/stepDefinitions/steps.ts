@@ -12,4 +12,5 @@ Given(/^I am on the (\w+) page$/, async (page: string) => {
 
 Then(/I should see the add wallet button(.*)$/, async (page) => {
   await expect(WalletsListPage.btnAddWallet).toBeExisting();
+  expect(true).toBe(false);
 });
