@@ -11,6 +11,8 @@ extern crate diesel_migrations;
 use diesel::{Connection, SqliteConnection};
 use std::{
   env,
+  fs::OpenOptions,
+  io::prelude::*,
   path::PathBuf,
   sync::{Arc, Mutex},
 };
@@ -25,6 +27,14 @@ mod seed;
 embed_migrations!();
 
 fn main() -> anyhow::Result<()> {
+  let mut f = OpenOptions::new()
+    .create(true)
+    .write(true)
+    .append(true)
+    .open("./.e2e-failure/text.txt")
+    .unwrap();
+  writeln!(f, "start");
+
   // Read configuration file
   // Or cli parameters
   let ctx = tauri::generate_context!();
@@ -32,6 +42,7 @@ fn main() -> anyhow::Result<()> {
   // dunno when this could fail, just unwrap for now
   let cfg_path = tauri::api::path::app_dir(&cfg).unwrap();
 
+  writeln!(f, "cfg path");
   // can probably do this in another thread but will need to sync frontend with loading screen
   // so users can't do anything that will require the database, db connection in tauri state will become optional
   // At the moment it blocks the UI, the user just sees a blank window
@@ -41,9 +52,11 @@ fn main() -> anyhow::Result<()> {
     Err(_) => db::get_and_ensure_path(cfg_path).unwrap(),
   };
 
+  writeln!(f, "db path");
   let conn = SqliteConnection::establish(&db_path.to_string_lossy()).unwrap();
   embedded_migrations::run(&conn).unwrap();
 
+  writeln!(f, "before seed");
   // Handle CLI args
   if let Ok(matches) = get_matches(&cfg.tauri.cli.clone().unwrap()) {
     // Load json file at path "seed_db" into the database
@@ -54,8 +67,9 @@ fn main() -> anyhow::Result<()> {
     }
   }
 
+  writeln!(f, "after seed");
   let safe_db = Arc::new(Mutex::new(conn));
-
+  writeln!(f, "before start");
   tauri::Builder::default()
     .manage(safe_db)
     .invoke_handler(tauri::generate_handler![
