@@ -17,21 +17,22 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <SensitiveModeProvider>
-        <React.StrictMode>
-          <Suspense fallback="loading">
-            <Routes>
-              <Route path="/" element={<Navigate to="/wallets" />} />
-              <Route path="/wallets" element={<WalletsList />} />
-              <Route path="/wallets/add" element={<AddWallet />} />
-              <Route path="/wallets/:walletId" element={<WalletView />} />
-              <Route path="*" element={<p>How did you get hur?</p>} />
-            </Routes>
-          </Suspense>
-        </React.StrictMode>
-      </SensitiveModeProvider>
-    </BrowserRouter>
+    <p>testoing....</p>
+    // <BrowserRouter>
+    //   <SensitiveModeProvider>
+    //     <React.StrictMode>
+    //       <Suspense fallback="loading">
+    //         <Routes>
+    //           <Route path="/" element={<Navigate to="/wallets" />} />
+    //           <Route path="/wallets" element={<WalletsList />} />
+    //           <Route path="/wallets/add" element={<AddWallet />} />
+    //           <Route path="/wallets/:walletId" element={<WalletView />} />
+    //           <Route path="*" element={<p>How did you get hur?</p>} />
+    //         </Routes>
+    //       </Suspense>
+    //     </React.StrictMode>
+    //   </SensitiveModeProvider>
+    // </BrowserRouter>
   );
 }
 
