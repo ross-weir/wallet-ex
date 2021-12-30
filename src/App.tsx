@@ -7,13 +7,15 @@ import { WalletsList, AddWallet, WalletView } from './routes';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingCount, setLoadingCount] = useState(0);
 
   useEffect(() => {
     initErgo().then(() => setIsLoading(false));
   }, []);
 
   if (isLoading) {
-    return <p>loading..</p>;
+    setLoadingCount(loadingCount + 1);
+    return <p>loading..{loadingCount}</p>;
   }
 
   return (
