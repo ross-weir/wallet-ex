@@ -15,9 +15,14 @@ export const getErgo = (): Ergo => {
 export const initErgo = async (): Promise<Ergo> => {
   if (!ergo) {
     // Tests are ran using jest (nodejs) otherwise we should be in the browser
-    ergo = await (process.env.NODE_ENV === 'test'
-      ? import('ergo-lib-wasm-nodejs')
-      : import('ergo-lib-wasm-browser'));
+    if (process.env.E2E === 'true') {
+      console.log('loading browser');
+      ergo = await import('ergo-lib-wasm-browser');
+    } else {
+      ergo = await (process.env.NODE_ENV === 'test'
+        ? import('ergo-lib-wasm-nodejs')
+        : import('ergo-lib-wasm-browser'));
+    }
   }
 
   return ergo;

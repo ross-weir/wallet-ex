@@ -47,11 +47,13 @@ jobs:
         run: yarn tauri build
         env:
           CI: false
+          E2E: 'true'
       - name: Run tests
         run: xvfb-run yarn wdio
         env:
           # TODO: move this to wdio config, each test should use their own db
           WALLET_X_DB_URL: ./test.sqlite3
+          E2E: 'true'
       - name: Upload failure artifacts
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
