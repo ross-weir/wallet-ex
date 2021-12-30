@@ -6,17 +6,17 @@ import { SensitiveModeProvider } from './hooks';
 import { WalletsList, AddWallet, WalletView } from './routes';
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadingCount, setLoadingCount] = useState(0);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [loadingCount, setLoadingCount] = useState(0);
 
-  useEffect(() => {
-    initErgo().then(() => setIsLoading(false));
-  }, []);
+  // useEffect(() => {
+  //   initErgo().then(() => setIsLoading(false));
+  // }, []);
 
-  if (isLoading) {
-    setLoadingCount(loadingCount + 1);
-    return <p>loading..{loadingCount}</p>;
-  }
+  // if (isLoading) {
+  //   setLoadingCount(loadingCount + 1);
+  //   return <p>loading..{loadingCount}</p>;
+  // }
 
   return (
     <BrowserRouter>
