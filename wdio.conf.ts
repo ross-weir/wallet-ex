@@ -303,7 +303,7 @@ export const config: WebdriverIO.Config = {
     writeFileSync(resolve(failDir, 'ports.txt'), ports);
 
     writeFileSync(resolve(failDir, 'path.txt'), await browser.getUrl());
-    readdirSync(resolve(__dirname, 'build')).forEach((f) =>
+    readdirSync(resolve(__dirname, 'build', 'static')).forEach((f) =>
       appendFileSync(resolve(failDir, 'path.txt'), f + '\n'),
     );
 
