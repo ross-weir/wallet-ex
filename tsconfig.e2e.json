@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./.e2e.build/",
+    "outDir": "./build/",
     "sourceMap": false,
     "target": "es6",
     "module": "commonjs",
