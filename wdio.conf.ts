@@ -1,5 +1,11 @@
 import { homedir, platform } from 'os';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  writeFileSync,
+} from 'fs';
 import { resolve, basename } from 'path';
 import { exec, execSync, spawn, spawnSync } from 'child_process';
 
@@ -64,8 +70,6 @@ export const config: WebdriverIO.Config = {
       // grid with only 5 firefox instances available you can make sure that not more than
       // 5 instances get started at a time.
       maxInstances: 1,
-      //
-      acceptInsecureCerts: true,
       // If outputDir is provided WebdriverIO can capture driver session logs
       // it is possible to configure which logTypes to include/exclude.
       // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
@@ -187,7 +191,7 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: function (config, capabilities) {
-    spawnSync('cargo', ['build', '--release']);
+    // spawnSync('cargo', ['build', '--release']);
   },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
@@ -299,6 +303,11 @@ export const config: WebdriverIO.Config = {
 
     const ports = execSync('netstat -lntup');
     writeFileSync(resolve(failDir, 'ports.txt'), ports);
+
+    writeFileSync(resolve(failDir, 'path.txt'), await browser.getUrl());
+    readdirSync(__dirname).forEach((f) =>
+      appendFileSync(resolve(failDir, 'path.txt'), f + '\n'),
+    );
 
     browser.saveScreenshot(resolve(failDir, 'test.png'));
     writeFileSync(resolve(failDir, 'dom.html'), await browser.getPageSource());
