@@ -1,4 +1,5 @@
 import { Given, Then } from '@wdio/cucumber-framework';
+import walletsListPage from '../pageObjects/walletsList.page';
 
 import WalletsListPage from '../pageObjects/walletsList.page';
 
@@ -11,5 +12,6 @@ Given(/^I am on the (\w+) page$/, async (page: string) => {
 });
 
 Then(/I should see the add wallet button(.*)$/, async (page) => {
+  await WalletsListPage.btnAddWallet.waitForDisplayed({ timeout: 60000 });
   await expect(WalletsListPage.btnAddWallet).toBeExisting();
 });
