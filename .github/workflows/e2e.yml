@@ -1,60 +1,66 @@
-name: e2e
+# TODO: Figure out how to get this working or change to windows os/edge
+# See: https://github.com/ross-weir/wallet-x/pull/22
 
-on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
+# name: e2e
 
-jobs:
-  test:
-    name: e2e-tests
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Tauri deps
-        run: >
-          sudo apt-get update &&
-          sudo apt-get install -y
-          libwebkit2gtk-4.0-37
-          webkit2gtk-driver
-          xvfb
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-          cache: yarn
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: Swatinem/rust-cache@v1
-        with:
-          working-directory: src-tauri
-      - name: Install tauri-driver
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: tauri-driver
-      - run: yarn --frozen-lockfile --ignore-scripts
-      # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
-      # https://github.com/webpack/webpack/issues/8826
-      # CI=false causes the build to not fail on warnings, fix this
-      - name: Build application
-        run: yarn tauri build
-        env:
-          CI: false
-          E2E: 'true'
-      - name: Run tests
-        run: xvfb-run yarn wdio
-        env:
-          # TODO: move this to wdio config, each test should use their own db
-          WALLET_X_DB_URL: ./test.sqlite3
-          E2E: 'true'
-      - name: Upload failure artifacts
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: e2e-failures
-          path: .e2e-failure
-          retention-days: 3
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   test:
+#     name: e2e-tests
+#     runs-on: ubuntu-20.04
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Tauri deps
+#         run: >
+#           sudo apt-get update &&
+#           sudo apt-get install -y
+#           libgtk-3-dev
+#           libgtksourceview-3.0-dev
+#           webkit2gtk-4.0
+#           libappindicator3-dev
+#           webkit2gtk-driver
+#           xvfb
+#       - uses: actions/setup-node@v2
+#         with:
+#           node-version: '16'
+#           cache: yarn
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#       - uses: Swatinem/rust-cache@v1
+#         with:
+#           working-directory: src-tauri
+#       - name: Install tauri-driver
+#         uses: actions-rs/cargo@v1
+#         with:
+#           command: install
+#           args: tauri-driver
+#       - run: yarn --frozen-lockfile --ignore-scripts
+#       # hack: CI disabled to get around webpack warning: https://github.com/rustwasm/wasm-pack/issues/822
+#       # https://github.com/webpack/webpack/issues/8826
+#       # CI=false causes the build to not fail on warnings, fix this
+#       - name: Build application
+#         run: yarn tauri build
+#         env:
+#           CI: false
+#           E2E: 'true'
+#       - name: Run tests
+#         run: xvfb-run yarn wdio
+#         env:
+#           # TODO: move this to wdio config, each test should use their own db
+#           WALLET_X_DB_URL: ./test.sqlite3
+#           E2E: 'true'
+#       - name: Upload failure artifacts
+#         if: ${{ failure() }}
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: e2e-failures
+#           path: .e2e-failure
+#           retention-days: 3

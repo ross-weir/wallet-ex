@@ -67,7 +67,6 @@ function WalletsList() {
     <>
       <BackendProvider>
         <AppBarTop />
-        <p>{window.location.href}</p>
         <Container text style={{ marginTop: 30 }}>
           <Grid columns={2}>
             <Grid.Column verticalAlign="middle">

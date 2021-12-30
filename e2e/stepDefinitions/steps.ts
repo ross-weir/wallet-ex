@@ -12,6 +12,5 @@ Given(/^I am on the (\w+) page$/, async (page: string) => {
 });
 
 Then(/I should see the add wallet button(.*)$/, async (page) => {
-  await WalletsListPage.btnAddWallet.waitForDisplayed({ timeout: 60000 });
   await expect(WalletsListPage.btnAddWallet).toBeExisting();
 });

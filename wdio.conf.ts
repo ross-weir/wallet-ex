@@ -1,13 +1,7 @@
-import { homedir, platform } from 'os';
-import {
-  appendFileSync,
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  writeFileSync,
-} from 'fs';
+import { platform } from 'os';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, basename } from 'path';
-import { exec, execSync, spawn, spawnSync } from 'child_process';
+import { spawnSync } from 'child_process';
 
 let tauriDriver;
 
@@ -86,7 +80,7 @@ export const config: WebdriverIO.Config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'trace',
+  logLevel: 'info',
   //
   // Set specific log levels per logger
   // loggers:
@@ -191,7 +185,7 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: function (config, capabilities) {
-    // spawnSync('cargo', ['build', '--release']);
+    spawnSync('yarn', ['tauri', 'build']);
   },
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
@@ -217,7 +211,7 @@ export const config: WebdriverIO.Config = {
       mkdirSync(failedRunsDir);
     }
 
-    tauriDriver = spawn('tauri-driver', [], {
+    tauriDriver = spawnSync('tauri-driver', [], {
       stdio: [null, process.stdout, process.stderr],
     });
   },
@@ -228,9 +222,8 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<String>} specs        List of spec file paths that are to be run
    * @param {Object}         browser      instance of created browser/device session
    */
-  before: async function (capabilities, specs) {
-    await browser.setTimeout({ pageLoad: 60000 });
-  },
+  // before: async function (capabilities, specs) {
+  // },
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {String} commandName hook command name
@@ -288,7 +281,6 @@ export const config: WebdriverIO.Config = {
    * @param {Object}                 context          Cucumber World object
    */
   afterScenario: async function (world, result, context) {
-    console.log(browser);
     if (result.passed) {
       return;
     }
@@ -300,14 +292,6 @@ export const config: WebdriverIO.Config = {
     if (!existsSync(failDir)) {
       mkdirSync(failDir);
     }
-
-    const ports = execSync('netstat -lntup');
-    writeFileSync(resolve(failDir, 'ports.txt'), ports);
-
-    writeFileSync(resolve(failDir, 'path.txt'), await browser.getUrl());
-    readdirSync(resolve(__dirname, 'build', 'static', 'js')).forEach((f) =>
-      appendFileSync(resolve(failDir, 'path.txt'), f + '\n'),
-    );
 
     browser.saveScreenshot(resolve(failDir, 'test.png'));
     writeFileSync(resolve(failDir, 'dom.html'), await browser.getPageSource());
