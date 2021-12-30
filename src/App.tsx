@@ -6,32 +6,33 @@ import { SensitiveModeProvider } from './hooks';
 import { WalletsList, AddWallet, WalletView } from './routes';
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    initErgo().then(() => setIsLoading(false));
-  }, []);
+  // useEffect(() => {
+  //   initErgo().then(() => setIsLoading(false));
+  // }, []);
 
-  if (isLoading) {
-    return null;
-  }
+  // if (isLoading) {
+  //   return null;
+  // }
 
   return (
-    <BrowserRouter>
-      <SensitiveModeProvider>
-        <React.StrictMode>
-          <Suspense fallback="loading">
-            <Routes>
-              <Route path="/" element={<Navigate to="/wallets" />} />
-              <Route path="/wallets" element={<WalletsList />} />
-              <Route path="/wallets/add" element={<AddWallet />} />
-              <Route path="/wallets/:walletId" element={<WalletView />} />
-              <Route path="*" element={<p>How did you get hur?</p>} />
-            </Routes>
-          </Suspense>
-        </React.StrictMode>
-      </SensitiveModeProvider>
-    </BrowserRouter>
+    <p>Testing.....</p>
+    // <BrowserRouter>
+    //   <SensitiveModeProvider>
+    //     <React.StrictMode>
+    //       <Suspense fallback="loading">
+    //         <Routes>
+    //           <Route path="/" element={<Navigate to="/wallets" />} />
+    //           <Route path="/wallets" element={<WalletsList />} />
+    //           <Route path="/wallets/add" element={<AddWallet />} />
+    //           <Route path="/wallets/:walletId" element={<WalletView />} />
+    //           <Route path="*" element={<p>How did you get hur?</p>} />
+    //         </Routes>
+    //       </Suspense>
+    //     </React.StrictMode>
+    //   </SensitiveModeProvider>
+    // </BrowserRouter>
   );
 }
 
