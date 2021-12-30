@@ -18,9 +18,18 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": [
+      "node",
+      "webdriverio/async",
+      "@wdio/cucumber-framework",
+      "@wdio/devtools-service",
+      "expect-webdriverio/jest"
+    ]
   },
   "include": [
+    "wdio.conf.ts",
     "src",
-  ]
+    "e2e"
+  ],
 }
