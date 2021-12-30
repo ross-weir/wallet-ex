@@ -217,11 +217,9 @@ export const config: WebdriverIO.Config = {
       mkdirSync(failedRunsDir);
     }
 
-    tauriDriver = spawn(
-      resolve(homedir(), '.cargo', 'bin', 'tauri-driver'),
-      [],
-      { stdio: [null, process.stdout, process.stderr] },
-    );
+    tauriDriver = spawn('tauri-driver', [], {
+      stdio: [null, process.stdout, process.stderr],
+    });
   },
   /**
    * Gets executed before test execution begins. At this point you can access to all global
@@ -305,7 +303,7 @@ export const config: WebdriverIO.Config = {
     writeFileSync(resolve(failDir, 'ports.txt'), ports);
 
     writeFileSync(resolve(failDir, 'path.txt'), await browser.getUrl());
-    readdirSync(__dirname).forEach((f) =>
+    readdirSync(resolve(__dirname, 'build')).forEach((f) =>
       appendFileSync(resolve(failDir, 'path.txt'), f + '\n'),
     );
 
