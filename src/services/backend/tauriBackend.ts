@@ -1,5 +1,6 @@
 import { invoke, path, fs } from '@tauri-apps/api';
 import localforage from 'localforage';
+import { injectable } from 'tsyringe';
 import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
 import { Account, Address, Wallet } from '../../entities';
 import { toBase16 } from '../../utils/formatting';
@@ -25,6 +26,7 @@ const storageKeyForWallet = async (wallet: Wallet): Promise<string> => {
   return toBase16(new Uint8Array(hashedKey));
 };
 
+@injectable()
 export class TauriBackend implements BackendService {
   private readonly aes = AesCrypto.default();
 

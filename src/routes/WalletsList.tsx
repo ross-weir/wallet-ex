@@ -49,7 +49,11 @@ function WalletsList() {
           const accounts = await backend.accountsForWallet(wallet.id);
           const balance = 1337;
 
-          return { ...wallet, accountCount: accounts.length, balance };
+          return {
+            ...wallet,
+            accountCount: accounts.length,
+            balance,
+          } as WalletWithSummary;
         }),
       );
       // TODO: handle failures

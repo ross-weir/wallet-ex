@@ -49,12 +49,21 @@ function WalletView() {
     setWalletSeed(state.seed);
   }
 
+  if (!wallet && state.wallet) {
+    setWallet(state.wallet);
+  }
+
   const onLogoutWallet = () => {
     // Remove the seed from browser history state so users can't
     // navigate backwards and preserve access to wallet seed
-    const usr = { ...window.history.state.usr, seed: undefined };
+    const usr = {
+      ...window.history.state.usr,
+      seed: undefined,
+      wallet: undefined,
+    };
     window.history.replaceState({ ...window.history.state, usr }, '');
     setWalletSeed(undefined);
+    setWallet(undefined);
   };
 
   // TODO: loading indicator/state
@@ -64,20 +73,11 @@ function WalletView() {
     const fetchEntities = async () => {
       setIsLoading(true);
 
-      const walletId = parseInt(walletIdParam as string, 10);
-      const walletReq = backend.findWallet(walletId);
-      const accountsReq = backend.accountsForWallet(walletId);
-      const [walletResp, accountsResp] = await Promise.allSettled([
-        walletReq,
-        accountsReq,
-      ]);
+      //const walletId = parseInt(walletIdParam as string, 10);
+      //const walletReq = backend.findWallet(walletId);
+      const accountsReq = backend.accountsForWallet(wallet!.id);
 
-      if (walletResp.status === 'fulfilled') {
-        setWallet(walletResp.value);
-      } else {
-        // TODO: handle failure
-        console.log(walletResp.reason);
-      }
+      const [accountsResp] = await Promise.allSettled([accountsReq]);
 
       if (accountsResp.status === 'fulfilled') {
         setAccountList(accountsResp.value);

@@ -1,3 +1,4 @@
+import { container } from 'tsyringe';
 import { BackendService } from './backend';
 import { TauriBackend } from './tauriBackend';
 
