@@ -10,22 +10,18 @@ import {
   Segment,
   Image,
 } from 'semantic-ui-react';
-import { hashPassword } from '../../crypto';
-import { getErgo } from '../../ergo';
-import { getBackendService, getInterfaceForWallet } from '../../services';
 import { capitalize } from '../../utils/formatting';
 import ledgerImg from '../../img/ledger.svg';
 import WalletActionForm from './WalletActionForm';
 import { container } from 'tsyringe';
 import { WalletService } from '../../entities';
+import { useBackend } from '../../hooks';
 
 function InitWalletView() {
   const { t } = useTranslation(['common', 'walletCreateRestore']);
   const [action, setAction] = useState<'Restore' | 'Create' | ''>('');
-  const backend = getBackendService();
   const navigate = useNavigate();
-  const ergo = getErgo();
-
+  const backend = useBackend();
   const walletService = container.resolve(WalletService);
 
   /**
@@ -53,45 +49,17 @@ function InitWalletView() {
     const wallet = await walletService.create({
       name: values.name,
       password: values.password,
-      mnemonic: values.phrase,
+      mnemonic: values.phrase.join(' '),
       mnemonicPass: values.mnemonicPassphrase,
     });
 
-    // const password = await hashPassword(values.password);
-    // const wallet = await backend.createWallet({
-    //   name: values.name,
-    //   password,
-    //   interface: 'local',
-    //   hdStandard: 'eip3',
-    // });
-    // const seed = ergo.Mnemonic.to_seed(
-    //   values.phrase.join(' '),
-    //   values.mnemonicPassphrase,
-    // );
-
-    // // Password doesn't need to be hashed here, we use it to derive a crypt key, it's never stored
-    // await backend.storeSecretSeed({ password: values.password, seed, wallet });
-
-    // // Create initial account/address
-    // // TODO: extract out into a 'service layer'
-    // // TODO: kick off job to retrieve balances using a stopgap
-    // const acct = await backend.createAccount({
-    //   name: 'Main',
-    //   coinType: 429,
-    //   walletId: wallet.id,
-    // });
-    // const walletInterface = getInterfaceForWallet(wallet);
-    // const address = await walletInterface.deriveAddress({
-    //   seedBytes: seed,
-    //   hdStandardArgs: { addressIdx: 0, accountIdx: 0 },
-    // });
-    // await backend.createAddress({
-    //   deriveIdx: 0,
-    //   accountId: acct.id,
-    //   address,
-    // });
-
-    navigate(`/wallets/${wallet.id}`, { state: { seed: [], wallet } });
+    // TODO: move to wallet entity
+    const storageKey = await wallet.seedStorageKey();
+    const seed = await backend.getSecretSeed({
+      password: values.password,
+      storageKey,
+    });
+    navigate(`/wallets/${wallet.id}`, { state: { seed } });
   };
 
   const totalSteps = {

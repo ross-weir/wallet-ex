@@ -22,7 +22,6 @@ import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, Wallet } from '../entities';
 import { BackendProvider, useBackend } from '../hooks';
-import { getInterfaceForWallet } from '../services';
 import { capitalize } from '../utils/formatting';
 
 function WalletView() {
@@ -42,16 +41,7 @@ function WalletView() {
   const [wallet, setWallet] = useState<Wallet | undefined>();
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
-  const [walletSeed, setWalletSeed] = useState<Uint8Array | undefined>();
   const { state } = useLocation();
-
-  if (!walletSeed && state.seed) {
-    setWalletSeed(state.seed);
-  }
-
-  if (!wallet && state.wallet) {
-    setWallet(state.wallet);
-  }
 
   const onLogoutWallet = () => {
     // Remove the seed from browser history state so users can't
@@ -59,11 +49,9 @@ function WalletView() {
     const usr = {
       ...window.history.state.usr,
       seed: undefined,
-      wallet: undefined,
     };
     window.history.replaceState({ ...window.history.state, usr }, '');
-    setWalletSeed(undefined);
-    setWallet(undefined);
+    wallet?.zeroSeed();
   };
 
   // TODO: loading indicator/state
@@ -73,9 +61,15 @@ function WalletView() {
     const fetchEntities = async () => {
       setIsLoading(true);
 
-      //const walletId = parseInt(walletIdParam as string, 10);
-      //const walletReq = backend.findWallet(walletId);
-      const accountsReq = backend.accountsForWallet(wallet!.id);
+      const walletId = parseInt(walletIdParam as string, 10);
+      const walletReq = await backend.findWallet(walletId);
+
+      const w = Wallet.fromJson(walletReq);
+      if (state.seed && !w.hasSeed()) {
+        w.setSeed(state.seed);
+      }
+      setWallet(w);
+      const accountsReq = backend.accountsForWallet(w.id);
 
       const [accountsResp] = await Promise.allSettled([accountsReq]);
 
@@ -121,7 +115,6 @@ function WalletView() {
         <WalletViewReceiveTab
           account={selectedAccount as Account}
           wallet={wallet as Wallet}
-          seed={walletSeed as Uint8Array}
         />
       ),
     },
@@ -134,20 +127,6 @@ function WalletView() {
     const walletBalance = '$1,000';
 
     return `${acctCount} · ${walletBalance}`;
-  };
-
-  const onAccountCreated = async (account: Account): Promise<void> => {
-    const walletInterface = getInterfaceForWallet(wallet!);
-    const ergAddr = await walletInterface.deriveAddress({
-      seedBytes: walletSeed,
-      hdStandardArgs: { addressIdx: 0, accountIdx: account.deriveIdx },
-    });
-    await backend.createAddress({
-      address: ergAddr,
-      deriveIdx: 0,
-      accountId: account.id,
-    });
-    setAccountList((accts) => [...accts, account]);
   };
 
   return (
@@ -186,7 +165,9 @@ function WalletView() {
                 </Card.Header>
                 <CreateAccountModal
                   wallet={wallet!}
-                  onAccountCreated={onAccountCreated}
+                  onAccountCreated={(account) =>
+                    setAccountList((accts) => [...accts, account])
+                  }
                   trigger={<Button floated="right" icon="add" size="tiny" />}
                 />
               </Card.Content>

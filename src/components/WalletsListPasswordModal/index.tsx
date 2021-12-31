@@ -27,16 +27,18 @@ function WalletsListPasswordModal({
     setIsLoading(true);
     backend
       .checkCredentialsForWallet(wallet.id, { password })
-      .then(async (isValid) => {
+      .then(async (isValid: boolean) => {
         if (!isValid) {
           setPasswordError(t('common:incorrectPassword'));
           return;
         }
 
-        const seed = await backend.getSecretSeed({ password, wallet });
+        // todo: add to wallet entity
+        const storageKey = await wallet.seedStorageKey();
+        const seed = await backend.getSecretSeed({ password, storageKey });
         navigate(`/wallets/${wallet.id}`, { state: { seed } });
       })
-      .catch((e) => console.error(`handle this error: ${e}`))
+      .catch((e: any) => console.error(`handle this error: ${e}`))
       .finally(() => setIsLoading(false));
   };
 

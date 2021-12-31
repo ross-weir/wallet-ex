@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
-import { Account, Wallet } from '../../entities';
-import { useBackend } from '../../hooks';
+import { container } from 'tsyringe';
+import { Account, AccountService, Wallet } from '../../entities';
 import { capitalize } from '../../utils/formatting';
 
 export interface CreateAccountModalProps {
@@ -24,7 +24,7 @@ function CreateAccountModal({
   const [accountNameError, setAccountNameError] = useState<
     string | undefined
   >();
-  const backend = useBackend();
+  const accountService = container.resolve(AccountService);
 
   const validate = () => {
     if (!accountName) {
@@ -45,15 +45,12 @@ function CreateAccountModal({
 
     setIsLoading(true);
     try {
-      // TODO: service layer
-      const acct = await backend.createAccount({
-        walletId: wallet.id,
-        // This could be a form field
-        coinType: 429,
+      const newAccount = await accountService.create(wallet, {
         name: accountName,
+        coinType: 429,
       });
-      // derives an address and other stuff
-      onAccountCreated(acct);
+
+      onAccountCreated(newAccount);
       setIsOpen(false);
       setAccountName('');
       setAccountNameError(undefined);

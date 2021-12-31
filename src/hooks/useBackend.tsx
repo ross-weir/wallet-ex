@@ -1,5 +1,5 @@
 import React from 'react';
-import { getBackendService } from '../services';
+import { getBackendService } from '../services/backend/factory';
 
 const backend = getBackendService();
 const BackendContext = React.createContext(backend);

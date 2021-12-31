@@ -2,8 +2,6 @@ import { invoke, path, fs } from '@tauri-apps/api';
 import localforage from 'localforage';
 import { injectable } from 'tsyringe';
 import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
-import { Account, Address, Wallet } from '../../entities';
-import { toBase16 } from '../../utils/formatting';
 import {
   BackendService,
   CreateWalletArgs,
@@ -19,15 +17,8 @@ const cfgPath = async () => {
   return `${appDir}${path.sep}.wallet-x.json`;
 };
 
-const storageKeyForWallet = async (wallet: Wallet): Promise<string> => {
-  const key = new TextEncoder().encode(`${wallet.id}-${wallet.createdAt}`);
-  const hashedKey = await crypto.subtle.digest('SHA-256', key);
-
-  return toBase16(new Uint8Array(hashedKey));
-};
-
 @injectable()
-export class TauriBackend implements BackendService {
+export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
 
   async readConfig(): BackendOpResult<string> {
@@ -39,44 +30,43 @@ export class TauriBackend implements BackendService {
     return fs.writeFile(file);
   }
 
-  createAddress(args: CreateAddressArgs): BackendOpResult<Address> {
+  createAddress(args: CreateAddressArgs): BackendOpResult<any> {
     return invoke('create_address', { args });
   }
 
-  addressesForAccount(accountId: number): BackendOpResult<Address[]> {
+  addressesForAccount(accountId: number): BackendOpResult<any[]> {
     return invoke('addresses_for_account', { accountId });
   }
 
-  createAccount(args: CreateAccountArgs): BackendOpResult<Account> {
+  createAccount(args: CreateAccountArgs): BackendOpResult<any> {
     return invoke('create_account', { args });
   }
 
-  findAccount(id: number): BackendOpResult<Account> {
+  findAccount(id: number): BackendOpResult<any> {
     return invoke('find_account', { id });
   }
 
-  accountsForWallet(walletId: number): BackendOpResult<Account[]> {
+  accountsForWallet(walletId: number): BackendOpResult<any[]> {
     return invoke('accounts_for_wallet', { walletId });
   }
 
-  listWallets(): BackendOpResult<Wallet[]> {
+  listWallets(): BackendOpResult<any[]> {
     return invoke('list_wallets');
   }
 
-  createWallet(args: CreateWalletArgs): BackendOpResult<Wallet> {
+  createWallet(args: CreateWalletArgs): BackendOpResult<any> {
     return invoke('create_wallet', { args });
   }
 
-  findWallet(id: number): BackendOpResult<Wallet> {
+  findWallet(id: number): BackendOpResult<any> {
     return invoke('find_wallet', { id });
   }
 
   async storeSecretSeed({
-    wallet,
+    storageKey,
     password,
     seed,
   }: StoreSecretSeedArgs): BackendOpResult<void> {
-    const storageKey = await storageKeyForWallet(wallet);
     const encryptedSeedResult = await this.aes.encrypt({
       password,
       data: seed,
@@ -86,10 +76,9 @@ export class TauriBackend implements BackendService {
   }
 
   async getSecretSeed({
-    wallet,
+    storageKey,
     password,
   }: GetSecretSeedArgs): BackendOpResult<Uint8Array> {
-    const storageKey = await storageKeyForWallet(wallet);
     const decryptParams = await localforage.getItem<EncryptResult>(storageKey);
 
     if (!decryptParams) {

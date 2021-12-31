@@ -14,58 +14,27 @@ import {
   Grid,
   Icon,
 } from 'semantic-ui-react';
+import { container } from 'tsyringe';
 import AppBarTop from '../components/AppBarTop';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
-import { Wallet } from '../entities';
-import { BackendProvider, useBackend } from '../hooks';
+import { Wallet, WalletService } from '../entities';
+import { BackendProvider } from '../hooks';
 import { capitalize } from '../utils/formatting';
-
-interface WalletWithSummary extends Wallet {
-  accountCount: number;
-  balance: number;
-}
 
 function WalletsList() {
   const { t } = useTranslation(['walletsList', 'common']);
   const [isLoading, setIsLoading] = useState(true);
-  const [wallets, setWallets] = useState<WalletWithSummary[]>([]);
-  const [selectedWallet, setSelectedWallet] = useState<
-    WalletWithSummary | undefined
-  >();
-  const backend = useBackend();
+  const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
   const navigate = useNavigate();
+  const walletService = container.resolve(WalletService);
 
   useEffect(() => {
-    // perf: possible performance hotspot
-    // First we fetch all wallets
-    // then for each wallet we fetch all accounts to get accountCount + balance
-    // This could be more efficient using a better query and SQL count+sum functions
-    // I think users will likely use a small amount of wallets and small amount of accounts
-    // per wallet so it may never be a problem
-    const fetchEntities = async () => {
-      const walletsResp = await backend.listWallets();
-      const walletsWithSummary = await Promise.allSettled(
-        walletsResp.map(async (wallet): Promise<WalletWithSummary> => {
-          const accounts = await backend.accountsForWallet(wallet.id);
-          const balance = 1337;
-
-          return {
-            ...wallet,
-            accountCount: accounts.length,
-            balance,
-          } as WalletWithSummary;
-        }),
-      );
-      // TODO: handle failures
-      const successWallets = walletsWithSummary
-        .filter((p) => p.status === 'fulfilled')
-        .map((w) => (w as PromiseFulfilledResult<WalletWithSummary>).value);
-
-      setWallets(successWallets);
-    };
-
-    fetchEntities().finally(() => setIsLoading(false));
-  }, [backend]);
+    walletService
+      .list()
+      .then(setWallets)
+      .finally(() => setIsLoading(false));
+  }, []);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { getBackendService } from './services';
+import { getBackendService } from './services/backend/factory';
 
 export interface AppState {
   initialSetupComplete: boolean;

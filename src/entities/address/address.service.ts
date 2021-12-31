@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { CreateAddressDto } from './dto';
 import { BackendService } from '../../services/backend/backend';
-import { Address } from '.';
+import { Address } from './address.entity';
 
 @injectable()
 export class AddressService {
@@ -9,7 +9,7 @@ export class AddressService {
 
   public async create(dto: CreateAddressDto): Promise<Address> {
     const address = await this.backend.createAddress({ ...dto });
-    // scan for balances
+    // TODO: scan for balances
 
     return Address.fromJson(address);
   }

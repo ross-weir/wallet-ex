@@ -8,9 +8,9 @@ import {
   Segment,
   Table,
 } from 'semantic-ui-react';
-import { Account, Address, Wallet } from '../../entities';
+import { container } from 'tsyringe';
+import { Account, Address, AddressService, Wallet } from '../../entities';
 import { useBackend } from '../../hooks';
-import { getChainProvider, getInterfaceForWallet } from '../../services';
 import CopyIcon from '../CopyIcon';
 import ErgDisplay from '../ErgDisplay';
 import QrIconPopup from '../QrIconPopup';
@@ -19,22 +19,17 @@ import SensitiveComponent from '../SensitiveComponent';
 export interface WalletViewReceiveTabProps {
   wallet: Wallet;
   account: Account;
-  seed: Uint8Array;
 }
 
 // TODO: paginate addresses?
 // TODO: display "create address" snackbar: https://www.npmjs.com/package/react-simple-snackbar
-function WalletViewReceiveTab({
-  wallet,
-  account,
-  seed,
-}: WalletViewReceiveTabProps) {
+function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
   const { t } = useTranslation('walletReceiveTab');
   const backend = useBackend();
-  const chain = getChainProvider();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeriving, setIsDeriving] = useState(false);
+  const addressService = container.resolve(AddressService);
   let latestAddress!: Address;
 
   // Only trigger reload if accountId changes
@@ -54,21 +49,17 @@ function WalletViewReceiveTab({
     setIsDeriving(true);
     try {
       const addressIdx = latestAddress.deriveIdx + 1;
-      const accountIdx = account.deriveIdx;
-      const walletInterface = getInterfaceForWallet(wallet);
-      const ergoAddr = await walletInterface.deriveAddress({
-        seedBytes: seed,
-        hdStandardArgs: { addressIdx, accountIdx },
+      const newAddr = await wallet.deriveAddress({
+        accountIdx: account.deriveIdx,
+        addressIdx,
       });
-      const balance = await chain.balanceForAddress(ergoAddr);
-      const newAddr = await backend.createAddress({
-        address: ergoAddr,
-        deriveIdx: addressIdx,
+      const addr = await addressService.create({
+        address: newAddr,
         accountId: account.id,
-        balance,
+        deriveIdx: addressIdx,
       });
 
-      setAddresses((addrs) => [...addrs, newAddr]);
+      setAddresses((addrs) => [...addrs, addr]);
       // TODO: handle err
     } finally {
       setIsDeriving(false);
