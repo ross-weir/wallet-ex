@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof WalletDetailCard> = (args) => (
 
 export const WalletDetailCardStory = Template.bind({});
 
-const mockWallet: Wallet = {
+const mockWallet = {
   createdAt: '2021-12-06T03:04:43',
   id: 2,
   interface: 'local',
@@ -28,4 +28,4 @@ const mockWallet: Wallet = {
   name: 'Ergo Wallet',
 };
 
-WalletDetailCardStory.args = { wallet: mockWallet };
+WalletDetailCardStory.args = { wallet: mockWallet as Wallet };

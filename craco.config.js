@@ -1,6 +1,9 @@
 const { addBeforeLoader, loaderByName } = require('@craco/craco');
 
 module.exports = {
+  babel: {
+    plugins: ['babel-plugin-transform-typescript-metadata'],
+  },
   webpack: {
     configure(webpackConfig) {
       const wasmExtensionRegExp = /\.wasm$/;

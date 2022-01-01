@@ -20,10 +20,9 @@ import CreateAccountModal from '../components/CreateAccountModal';
 import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
-import { Account, Wallet } from '../entities';
-import { BackendProvider, useBackend } from '../hooks';
-import { getInterfaceForWallet } from '../services';
+import { Account, AccountService, Wallet, WalletService } from '../entities';
 import { capitalize } from '../utils/formatting';
+import { Container as IocContainer } from 'typedi';
 
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}
@@ -37,24 +36,23 @@ function WalletView() {
   // Default to the first account for the wallet, there should always be one when creating wallet
   const { t } = useTranslation(['common', 'walletView']);
   const { walletId: walletIdParam } = useParams();
-  const backend = useBackend();
   const [isLoading, setIsLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | undefined>();
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
-  const [walletSeed, setWalletSeed] = useState<Uint8Array | undefined>();
   const { state } = useLocation();
-
-  if (!walletSeed && state.seed) {
-    setWalletSeed(state.seed);
-  }
+  const walletService = IocContainer.get(WalletService);
+  const accountService = IocContainer.get(AccountService);
 
   const onLogoutWallet = () => {
     // Remove the seed from browser history state so users can't
     // navigate backwards and preserve access to wallet seed
-    const usr = { ...window.history.state.usr, seed: undefined };
+    const usr = {
+      ...window.history.state.usr,
+      seed: undefined,
+    };
     window.history.replaceState({ ...window.history.state, usr }, '');
-    setWalletSeed(undefined);
+    wallet?.zeroSeed();
   };
 
   // TODO: loading indicator/state
@@ -62,36 +60,29 @@ function WalletView() {
   // TODO: could be done in 1 request - don't bother until there's actual perf issues
   useEffect(() => {
     const fetchEntities = async () => {
-      setIsLoading(true);
-
       const walletId = parseInt(walletIdParam as string, 10);
-      const walletReq = backend.findWallet(walletId);
-      const accountsReq = backend.accountsForWallet(walletId);
-      const [walletResp, accountsResp] = await Promise.allSettled([
-        walletReq,
-        accountsReq,
-      ]);
 
-      if (walletResp.status === 'fulfilled') {
-        setWallet(walletResp.value);
-      } else {
-        // TODO: handle failure
-        console.log(walletResp.reason);
-      }
+      const walletsRequest = walletService.findOne(walletId).then((wallet) => {
+        if (state.seed && !wallet.hasSeed()) {
+          wallet.setSeed(state.seed);
+        }
 
-      if (accountsResp.status === 'fulfilled') {
-        setAccountList(accountsResp.value);
-        setSelectedAccount(accountsResp.value[0]);
-      } else {
-        // TODO: handle failure
-        console.log(accountsResp.reason);
-      }
+        setWallet(wallet);
+      });
 
-      setIsLoading(false);
+      const accountsRequest = accountService
+        .filterByWalletId(walletId)
+        .then((accounts) => {
+          setAccountList(accounts);
+          setSelectedAccount(accounts[0]);
+        });
+
+      await Promise.allSettled([walletsRequest, accountsRequest]);
     };
 
-    fetchEntities();
-  }, [walletIdParam, backend]);
+    setIsLoading(true);
+    fetchEntities().finally(() => setIsLoading(false));
+  }, [walletIdParam]);
 
   const panes = () => [
     {
@@ -121,7 +112,6 @@ function WalletView() {
         <WalletViewReceiveTab
           account={selectedAccount as Account}
           wallet={wallet as Wallet}
-          seed={walletSeed as Uint8Array}
         />
       ),
     },
@@ -136,99 +126,80 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
-  const onAccountCreated = async (account: Account): Promise<void> => {
-    const walletInterface = getInterfaceForWallet(wallet!);
-    const ergAddr = await walletInterface.deriveAddress({
-      seedBytes: walletSeed,
-      hdStandardArgs: { addressIdx: 0, accountIdx: account.deriveIdx },
-    });
-    await backend.createAddress({
-      address: ergAddr,
-      deriveIdx: 0,
-      accountId: account.id,
-    });
-    setAccountList((accts) => [...accts, account]);
-  };
-
   return (
     <>
-      <BackendProvider>
-        <AppBarTop onLogout={onLogoutWallet} />
-        <Grid stackable padded>
-          <Grid.Column width={4}>
-            <Card onClick={() => null} fluid>
-              <Card.Content>
-                {isLoading ? (
-                  <p>loading..</p>
-                ) : (
-                  <>
-                    <Image src={walletImg} size="mini" floated="left" />
-                    <Card.Header>{wallet?.name}</Card.Header>
-                    <Card.Meta>
-                      <SensitiveComponent>
-                        {walletSubtitle()}
-                      </SensitiveComponent>
-                    </Card.Meta>
-                  </>
-                )}
-              </Card.Content>
-            </Card>
-            <Card fluid>
-              <Card.Content>
-                <Card.Header
-                  style={{
-                    lineHeight: 2,
-                    display: 'inline-block',
-                    verticalAlign: 'middle',
-                  }}
-                >
-                  {t('walletView:myAccounts')}
-                </Card.Header>
-                <CreateAccountModal
-                  wallet={wallet!}
-                  onAccountCreated={onAccountCreated}
-                  trigger={<Button floated="right" icon="add" size="tiny" />}
-                />
-              </Card.Content>
-              <Menu vertical fluid>
-                {accountList.length &&
-                  accountList.map((account, idx) => (
-                    <Menu.Item
-                      key={account.id}
-                      active={selectedAccount?.id === account.id}
-                      onClick={() => setSelectedAccount(accountList[idx])}
-                    >
-                      <SensitiveComponent>
-                        <Header as="h4">
-                          {account.name}
-                          <Header.Subheader>$999.00</Header.Subheader>
-                        </Header>
-                      </SensitiveComponent>
-                    </Menu.Item>
-                  ))}
-              </Menu>
-            </Card>
-          </Grid.Column>
-          <Grid.Column stretched width={12}>
-            <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
-              <Header style={{ marginTop: 15 }} as="h2">
-                {selectedAccount &&
-                  `${selectedAccount.name} - ${capitalize(
-                    t('common:account'),
-                  )} #${selectedAccount.deriveIdx}`}
-              </Header>
-              <SensitiveComponent>
-                <p>0.02484236 BTC ≈ A$1,672.36</p>
-              </SensitiveComponent>
-              <Divider />
-              <Tab
-                menu={{ secondary: true, stackable: true }}
-                panes={panes()}
+      <AppBarTop onLogout={onLogoutWallet} />
+      <Grid stackable padded>
+        <Grid.Column width={4}>
+          <Card onClick={() => null} fluid>
+            <Card.Content>
+              {isLoading ? (
+                <p>loading..</p>
+              ) : (
+                <>
+                  <Image src={walletImg} size="mini" floated="left" />
+                  <Card.Header>{wallet?.name}</Card.Header>
+                  <Card.Meta>
+                    <SensitiveComponent>{walletSubtitle()}</SensitiveComponent>
+                  </Card.Meta>
+                </>
+              )}
+            </Card.Content>
+          </Card>
+          <Card fluid>
+            <Card.Content>
+              <Card.Header
+                style={{
+                  lineHeight: 2,
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                }}
+              >
+                {t('walletView:myAccounts')}
+              </Card.Header>
+              <CreateAccountModal
+                wallet={wallet!}
+                onAccountCreated={(account) =>
+                  setAccountList((accts) => [...accts, account])
+                }
+                trigger={<Button floated="right" icon="add" size="tiny" />}
               />
-            </Container>
-          </Grid.Column>
-        </Grid>
-      </BackendProvider>
+            </Card.Content>
+            <Menu vertical fluid>
+              {accountList.length &&
+                accountList.map((account, idx) => (
+                  <Menu.Item
+                    key={account.id}
+                    active={selectedAccount?.id === account.id}
+                    onClick={() => setSelectedAccount(accountList[idx])}
+                  >
+                    <SensitiveComponent>
+                      <Header as="h4">
+                        {account.name}
+                        <Header.Subheader>$999.00</Header.Subheader>
+                      </Header>
+                    </SensitiveComponent>
+                  </Menu.Item>
+                ))}
+            </Menu>
+          </Card>
+        </Grid.Column>
+        <Grid.Column stretched width={12}>
+          <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
+            <Header style={{ marginTop: 15 }} as="h2">
+              {selectedAccount &&
+                `${selectedAccount.name} - ${capitalize(
+                  t('common:account'),
+                )} #${selectedAccount.deriveIdx}`}
+            </Header>
+            <SensitiveComponent>
+              <p>0.02484236 BTC ≈ A$1,672.36</p>
+            </SensitiveComponent>
+            <Divider />
+            <Tab menu={{ secondary: true, stackable: true }} panes={panes()} />
+          </Container>
+        </Grid.Column>
+      </Grid>
     </>
   );
 }

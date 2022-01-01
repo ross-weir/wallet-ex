@@ -2,7 +2,7 @@
 // Used to query data, etc
 // For example: explorer vs node etc
 
-export interface ChainProvider {
+export abstract class ChainProvider {
   /**
    * Get the CONFIRMED balance of an address.
    *
@@ -13,5 +13,5 @@ export interface ChainProvider {
    *
    * @param address the address to update the balance for base58 with network address encoding.
    */
-  balanceForAddress(address: string): Promise<number>;
+  abstract balanceForAddress(address: string): Promise<number>;
 }
