@@ -1,4 +1,3 @@
-import { deserializeArray, plainToClass } from 'class-transformer';
 import { inject, injectable } from 'tsyringe';
 import { hashPassword } from '../../crypto';
 import { getErgo } from '../../ergo';

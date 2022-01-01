@@ -1,6 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import { AutoWired } from '../../ioc';
-import { BackendService, getInterfaceForWallet } from '../../services';
+import { getInterfaceForWallet } from '../../services';
 import { toBase16 } from '../../utils/formatting';
 import { BaseEntity } from '../baseEntity';
 
@@ -14,8 +13,6 @@ export class Wallet extends BaseEntity {
     super();
   }
 
-  @AutoWired('BackendService')
-  private backend!: BackendService;
   private seed?: Uint8Array;
 
   public hasSeed(): boolean {
