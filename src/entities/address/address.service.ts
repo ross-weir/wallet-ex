@@ -13,4 +13,10 @@ export class AddressService {
 
     return Address.fromJson(address);
   }
+
+  public async filterByAccountId(accountId: number): Promise<Address[]> {
+    return this.backend
+      .addressesForAccount(accountId)
+      .then((addresses) => addresses.map(Address.fromJson));
+  }
 }

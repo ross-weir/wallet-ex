@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router';
 import { Button, Form, Modal } from 'semantic-ui-react';
 import { Wallet } from '../../entities';
 import { capitalize } from '../../utils/formatting';
-import { useBackend } from '../../hooks';
 
 export interface WalletsListPasswordProps {
   onCancel: () => void;
@@ -20,16 +19,17 @@ function WalletsListPasswordModal({
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-  const backend = useBackend();
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    backend
-      .checkCredentialsForWallet(wallet.id, { password })
+
+    wallet
+      .checkCredentials({ password })
       .then(async (isValid: boolean) => {
         if (!isValid) {
           setPasswordError(t('common:incorrectPassword'));
+
           return;
         }
 

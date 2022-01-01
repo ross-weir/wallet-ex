@@ -10,7 +10,6 @@ import {
 } from 'semantic-ui-react';
 import { container } from 'tsyringe';
 import { Account, Address, AddressService, Wallet } from '../../entities';
-import { useBackend } from '../../hooks';
 import CopyIcon from '../CopyIcon';
 import ErgDisplay from '../ErgDisplay';
 import QrIconPopup from '../QrIconPopup';
@@ -25,7 +24,6 @@ export interface WalletViewReceiveTabProps {
 // TODO: display "create address" snackbar: https://www.npmjs.com/package/react-simple-snackbar
 function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
   const { t } = useTranslation('walletReceiveTab');
-  const backend = useBackend();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeriving, setIsDeriving] = useState(false);
@@ -37,13 +35,13 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
   useEffect(() => {
     setIsLoading(true);
 
-    backend
-      .addressesForAccount(account.id)
-      .then((addresses) => setAddresses(addresses))
+    addressService
+      .filterByAccountId(account.id)
+      .then(setAddresses)
       .catch((err) => console.log(`handle this m8: ${err}`));
 
     setIsLoading(false);
-  }, [account.id, backend]);
+  }, [account.id]);
 
   const onNewAddress = async () => {
     setIsDeriving(true);

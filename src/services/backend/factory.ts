@@ -1,10 +1,5 @@
-import { container } from 'tsyringe';
 import { BackendService } from './backend';
 import { TauriBackend } from './tauriBackend';
-
-container.register<BackendService>('BackendService', {
-  useValue: new TauriBackend(),
-});
 
 let _backend: BackendService;
 

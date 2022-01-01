@@ -1,5 +1,6 @@
 import { plainToClass } from 'class-transformer';
-import { getInterfaceForWallet } from '../../services';
+import { AutoWired } from '../../ioc';
+import { BackendService, getInterfaceForWallet } from '../../services';
 import { toBase16 } from '../../utils/formatting';
 import { BaseEntity } from '../baseEntity';
 
@@ -9,6 +10,12 @@ export class Wallet extends BaseEntity {
   hdStandard!: 'eip3';
   createdAt!: string;
 
+  constructor(public testProp: string = 'hello') {
+    super();
+  }
+
+  @AutoWired('BackendService')
+  private backend!: BackendService;
   private seed?: Uint8Array;
 
   public hasSeed(): boolean {
@@ -24,15 +31,19 @@ export class Wallet extends BaseEntity {
   }
 
   public async retrieveSeed(password: string): Promise<Uint8Array> {
-    const storageKey = await this.seedStorageKey();
-
-    return this.backend.getSecretSeed({ password, storageKey });
+    return this.seedStorageKey().then((storageKey) =>
+      this.backend.getSecretSeed({ password, storageKey }),
+    );
   }
 
   public async storeSeed(password: string, seed: Uint8Array): Promise<void> {
-    const storageKey = await this.seedStorageKey();
+    return this.seedStorageKey().then((storageKey) =>
+      this.backend.storeSecretSeed({ password, seed, storageKey }),
+    );
+  }
 
-    return this.backend.storeSecretSeed({ password, seed, storageKey });
+  public async checkCredentials(args: Record<string, any>): Promise<boolean> {
+    return this.backend.checkCredentialsForWallet(this.id, args);
   }
 
   public async deriveAddress(hdStandardArgs: object): Promise<string> {

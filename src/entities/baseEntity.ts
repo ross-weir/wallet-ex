@@ -3,7 +3,4 @@ import { BackendService } from '../services';
 
 export class BaseEntity {
   id!: number;
-
-  @AutoWired
-  protected backend!: BackendService;
 }

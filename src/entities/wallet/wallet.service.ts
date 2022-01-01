@@ -18,13 +18,14 @@ export class WalletService {
 
   public async create(dto: CreateWalletDto): Promise<Wallet> {
     const password = await hashPassword(dto.password);
-    const walletJson = await this.backend.createWallet({
-      name: dto.name,
-      password,
-      interface: 'local',
-      hdStandard: 'eip3',
-    });
-    const wallet = Wallet.fromJson(walletJson);
+    const wallet = await this.backend
+      .createWallet({
+        name: dto.name,
+        password,
+        interface: 'local',
+        hdStandard: 'eip3',
+      })
+      .then(Wallet.fromJson);
     const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
     wallet.setSeed(seed);

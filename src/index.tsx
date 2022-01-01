@@ -6,7 +6,10 @@ import App from './App';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
+import { setupContainer } from './ioc';
+import { container } from 'tsyringe';
 
 initI18n();
+setupContainer();
 
 ReactDOM.render(<App />, document.getElementById('root'));

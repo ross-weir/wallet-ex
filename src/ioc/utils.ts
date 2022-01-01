@@ -24,6 +24,7 @@ export function AutoWired<T>(
     ) => void)
   | void {
   if (typeof token === 'function') {
+    console.log('HERE1');
     return (target: any, propertyKey: string | symbol) => {
       Object.defineProperty(target, propertyKey, {
         get: () => {
@@ -33,6 +34,7 @@ export function AutoWired<T>(
       });
     };
   } else if (token && propertyKey) {
+    console.log('HERE2');
     const type = Reflect.getMetadata('design:type', token, propertyKey);
     if (type === undefined) {
       // tslint:disable-next-line:no-console
@@ -48,11 +50,17 @@ export function AutoWired<T>(
       },
     });
   } else {
+    console.log('HERE3');
     return (target: any, propertyKey: string | symbol, index?: number) => {
       if (index !== undefined) {
+        console.log(index);
+        console.log(token);
+        console.log('HERE31');
         return inject(token!)(target, propertyKey, index);
       } else {
+        console.log('HERE32');
         if (token) {
+          console.log('HERE34');
           Object.defineProperty(target, propertyKey, {
             get: () => {
               return container.resolve(token);

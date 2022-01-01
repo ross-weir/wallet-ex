@@ -22,7 +22,6 @@ import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, AccountService, Wallet, WalletService } from '../entities';
-import { BackendProvider, useBackend } from '../hooks';
 import { capitalize } from '../utils/formatting';
 
 function WalletView() {
@@ -37,7 +36,6 @@ function WalletView() {
   // Default to the first account for the wallet, there should always be one when creating wallet
   const { t } = useTranslation(['common', 'walletView']);
   const { walletId: walletIdParam } = useParams();
-  const backend = useBackend();
   const [isLoading, setIsLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | undefined>();
   const [accountList, setAccountList] = useState<Account[]>([]);
@@ -84,7 +82,7 @@ function WalletView() {
 
     setIsLoading(true);
     fetchEntities().finally(() => setIsLoading(false));
-  }, [walletIdParam, backend]);
+  }, [walletIdParam]);
 
   const panes = () => [
     {
@@ -130,85 +128,78 @@ function WalletView() {
 
   return (
     <>
-      <BackendProvider>
-        <AppBarTop onLogout={onLogoutWallet} />
-        <Grid stackable padded>
-          <Grid.Column width={4}>
-            <Card onClick={() => null} fluid>
-              <Card.Content>
-                {isLoading ? (
-                  <p>loading..</p>
-                ) : (
-                  <>
-                    <Image src={walletImg} size="mini" floated="left" />
-                    <Card.Header>{wallet?.name}</Card.Header>
-                    <Card.Meta>
-                      <SensitiveComponent>
-                        {walletSubtitle()}
-                      </SensitiveComponent>
-                    </Card.Meta>
-                  </>
-                )}
-              </Card.Content>
-            </Card>
-            <Card fluid>
-              <Card.Content>
-                <Card.Header
-                  style={{
-                    lineHeight: 2,
-                    display: 'inline-block',
-                    verticalAlign: 'middle',
-                  }}
-                >
-                  {t('walletView:myAccounts')}
-                </Card.Header>
-                <CreateAccountModal
-                  wallet={wallet!}
-                  onAccountCreated={(account) =>
-                    setAccountList((accts) => [...accts, account])
-                  }
-                  trigger={<Button floated="right" icon="add" size="tiny" />}
-                />
-              </Card.Content>
-              <Menu vertical fluid>
-                {accountList.length &&
-                  accountList.map((account, idx) => (
-                    <Menu.Item
-                      key={account.id}
-                      active={selectedAccount?.id === account.id}
-                      onClick={() => setSelectedAccount(accountList[idx])}
-                    >
-                      <SensitiveComponent>
-                        <Header as="h4">
-                          {account.name}
-                          <Header.Subheader>$999.00</Header.Subheader>
-                        </Header>
-                      </SensitiveComponent>
-                    </Menu.Item>
-                  ))}
-              </Menu>
-            </Card>
-          </Grid.Column>
-          <Grid.Column stretched width={12}>
-            <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
-              <Header style={{ marginTop: 15 }} as="h2">
-                {selectedAccount &&
-                  `${selectedAccount.name} - ${capitalize(
-                    t('common:account'),
-                  )} #${selectedAccount.deriveIdx}`}
-              </Header>
-              <SensitiveComponent>
-                <p>0.02484236 BTC ≈ A$1,672.36</p>
-              </SensitiveComponent>
-              <Divider />
-              <Tab
-                menu={{ secondary: true, stackable: true }}
-                panes={panes()}
+      <AppBarTop onLogout={onLogoutWallet} />
+      <Grid stackable padded>
+        <Grid.Column width={4}>
+          <Card onClick={() => null} fluid>
+            <Card.Content>
+              {isLoading ? (
+                <p>loading..</p>
+              ) : (
+                <>
+                  <Image src={walletImg} size="mini" floated="left" />
+                  <Card.Header>{wallet?.name}</Card.Header>
+                  <Card.Meta>
+                    <SensitiveComponent>{walletSubtitle()}</SensitiveComponent>
+                  </Card.Meta>
+                </>
+              )}
+            </Card.Content>
+          </Card>
+          <Card fluid>
+            <Card.Content>
+              <Card.Header
+                style={{
+                  lineHeight: 2,
+                  display: 'inline-block',
+                  verticalAlign: 'middle',
+                }}
+              >
+                {t('walletView:myAccounts')}
+              </Card.Header>
+              <CreateAccountModal
+                wallet={wallet!}
+                onAccountCreated={(account) =>
+                  setAccountList((accts) => [...accts, account])
+                }
+                trigger={<Button floated="right" icon="add" size="tiny" />}
               />
-            </Container>
-          </Grid.Column>
-        </Grid>
-      </BackendProvider>
+            </Card.Content>
+            <Menu vertical fluid>
+              {accountList.length &&
+                accountList.map((account, idx) => (
+                  <Menu.Item
+                    key={account.id}
+                    active={selectedAccount?.id === account.id}
+                    onClick={() => setSelectedAccount(accountList[idx])}
+                  >
+                    <SensitiveComponent>
+                      <Header as="h4">
+                        {account.name}
+                        <Header.Subheader>$999.00</Header.Subheader>
+                      </Header>
+                    </SensitiveComponent>
+                  </Menu.Item>
+                ))}
+            </Menu>
+          </Card>
+        </Grid.Column>
+        <Grid.Column stretched width={12}>
+          <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
+            <Header style={{ marginTop: 15 }} as="h2">
+              {selectedAccount &&
+                `${selectedAccount.name} - ${capitalize(
+                  t('common:account'),
+                )} #${selectedAccount.deriveIdx}`}
+            </Header>
+            <SensitiveComponent>
+              <p>0.02484236 BTC ≈ A$1,672.36</p>
+            </SensitiveComponent>
+            <Divider />
+            <Tab menu={{ secondary: true, stackable: true }} panes={panes()} />
+          </Container>
+        </Grid.Column>
+      </Grid>
     </>
   );
 }
