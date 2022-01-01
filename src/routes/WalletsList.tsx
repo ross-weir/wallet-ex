@@ -14,11 +14,11 @@ import {
   Grid,
   Icon,
 } from 'semantic-ui-react';
-import { container } from 'tsyringe';
 import AppBarTop from '../components/AppBarTop';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
 import { Wallet, WalletService } from '../entities';
 import { capitalize } from '../utils/formatting';
+import { Container as IocContainer } from 'typedi';
 
 function WalletsList() {
   const { t } = useTranslation(['walletsList', 'common']);
@@ -26,7 +26,7 @@ function WalletsList() {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
   const navigate = useNavigate();
-  const walletService = container.resolve(WalletService);
+  const walletService = IocContainer.get(WalletService);
 
   useEffect(() => {
     walletService

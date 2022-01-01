@@ -1,18 +1,19 @@
-import { inject, injectable } from 'tsyringe';
+import { Inject, Service } from 'typedi';
 import { hashPassword } from '../../crypto';
 import { getErgo } from '../../ergo';
+import { BackendServiceToken } from '../../ioc';
 import { BackendService } from '../../services/backend';
 import { AccountService } from '../account';
 import { CreateWalletDto } from './dto';
 import { Wallet } from './wallet.entity';
 
-@injectable()
+@Service()
 export class WalletService {
   private readonly ergo = getErgo();
 
   constructor(
-    @inject('BackendService') private backend: BackendService,
-    @inject(AccountService) private accountService: AccountService,
+    @Inject(BackendServiceToken) private backend: BackendService,
+    private accountService: AccountService,
   ) {}
 
   public async create(dto: CreateWalletDto): Promise<Wallet> {
@@ -28,7 +29,7 @@ export class WalletService {
     const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
     wallet.setSeed(seed);
-    wallet.storeSeed(dto.password, seed);
+    await wallet.storeSeed(dto.password, seed);
 
     // If we support other coins we probably will stop creating accounts when creating wallets
     await this.accountService.create(wallet, { name: 'Main', coinType: 429 });

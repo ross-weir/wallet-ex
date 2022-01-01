@@ -13,14 +13,14 @@ import {
 import { capitalize } from '../../utils/formatting';
 import ledgerImg from '../../img/ledger.svg';
 import WalletActionForm from './WalletActionForm';
-import { container } from 'tsyringe';
 import { WalletService } from '../../entities';
+import Container from 'typedi';
 
 function InitWalletView() {
   const { t } = useTranslation(['common', 'walletCreateRestore']);
   const [action, setAction] = useState<'Restore' | 'Create' | ''>('');
   const navigate = useNavigate();
-  const walletService = container.resolve(WalletService);
+  const walletService = Container.get(WalletService);
 
   /**
    * Handle create/restore wallet submission. Performs the following actions:

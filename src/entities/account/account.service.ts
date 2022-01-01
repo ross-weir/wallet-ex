@@ -1,15 +1,16 @@
-import { inject, injectable } from 'tsyringe';
+import { Inject, Service } from 'typedi';
+import { BackendServiceToken } from '../../ioc';
 import { BackendService } from '../../services/backend/backend';
 import { AddressService } from '../address';
 import { Wallet } from '../wallet';
 import { Account } from './account.entity';
 import { CreateAccountDto } from './dto';
 
-@injectable()
+@Service()
 export class AccountService {
   constructor(
-    @inject('BackendService') private backend: BackendService,
-    @inject(AddressService) private addressService: AddressService,
+    @Inject(BackendServiceToken) private backend: BackendService,
+    private addressService: AddressService,
   ) {}
 
   public async create(wallet: Wallet, dto: CreateAccountDto): Promise<Account> {

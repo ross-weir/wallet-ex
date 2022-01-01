@@ -8,7 +8,7 @@ import {
   Segment,
   Table,
 } from 'semantic-ui-react';
-import { container } from 'tsyringe';
+import Container from 'typedi';
 import { Account, Address, AddressService, Wallet } from '../../entities';
 import CopyIcon from '../CopyIcon';
 import ErgDisplay from '../ErgDisplay';
@@ -27,7 +27,7 @@ function WalletViewReceiveTab({ wallet, account }: WalletViewReceiveTabProps) {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeriving, setIsDeriving] = useState(false);
-  const addressService = container.resolve(AddressService);
+  const addressService = Container.get(AddressService);
   let latestAddress!: Address;
 
   // Only trigger reload if accountId changes

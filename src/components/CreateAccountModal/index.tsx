@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
-import { container } from 'tsyringe';
+import Container from 'typedi';
 import { Account, AccountService, Wallet } from '../../entities';
 import { capitalize } from '../../utils/formatting';
 
@@ -24,7 +24,7 @@ function CreateAccountModal({
   const [accountNameError, setAccountNameError] = useState<
     string | undefined
   >();
-  const accountService = container.resolve(AccountService);
+  const accountService = Container.get(AccountService);
 
   const validate = () => {
     if (!accountName) {

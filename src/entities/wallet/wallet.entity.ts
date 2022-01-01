@@ -9,10 +9,6 @@ export class Wallet extends BaseEntity {
   hdStandard!: 'eip3';
   createdAt!: string;
 
-  constructor(public testProp: string = 'hello') {
-    super();
-  }
-
   private seed?: Uint8Array;
 
   public hasSeed(): boolean {

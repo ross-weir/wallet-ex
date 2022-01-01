@@ -1,6 +1,5 @@
 import { invoke, path, fs } from '@tauri-apps/api';
 import localforage from 'localforage';
-import { injectable } from 'tsyringe';
 import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
 import {
   BackendService,
@@ -17,7 +16,6 @@ const cfgPath = async () => {
   return `${appDir}${path.sep}.wallet-x.json`;
 };
 
-@injectable()
 export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
 

@@ -15,7 +15,6 @@ import {
   Menu,
   Tab,
 } from 'semantic-ui-react';
-import { container } from 'tsyringe';
 import AppBarTop from '../components/AppBarTop';
 import CreateAccountModal from '../components/CreateAccountModal';
 import SensitiveComponent from '../components/SensitiveComponent';
@@ -23,6 +22,7 @@ import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, AccountService, Wallet, WalletService } from '../entities';
 import { capitalize } from '../utils/formatting';
+import { Container as IocContainer } from 'typedi';
 
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}
@@ -41,8 +41,8 @@ function WalletView() {
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
   const { state } = useLocation();
-  const walletService = container.resolve(WalletService);
-  const accountService = container.resolve(AccountService);
+  const walletService = IocContainer.get(WalletService);
+  const accountService = IocContainer.get(AccountService);
 
   const onLogoutWallet = () => {
     // Remove the seed from browser history state so users can't
