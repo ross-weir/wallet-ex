@@ -50,7 +50,7 @@ function InitWalletView() {
       mnemonic: values.phrase.join(' '),
       mnemonicPass: values.mnemonicPassphrase,
     });
-    const seed = await wallet.unlockSeed(values.password);
+    const seed = await wallet.retrieveSeed(values.password);
 
     navigate(`/wallets/${wallet.id}`, { state: { seed } });
   };
