@@ -15,12 +15,13 @@ import {
   Menu,
   Tab,
 } from 'semantic-ui-react';
+import { container } from 'tsyringe';
 import AppBarTop from '../components/AppBarTop';
 import CreateAccountModal from '../components/CreateAccountModal';
 import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
-import { Account, Wallet } from '../entities';
+import { Account, AccountService, Wallet, WalletService } from '../entities';
 import { BackendProvider, useBackend } from '../hooks';
 import { capitalize } from '../utils/formatting';
 
@@ -42,6 +43,8 @@ function WalletView() {
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
   const { state } = useLocation();
+  const walletService = container.resolve(WalletService);
+  const accountService = container.resolve(AccountService);
 
   const onLogoutWallet = () => {
     // Remove the seed from browser history state so users can't
@@ -59,32 +62,28 @@ function WalletView() {
   // TODO: could be done in 1 request - don't bother until there's actual perf issues
   useEffect(() => {
     const fetchEntities = async () => {
-      setIsLoading(true);
-
       const walletId = parseInt(walletIdParam as string, 10);
-      const walletReq = await backend.findWallet(walletId);
 
-      const w = Wallet.fromJson(walletReq);
-      if (state.seed && !w.hasSeed()) {
-        w.setSeed(state.seed);
-      }
-      setWallet(w);
-      const accountsReq = backend.accountsForWallet(w.id);
+      const walletsRequest = walletService.findOne(walletId).then((wallet) => {
+        if (state.seed && !wallet.hasSeed()) {
+          wallet.setSeed(state.seed);
+        }
 
-      const [accountsResp] = await Promise.allSettled([accountsReq]);
+        setWallet(wallet);
+      });
 
-      if (accountsResp.status === 'fulfilled') {
-        setAccountList(accountsResp.value);
-        setSelectedAccount(accountsResp.value[0]);
-      } else {
-        // TODO: handle failure
-        console.log(accountsResp.reason);
-      }
+      const accountsRequest = accountService
+        .filterByWalletId(walletId)
+        .then((accounts) => {
+          setAccountList(accounts);
+          setSelectedAccount(accounts[0]);
+        });
 
-      setIsLoading(false);
+      await Promise.allSettled([walletsRequest, accountsRequest]);
     };
 
-    fetchEntities();
+    setIsLoading(true);
+    fetchEntities().finally(() => setIsLoading(false));
   }, [walletIdParam, backend]);
 
   const panes = () => [

@@ -33,9 +33,8 @@ function WalletsListPasswordModal({
           return;
         }
 
-        // todo: add to wallet entity
-        const storageKey = await wallet.seedStorageKey();
-        const seed = await backend.getSecretSeed({ password, storageKey });
+        const seed = await wallet.retrieveSeed(password);
+
         navigate(`/wallets/${wallet.id}`, { state: { seed } });
       })
       .catch((e: any) => console.error(`handle this error: ${e}`))

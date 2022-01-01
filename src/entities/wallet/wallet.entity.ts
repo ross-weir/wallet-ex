@@ -23,11 +23,16 @@ export class Wallet extends BaseEntity {
     this.seed = new Uint8Array([]);
   }
 
-  public async seedStorageKey(): Promise<string> {
-    const key = new TextEncoder().encode(`${this.id}-${this.createdAt}`);
-    const hashedKey = await crypto.subtle.digest('SHA-256', key);
+  public async retrieveSeed(password: string): Promise<Uint8Array> {
+    const storageKey = await this.seedStorageKey();
 
-    return toBase16(new Uint8Array(hashedKey));
+    return this.backend.getSecretSeed({ password, storageKey });
+  }
+
+  public async storeSeed(password: string, seed: Uint8Array): Promise<void> {
+    const storageKey = await this.seedStorageKey();
+
+    return this.backend.storeSecretSeed({ password, seed, storageKey });
   }
 
   public async deriveAddress(hdStandardArgs: object): Promise<string> {
@@ -45,5 +50,12 @@ export class Wallet extends BaseEntity {
 
   public static fromJson(obj: object): Wallet {
     return plainToClass(Wallet, obj);
+  }
+
+  private async seedStorageKey(): Promise<string> {
+    const key = new TextEncoder().encode(`${this.id}-${this.createdAt}`);
+    const hashedKey = await crypto.subtle.digest('SHA-256', key);
+
+    return toBase16(new Uint8Array(hashedKey));
   }
 }

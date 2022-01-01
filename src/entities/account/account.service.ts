@@ -29,4 +29,10 @@ export class AccountService {
 
     return Account.fromJson(account);
   }
+
+  public async filterByWalletId(walletId: number): Promise<Account[]> {
+    return this.backend
+      .accountsForWallet(walletId)
+      .then((accts) => accts.map(Account.fromJson));
+  }
 }

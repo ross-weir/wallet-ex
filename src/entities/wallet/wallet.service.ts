@@ -26,10 +26,9 @@ export class WalletService {
     });
     const wallet = Wallet.fromJson(walletJson);
     const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
-    wallet.setSeed(seed);
 
-    const storageKey = await wallet.seedStorageKey();
-    this.backend.storeSecretSeed({ password: dto.password, seed, storageKey });
+    wallet.setSeed(seed);
+    wallet.storeSeed(dto.password, seed);
 
     // If we support other coins we probably will stop creating accounts when creating wallets
     await this.accountService.create(wallet, { name: 'Main', coinType: 429 });
@@ -37,9 +36,13 @@ export class WalletService {
     return wallet;
   }
 
-  public async list(): Promise<Wallet[]> {
-    const wallets = await this.backend.listWallets();
+  public async findOne(id: number): Promise<Wallet> {
+    return this.backend.findWallet(id).then(Wallet.fromJson);
+  }
 
-    return wallets.map((w) => plainToClass(Wallet, w));
+  public async list(): Promise<Wallet[]> {
+    return this.backend
+      .listWallets()
+      .then((wallets) => wallets.map(Wallet.fromJson));
   }
 }

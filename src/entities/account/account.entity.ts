@@ -1,4 +1,4 @@
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { BaseEntity } from '../baseEntity';
 
 export class Account extends BaseEntity {
@@ -8,6 +8,6 @@ export class Account extends BaseEntity {
   walletId!: number;
 
   public static fromJson(obj: object): Account {
-    return plainToClass(Account, obj);
+    return plainToInstance(Account, obj);
   }
 }
