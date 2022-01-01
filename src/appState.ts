@@ -13,12 +13,14 @@ export const defaultAppState = (): AppState => ({
 });
 
 export const saveAppState = async (state: AppState): Promise<AppState> => {
+  // TODO: use container, delete this; factory.getBackendService
   const backend = getBackendService();
 
   return backend.storeData(DATA_DESCRIPTOR, state);
 };
 
 export const getAppState = async (): Promise<AppState> => {
+  // TODO: use container, delete this; factory.getBackendService
   const backend = getBackendService();
   const appState = await backend.getStoredData<AppState>(DATA_DESCRIPTOR);
 
