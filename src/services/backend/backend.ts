@@ -33,6 +33,7 @@ export interface GetSecretSeedArgs {
 }
 
 export type BackendOpResult<T> = Promise<T>;
+
 export abstract class BackendService {
   abstract createWallet(args: CreateWalletArgs): BackendOpResult<any>;
   abstract findWallet(id: number): BackendOpResult<any>;

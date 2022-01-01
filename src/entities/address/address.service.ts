@@ -1,18 +1,21 @@
 import { CreateAddressDto } from './dto';
-import { BackendService } from '../../services/backend/backend';
 import { Address } from './address.entity';
 import { Inject, Service } from 'typedi';
-import { BackendServiceToken } from '../../ioc';
+import { BackendServiceToken, ChainProviderToken } from '../../ioc';
+import { ChainProvider, BackendService } from '../../services';
 
 @Service()
 export class AddressService {
-  constructor(@Inject(BackendServiceToken) private backend: BackendService) {}
+  constructor(
+    @Inject(BackendServiceToken) private backend: BackendService,
+    @Inject(ChainProviderToken) private chain: ChainProvider,
+  ) {}
 
   public async create(dto: CreateAddressDto): Promise<Address> {
-    const address = await this.backend.createAddress({ ...dto });
-    // TODO: scan for balances
-
-    return Address.fromJson(address);
+    return this.chain
+      .balanceForAddress(dto.address)
+      .then((balance) => this.backend.createAddress({ ...dto, balance }))
+      .then(Address.fromJson);
   }
 
   public async filterByAccountId(accountId: number): Promise<Address[]> {

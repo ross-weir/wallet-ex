@@ -1,9 +1,10 @@
 import { ChainProvider } from './chainProvider';
 
-export class ExplorerChainProvider implements ChainProvider {
+export class ExplorerChainProvider extends ChainProvider {
   private readonly baseEndpoint: string;
 
   constructor(network: number) {
+    super();
     this.baseEndpoint = this.getBaseEndpoint(network);
   }
 
