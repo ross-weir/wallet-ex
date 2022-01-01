@@ -24,13 +24,13 @@ export class Wallet extends BaseEntity {
   }
 
   public async retrieveSeed(password: string): Promise<Uint8Array> {
-    return this.seedStorageKey().then((storageKey) =>
+    return await this.seedStorageKey().then((storageKey) =>
       this.backend.getSecretSeed({ password, storageKey }),
     );
   }
 
   public async storeSeed(password: string, seed: Uint8Array): Promise<void> {
-    return this.seedStorageKey().then((storageKey) =>
+    return await this.seedStorageKey().then((storageKey) =>
       this.backend.storeSecretSeed({ password, seed, storageKey }),
     );
   }
