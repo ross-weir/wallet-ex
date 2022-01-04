@@ -1,5 +1,5 @@
 import { HashedPassword } from '../../crypto';
-import { WalletInterfaceType } from '../wallet';
+import { WalletInterfaceType } from '../walletInterface';
 
 export interface CreateWalletArgs {
   name: string;
