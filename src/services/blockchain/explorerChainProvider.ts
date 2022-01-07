@@ -30,7 +30,7 @@ export class ExplorerChainProvider extends ChainProvider {
       case 0:
         return 'https://api.ergoplatform.com';
       case 1:
-        return '';
+        return 'https://api-testnet.ergoplatform.com';
       default:
         throw new Error(
           `Unsupported explorer API network: ${network}, 0 = mainnet, 1 = testnet`,

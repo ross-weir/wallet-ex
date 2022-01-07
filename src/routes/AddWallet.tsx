@@ -1,44 +1,65 @@
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
-import {
-  Button,
-  Container,
-  Header,
-  Icon,
-  Grid,
-  Divider,
-} from 'semantic-ui-react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
+import { Container, Header, Breadcrumb } from 'semantic-ui-react';
 import AppBarTop from '../components/AppBarTop';
-import InitWalletView from '../components/InitWalletView';
 import { capitalize } from '../utils/formatting';
 
 function AddWallet() {
-  const { t } = useTranslation(['common']);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const Breadcrumbs = () => {
+    const parts = location.pathname.split('/');
+
+    // remove empty leading element
+    parts.shift();
+
+    return (
+      <Breadcrumb size="small">
+        {parts.map((path, idx) => {
+          const isLast = idx === parts.length - 1;
+          let href = '';
+          let onClick;
+
+          if (!isLast) {
+            href += '/';
+            href += parts
+              .reduce((prev: string[], curr: string, i) => {
+                if (i > idx) {
+                  return prev;
+                }
+
+                prev.push(curr);
+                return prev;
+              }, [])
+              .join('/');
+
+            onClick = () => navigate(href);
+          }
+
+          return (
+            <>
+              <Breadcrumb.Section
+                link={!isLast}
+                active={isLast}
+                onClick={onClick}
+              >
+                {capitalize(path)}
+              </Breadcrumb.Section>
+              {!isLast && <Breadcrumb.Divider />}
+            </>
+          );
+        })}
+      </Breadcrumb>
+    );
+  };
 
   return (
     <>
       <AppBarTop />
-      <Container text style={{ marginTop: 30 }}>
-        <Grid columns={2}>
-          <Grid.Column verticalAlign="middle">
-            <Header as="h2" content="Add Wallet" />
-          </Grid.Column>
-          <Grid.Column>
-            <Button
-              floated="right"
-              icon
-              size="tiny"
-              labelPosition="left"
-              onClick={() => navigate(-1)}
-            >
-              <Icon name="arrow left" />
-              {capitalize(t('common:back'))}
-            </Button>
-          </Grid.Column>
-        </Grid>
-        <Divider />
-        <InitWalletView />
+      <Container style={{ marginTop: 30 }}>
+        <Header as="h2" content="Add Wallet" />
+        {Breadcrumbs()}
+        <Outlet />
       </Container>
     </>
   );

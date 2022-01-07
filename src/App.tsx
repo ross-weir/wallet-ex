@@ -1,6 +1,8 @@
 import React from 'react';
 import { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import InitWalletView from './components/InitWalletView';
+import WalletActionForm from './components/InitWalletView/WalletActionForm';
 import { initErgo } from './ergo';
 import { SensitiveModeProvider } from './hooks';
 import { WalletsList, AddWallet, WalletView } from './routes';
@@ -24,7 +26,10 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/wallets" />} />
               <Route path="/wallets" element={<WalletsList />} />
-              <Route path="/wallets/add" element={<AddWallet />} />
+              <Route path="/wallets/add" element={<AddWallet />}>
+                <Route index element={<InitWalletView />} />
+                <Route path=":action" element={<WalletActionForm />} />
+              </Route>
               <Route path="/wallets/:walletId" element={<WalletView />} />
               <Route path="*" element={<p>How did you get hur?</p>} />
             </Routes>
