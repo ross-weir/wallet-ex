@@ -130,7 +130,6 @@ function WalletActionForm() {
       {(formik) => (
         <Form onSubmit={formik.handleSubmit}>
           <Segment style={{ marginTop: 20 }}>
-            {/* <Header as="h2">{capitalize(action)} Wallet</Header> */}
             {(action as any) === 'restore' ? (
               <WalletRestoreWizard activeStep={state.activeStep} />
             ) : (
