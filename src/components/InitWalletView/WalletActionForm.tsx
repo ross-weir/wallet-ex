@@ -131,7 +131,7 @@ function WalletActionForm() {
       }}
     >
       {(formik) => (
-        <Form onSubmit={formik.handleSubmit}>
+        <Form id="walletForm" onSubmit={formik.handleSubmit}>
           <Segment style={{ marginTop: 20 }}>
             {(action as any) === 'restore' ? (
               <WalletRestoreWizard activeStep={state.activeStep} />
@@ -139,7 +139,12 @@ function WalletActionForm() {
               <WalletCreateWizard activeStep={state.activeStep} />
             )}
             <div style={{ marginTop: 10 }}>
-              <Button type="submit" primary loading={formik.isSubmitting}>
+              <Button
+                id="submitWalletForm"
+                type="submit"
+                primary
+                loading={formik.isSubmitting}
+              >
                 {progressButtonText}
               </Button>
               <Button

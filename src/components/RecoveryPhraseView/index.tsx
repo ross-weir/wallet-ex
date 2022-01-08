@@ -33,7 +33,7 @@ function RecoveryPhraseView({
           <Dimmer inverted active={hidden} />
           <Label.Group color={removable ? 'blue' : undefined} size="large">
             {value.map((word, i) => (
-              <Label key={`${word}-${i}`}>
+              <Label className="mnemonicWord" key={`${word}-${i}`}>
                 {(numbered ? `${i + 1}. ` : '') + word}
                 {removable && (
                   <Icon link name="close" onClick={onRemoveFactory(i)} />

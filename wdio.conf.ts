@@ -1,7 +1,7 @@
 import { platform } from 'os';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, basename } from 'path';
-import { spawnSync } from 'child_process';
+import { spawnSync, spawn } from 'child_process';
 
 let tauriDriver;
 
@@ -104,7 +104,7 @@ export const config: WebdriverIO.Config = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  // baseUrl: 'tauri://localhost',
+  baseUrl: 'https://tauri.localhost',
   //
   // Default timeout for all waitFor* commands.
   // waitforTimeout: 10000,
@@ -211,7 +211,8 @@ export const config: WebdriverIO.Config = {
       mkdirSync(failedRunsDir);
     }
 
-    tauriDriver = spawnSync('tauri-driver', [], {
+    // Has to be spawned async otherwise we block the test runner
+    tauriDriver = spawn('tauri-driver', [], {
       stdio: [null, process.stdout, process.stderr],
     });
   },
