@@ -1,7 +1,10 @@
 import { Formik, FormikValues } from 'formik';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal, Form } from 'semantic-ui-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Form, Segment } from 'semantic-ui-react';
+import { Container } from 'typedi';
+import { WalletService } from '../../entities';
 import { capitalize } from '../../utils/formatting';
 import WalletCreateWizard, {
   createInitialValues,
@@ -12,21 +15,55 @@ import WalletRestoreWizard, {
   restoreValidations,
 } from '../WalletRestoreWizard';
 
-interface Props {
-  action: 'Create' | 'Restore';
-  totalSteps: number;
-  onCancel?: () => void;
-  onSubmit?: (values: Record<string, any>) => void;
-}
-
 const initialState = {
   activeStep: 0,
-  open: true,
 };
 
-function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
+function WalletActionForm() {
   const { t } = useTranslation(['common']);
   const [state, setState] = React.useState({ ...initialState });
+  const navigate = useNavigate();
+  const params = useParams();
+  const walletService = Container.get(WalletService);
+  const action = params.action as 'create' | 'restore';
+
+  /**
+   * Handle create/restore wallet submission. Performs the following actions:
+   *
+   * - Creates the wallet/stores in database
+   * - Generates secret seed from mnemonic, encrypts it and stores
+   *
+   * @param values Example of submitted 'local' wallet:
+   *  {
+   *    "name": "test",
+   *    "password": "testing123",
+   *    "passwordConfirm": "testing123",
+   *    "mnemonicPassphrase": "test",
+   *    "mnemonicPassphrase2": "test", (confirmation field)
+   *    "phrase": [
+   *        ...
+   *        "words",
+   *        "here"
+   *        ...
+   *    ]
+   *  }
+   */
+  const handleSubmit = async (values: Record<string, any>) => {
+    const wallet = await walletService.create({
+      name: values.name,
+      password: values.password,
+      mnemonic: values.phrase.join(' '),
+      mnemonicPass: values.mnemonicPassphrase,
+    });
+    const seed = await wallet.retrieveSeed(values.password);
+
+    navigate(`/wallets/${wallet.id}`, { state: { seed } });
+  };
+
+  const totalSteps = {
+    restore: 3,
+    create: 4,
+  }[action];
 
   const progressButtonText =
     state.activeStep === totalSteps - 1
@@ -46,8 +83,7 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
     event.preventDefault();
 
     if (state.activeStep === 0) {
-      if (onCancel) onCancel();
-      setModalOpen(false);
+      navigate('/wallets/add');
 
       return;
     }
@@ -55,20 +91,11 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
     setActiveStep(state.activeStep - 1);
   };
 
-  const onModalClose = (resetForm: any) => {
-    resetState();
-    resetForm();
-    if (onCancel) onCancel();
-  };
-
-  const setModalOpen = (open: boolean) =>
-    setState((prev) => ({ ...prev, open }));
-
   const setActiveStep = (activeStep: number) =>
     setState((prev) => ({ ...prev, activeStep }));
 
   const getValidationSchema = () => {
-    if (action === 'Restore') {
+    if ((action as any) === 'restore') {
       return restoreValidations[state.activeStep];
     }
 
@@ -76,7 +103,7 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
   };
 
   const getInitialValues = () => {
-    if (action === 'Restore') {
+    if ((action as any) === 'restore') {
       return { ...restoreInitialValues };
     }
 
@@ -93,7 +120,7 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
 
         // last form submit
         if (state.activeStep === totalSteps - 1) {
-          if (onSubmit) onSubmit(values);
+          handleSubmit(values);
 
           resetState();
           resetForm();
@@ -101,33 +128,23 @@ function WalletActionForm({ action, totalSteps, onCancel, onSubmit }: Props) {
       }}
     >
       {(formik) => (
-        <Modal
-          as={Form}
-          size="large"
-          open={state.open}
-          closeIcon
-          onClose={() => onModalClose(formik.resetForm)}
-          onOpen={() => setModalOpen(true)}
-          onSubmit={formik.handleSubmit}
-        >
-          <Modal.Header>{action} Wallet</Modal.Header>
-          <Modal.Content>
-            {action === 'Restore' ? (
+        <Form onSubmit={formik.handleSubmit}>
+          <Segment style={{ marginTop: 20 }}>
+            {(action as any) === 'restore' ? (
               <WalletRestoreWizard activeStep={state.activeStep} />
             ) : (
               <WalletCreateWizard activeStep={state.activeStep} />
             )}
-          </Modal.Content>
-          <Modal.Actions>
-            {/* Hack: Tab index to force cancel button tabbed after submit button */}
-            <Button tabIndex={100} onClick={handleCancel}>
-              {cancelButtonText}
-            </Button>
-            <Button type="submit" primary>
-              {progressButtonText}
-            </Button>
-          </Modal.Actions>
-        </Modal>
+            <div style={{ marginTop: 10 }}>
+              <Button type="submit" primary>
+                {progressButtonText}
+              </Button>
+              <Button tabIndex={100} onClick={handleCancel}>
+                {cancelButtonText}
+              </Button>
+            </div>
+          </Segment>
+        </Form>
       )}
     </Formik>
   );
