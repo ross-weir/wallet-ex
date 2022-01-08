@@ -114,16 +114,19 @@ function WalletActionForm() {
     <Formik
       initialValues={getInitialValues() as FormikValues}
       validationSchema={getValidationSchema()}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
-        setSubmitting(false);
-        setActiveStep(state.activeStep + 1);
+      onSubmit={async (values, { setSubmitting, resetForm }) => {
+        try {
+          setActiveStep(state.activeStep + 1);
 
-        // last form submit
-        if (state.activeStep === totalSteps - 1) {
-          handleSubmit(values);
+          // last form submit
+          if (state.activeStep === totalSteps - 1) {
+            handleSubmit(values);
 
-          resetState();
-          resetForm();
+            resetState();
+            resetForm();
+          }
+        } finally {
+          setSubmitting(false);
         }
       }}
     >
@@ -136,10 +139,14 @@ function WalletActionForm() {
               <WalletCreateWizard activeStep={state.activeStep} />
             )}
             <div style={{ marginTop: 10 }}>
-              <Button type="submit" primary>
+              <Button type="submit" primary loading={formik.isSubmitting}>
                 {progressButtonText}
               </Button>
-              <Button tabIndex={100} onClick={handleCancel}>
+              <Button
+                tabIndex={100}
+                onClick={handleCancel}
+                loading={formik.isSubmitting}
+              >
                 {cancelButtonText}
               </Button>
             </div>
