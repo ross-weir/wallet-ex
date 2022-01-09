@@ -1,4 +1,5 @@
 import { ChainProvider } from './chainProvider';
+import { JSONBI } from '../../json';
 
 export class ExplorerChainProvider extends ChainProvider {
   private readonly baseEndpoint: string;
@@ -22,7 +23,7 @@ export class ExplorerChainProvider extends ChainProvider {
       throw new Error(`Explorer API request failed: ${await response.text()}`);
     }
 
-    return response.json();
+    return JSONBI.parse(await response.text());
   }
 
   private getBaseEndpoint(network: number): string {
