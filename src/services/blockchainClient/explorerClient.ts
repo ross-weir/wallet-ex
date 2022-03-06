@@ -1,7 +1,7 @@
-import { ChainProvider } from './chainProvider';
+import { BlockchainClient } from './blockchainClient';
 import { JSONBI } from '../../json';
 
-export class ExplorerChainProvider extends ChainProvider {
+export class ExplorerClient extends BlockchainClient {
   private readonly baseEndpoint: string;
 
   constructor(network: number) {
@@ -13,6 +13,10 @@ export class ExplorerChainProvider extends ChainProvider {
     return this.doRequest(`api/v1/addresses/${address}/balance/confirmed`).then(
       (res) => res.nanoErgs,
     );
+  }
+
+  submitTx(): void {
+    throw new Error('Method not implemented.');
   }
 
   private async doRequest(endpoint: string): Promise<any> {

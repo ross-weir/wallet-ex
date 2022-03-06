@@ -1,14 +1,14 @@
 import { CreateAddressDto } from './dto';
 import { Address } from './address.entity';
 import { Inject, Service } from 'typedi';
-import { BackendServiceToken, ChainProviderToken } from '../../ioc';
-import { ChainProvider, BackendService } from '../../services';
+import { BackendServiceToken, BlockchainClientToken } from '../../ioc';
+import { BlockchainClient, BackendService } from '../../services';
 
 @Service()
 export class AddressService {
   constructor(
     @Inject(BackendServiceToken) private backend: BackendService,
-    @Inject(ChainProviderToken) private chain: ChainProvider,
+    @Inject(BlockchainClientToken) private chain: BlockchainClient,
   ) {}
 
   public async create(dto: CreateAddressDto): Promise<Address> {

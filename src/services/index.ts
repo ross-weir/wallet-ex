@@ -1,3 +1,3 @@
 export * from './backend';
 export * from './walletInterface';
-export * from './blockchain';
+export * from './blockchainClient';

@@ -2,7 +2,7 @@
 // Used to query data, etc
 // For example: explorer vs node etc
 
-export abstract class ChainProvider {
+export abstract class BlockchainClient {
   /**
    * Get the CONFIRMED balance of an address.
    *
@@ -14,4 +14,6 @@ export abstract class ChainProvider {
    * @param address the address to update the balance for base58 with network address encoding.
    */
   abstract balanceForAddress(address: string): Promise<number>;
+
+  abstract submitTx(): void;
 }
