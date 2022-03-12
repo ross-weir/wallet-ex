@@ -1,4 +1,4 @@
-import { invoke, path, fs } from '@tauri-apps/api';
+import { invoke, path, fs, os } from '@tauri-apps/api';
 import localforage from 'localforage';
 import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
 import {
@@ -118,5 +118,20 @@ export class TauriBackend extends BackendService {
     descriptor: string,
   ): BackendOpResult<T | undefined | null> {
     return localforage.getItem(descriptor);
+  }
+
+  async downloadFile(url: string, outPath: string): BackendOpResult<void> {
+    return invoke('download_file', { url, outPath });
+  }
+
+  async appDir(): BackendOpResult<string> {
+    return path.appDir();
+  }
+
+  getPlatform(): BackendOpResult<string> {
+    return os.platform();
+  }
+  getFreePort(): BackendOpResult<number> {
+    return invoke('get_free_port');
   }
 }
