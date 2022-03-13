@@ -3,8 +3,6 @@ import { Sidecar } from './sidecar';
 export class SidecarManager {
   private readonly registry: Record<string, Sidecar> = {};
 
-  constructor() {}
-
   public get(sidecarName: string): Sidecar | undefined {
     return this.registry[sidecarName];
   }

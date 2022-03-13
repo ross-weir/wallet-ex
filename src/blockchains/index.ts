@@ -1,2 +1,2 @@
 export * from './blockchainClient';
-export * from './explorerClient';
+export * from './node';

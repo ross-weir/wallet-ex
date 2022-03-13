@@ -55,6 +55,11 @@ export abstract class BackendService {
   abstract readConfig(): Promise<string>;
   abstract writeConfig(cfg: string): Promise<void>;
 
+  abstract readFile(filePath: string): Promise<string>;
+  abstract writeFile(filePath: string, contents: string): Promise<void>;
+
+  abstract mkDir(dirPath: string): Promise<void>;
+
   // Not required when the Wallet interface is the type of a HW wallet
   abstract storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void>;
   abstract getSecretSeed(args: GetSecretSeedArgs): BackendOpResult<Uint8Array>;

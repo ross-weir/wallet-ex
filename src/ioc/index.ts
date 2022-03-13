@@ -1,4 +1,6 @@
-import { BackendService, BlockchainClient, ExplorerClient } from '../services';
+import { BackendService } from '../services';
+import { BlockchainClient } from '../blockchains';
+import { ExplorerClient } from '../blockchains/ergo/explorerClient'; // todo
 import { TauriBackend } from '../services/backend/tauriBackend';
 import { Token, Container } from 'typedi';
 

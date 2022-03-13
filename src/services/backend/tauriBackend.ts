@@ -19,6 +19,18 @@ const cfgPath = async () => {
 export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
 
+  mkDir(dirPath: string): Promise<void> {
+    return fs.createDir(dirPath);
+  }
+
+  readFile(filePath: string): Promise<string> {
+    return fs.readTextFile(filePath);
+  }
+
+  writeFile(filePath: string, contents: string): Promise<void> {
+    return fs.writeFile({ contents, path: filePath });
+  }
+
   async readConfig(): BackendOpResult<string> {
     return fs.readTextFile(await cfgPath());
   }
@@ -128,9 +140,12 @@ export class TauriBackend extends BackendService {
     return path.appDir();
   }
 
-  getPlatform(): BackendOpResult<string> {
+  async getPlatform(): BackendOpResult<string> {
+    // navigator.userAgentData.platform; could be used in future
+    // not currently supported in firefox, not sure if that matters though
     return os.platform();
   }
+
   getFreePort(): BackendOpResult<number> {
     return invoke('get_free_port');
   }

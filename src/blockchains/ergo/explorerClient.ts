@@ -1,4 +1,4 @@
-import { BlockchainClient } from './blockchainClient';
+import { BlockchainClient } from '../blockchainClient';
 import { JSONBI } from '../../json';
 
 export class ExplorerClient extends BlockchainClient {

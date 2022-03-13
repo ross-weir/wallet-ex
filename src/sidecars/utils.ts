@@ -9,37 +9,34 @@ const sidecarDir = async (): Promise<string> => {
   return backend.appDir();
 };
 
-export const downloadSidecars = async (): Promise<void[]> => {
-  const dir = await sidecarDir();
+const getFileExt = async (): Promise<string> => {
   const backend = Container.get(BackendServiceToken);
   let platform = await backend.getPlatform();
-  let fileExt = '';
 
-  if (platform === 'win32') {
-    platform = 'windows';
-    fileExt = '.exe';
-  }
+  return platform === 'windows' ? '.exe' : '';
+};
+
+const nodePath = async (): Promise<string> => {
+  const dir = await sidecarDir();
+  const fileExt = await getFileExt();
+
+  return `${dir}${path.sep}ergo${fileExt}`;
+};
+
+export const downloadSidecars = async (): Promise<void[]> => {
+  const backend = Container.get(BackendServiceToken);
+  let platform = await backend.getPlatform();
+  const fileExt = await getFileExt();
+  const nodeExe = await nodePath();
 
   return Promise.all([
     // pass version as arg
     backend.downloadFile(
       `https://github.com/ross-weir/ergo-portable/releases/download/v4.0.23/ergo-${platform}-v4.0.23${fileExt}`,
-      `${dir}${path.sep}ergo`,
+      nodeExe,
     ),
     // download indexer
   ]);
-};
-
-export interface ErgoSidecarArgs {
-  port?: number;
-  apiKey?: string;
-  network: 'testnet' | 'mainnet';
-}
-
-export const startErgoSidecar = async (): Promise<Sidecar | void> => {
-  // write to config file, rest api port, etc
-  // generate a apikey hash
-  // start sidecar
 };
 
 export const startIndexerSidecar = async (): Promise<Sidecar | void> => {
