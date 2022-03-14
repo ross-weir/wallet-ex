@@ -19,8 +19,24 @@ const cfgPath = async () => {
 export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
 
+  getFilename(fullPath: string): Promise<string> {
+    return path.basename(fullPath);
+  }
+
+  removeFile(file: string): Promise<void> {
+    return fs.removeFile(file);
+  }
+
   mkDir(dirPath: string): Promise<void> {
     return fs.createDir(dirPath);
+  }
+
+  pathExists(path: string): Promise<boolean> {
+    return invoke('path_exists', { path });
+  }
+
+  digestFile(filePath: string): Promise<string> {
+    return invoke('digest_file', { filePath });
   }
 
   readFile(filePath: string): Promise<string> {

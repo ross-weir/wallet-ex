@@ -9,6 +9,7 @@ use crate::{
     address::{Address, CreateAddressArgs},
     wallet::{CreateWalletArgs, Wallet},
   },
+  hash,
   net::pick_unused_port,
 };
 use std::string::ToString;
@@ -109,6 +110,16 @@ pub async fn download_file(url: String, out_path: String) -> Result<(), String> 
   std::io::copy(&mut bytes, &mut out_file).unwrap();
 
   Ok(())
+}
+
+#[tauri::command]
+pub async fn digest_file(file_path: String) -> Result<String, String> {
+  hash::digest_file(file_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub fn path_exists(path: String) -> bool {
+  std::path::Path::new(&path).exists()
 }
 
 #[tauri::command]

@@ -59,6 +59,11 @@ export abstract class BackendService {
   abstract writeFile(filePath: string, contents: string): Promise<void>;
 
   abstract mkDir(dirPath: string): Promise<void>;
+  abstract removeFile(file: string): Promise<void>;
+  abstract pathExists(path: string): Promise<boolean>;
+  abstract getFilename(fullPath: string): Promise<string>;
+
+  abstract digestFile(filePath: string): Promise<string>;
 
   // Not required when the Wallet interface is the type of a HW wallet
   abstract storeSecretSeed(args: StoreSecretSeedArgs): BackendOpResult<void>;
