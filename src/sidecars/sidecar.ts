@@ -12,6 +12,7 @@ export interface SidecarExitData {
   signal?: number; // not sure on the type
 }
 
+// TODO: auto restart?
 export class Sidecar {
   private readonly maxLogCount = 1000;
   private readonly cmd: Command;

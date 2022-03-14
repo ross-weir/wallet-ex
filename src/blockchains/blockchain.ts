@@ -18,24 +18,25 @@ type StaticThis = {
 // TODO: create dependency manager
 // dependencyManager.ensureDeps(); etc
 export abstract class Blockchain {
+  protected readonly network: string;
   protected readonly baseDir: string;
+  protected node?: Node;
   protected initialized = false;
+  protected useNode = false;
 
-  public constructor(
-    rootDir: string,
-    protected readonly network: string,
-    protected node?: Node,
-  ) {
-    this.baseDir = `${rootDir}/${this.getName()}`;
+  public constructor(rootDir: string, network: string, node?: Node) {
+    this.network = network;
+    this.node = node;
+    this.baseDir = `${rootDir}${this.getName()}`;
   }
 
   public static async new(
     this: StaticThis,
     network: string,
+    extraNodeCfg: Record<string, any> = {},
   ): Promise<Blockchain> {
     const backend = Container.get(BackendServiceToken);
     const rootDir = await backend.appDir();
-
     const bc = new this(rootDir, network);
     const nodeCls = bc.getNodeCls();
 
@@ -43,6 +44,7 @@ export abstract class Blockchain {
       const nodeCfg: NodeConfig = {
         network,
         baseDir: bc.baseDir,
+        ...extraNodeCfg,
       };
       bc.node = await nodeCls.new(nodeCfg);
     }
@@ -50,23 +52,29 @@ export abstract class Blockchain {
     return bc;
   }
 
+  public withNode(): Blockchain {
+    this.useNode = true;
+
+    return this;
+  }
+
   public getNode(): Node | void {
     return this.node;
   }
 
-  protected setNode(node: Node): void {
-    this.node = node;
-  }
-
   public async firstUseSetup(): Promise<void> {
-    await this.node?.firstUseSetup();
+    if (this.isNodeSupported) {
+      await this.node?.firstUseSetup();
+    }
 
     // get dependencies
     // mark as first time setup complete?
   }
 
-  public async run(): Promise<void> {
-    await this.node?.spawn();
+  public async initialize(): Promise<void> {
+    if (this.useNode) {
+      await this.node?.spawn();
+    }
 
     this.initialized = true;
   }
@@ -76,7 +84,7 @@ export abstract class Blockchain {
   }
 
   public get isNodeSupported(): boolean {
-    return false;
+    return !!this.getNodeCls();
   }
 
   public abstract getName(): string;
