@@ -15,6 +15,7 @@ pub struct Wallet {
   interface: String,
   // Describes the standard to use for HD wallets
   // For example: https://github.com/ergoplatform/eips/blob/master/eip-0003.md
+  // todo, remove this, we want to use multiple standards for a wallet (eg "regular" derviation + things like stealth addrs, etc)
   hd_standard: String,
   created_at: Option<NaiveDateTime>,
 }

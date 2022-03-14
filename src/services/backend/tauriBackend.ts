@@ -1,4 +1,4 @@
-import { invoke, path, fs } from '@tauri-apps/api';
+import { invoke, path, fs, os } from '@tauri-apps/api';
 import localforage from 'localforage';
 import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
 import {
@@ -18,6 +18,18 @@ const cfgPath = async () => {
 
 export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
+
+  mkDir(dirPath: string): Promise<void> {
+    return fs.createDir(dirPath);
+  }
+
+  readFile(filePath: string): Promise<string> {
+    return fs.readTextFile(filePath);
+  }
+
+  writeFile(filePath: string, contents: string): Promise<void> {
+    return fs.writeFile({ contents, path: filePath });
+  }
 
   async readConfig(): BackendOpResult<string> {
     return fs.readTextFile(await cfgPath());
@@ -118,5 +130,23 @@ export class TauriBackend extends BackendService {
     descriptor: string,
   ): BackendOpResult<T | undefined | null> {
     return localforage.getItem(descriptor);
+  }
+
+  async downloadFile(url: string, outPath: string): BackendOpResult<void> {
+    return invoke('download_file', { url, outPath });
+  }
+
+  async appDir(): BackendOpResult<string> {
+    return path.appDir();
+  }
+
+  async getPlatform(): BackendOpResult<string> {
+    // navigator.userAgentData.platform; could be used in future
+    // not currently supported in firefox, not sure if that matters though
+    return os.platform();
+  }
+
+  getFreePort(): BackendOpResult<number> {
+    return invoke('get_free_port');
   }
 }

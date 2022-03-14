@@ -19,6 +19,7 @@ use tauri::api::cli::get_matches;
 mod cmd;
 mod db;
 mod entities;
+mod net;
 mod schema;
 mod seed;
 
@@ -68,6 +69,8 @@ fn main() -> anyhow::Result<()> {
       cmd::accounts_for_wallet,
       cmd::addresses_for_account,
       cmd::create_address,
+      cmd::download_file,
+      cmd::get_free_port,
     ])
     .run(ctx)
     .expect("error while running application");

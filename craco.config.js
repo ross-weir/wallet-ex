@@ -1,4 +1,5 @@
 const { addBeforeLoader, loaderByName } = require('@craco/craco');
+const webpack = require('webpack');
 
 module.exports = {
   babel: {
@@ -24,6 +25,10 @@ module.exports = {
       };
 
       addBeforeLoader(webpackConfig, loaderByName('file-loader'), wasmLoader);
+
+      webpackConfig.plugins.push(
+        new webpack.ContextReplacementPlugin(/ergo-lib-wasm-browser/),
+      );
 
       return webpackConfig;
     },
