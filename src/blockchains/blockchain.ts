@@ -1,101 +1,53 @@
-export {};
-// import { Container } from 'typedi';
-// import { BackendService, RemoteDependency } from '../services';
-// import { BackendServiceToken } from '../ioc';
-// import { Node, NodeSetup } from './node';
+import { Sidecar } from '../sidecars';
 
-// type StaticThis = {
-//   new (rootDir: string, network: string): Blockchain;
-// };
+export type BlockchainSidecarRole = 'node' | 'indexer';
 
-// // TODO: create dependency manager
-// // dependencyManager.ensureDeps(); etc
+export interface BlockchainFactoryConfig {
+  baseDir: string;
+  network: string;
+}
 
-// /**
-//  * Maybe don't bother with subclasses
-//  * Pass everything as arguments should simplify this
-//  * Then each blockchain will have a factory function that wires it all up
-//  */
-// export abstract class Blockchain {
-//   protected readonly network: string;
-//   protected readonly baseDir: string;
-//   protected node?: Node;
-//   protected initialized = false;
-//   protected useNode = false;
+export interface SidecarEntry {
+  role: BlockchainSidecarRole;
+  sidecar: Sidecar;
+}
 
-//   // pass node has arg,
-//   public constructor(rootDir: string, network: string, node?: Node) {
-//     this.network = network;
-//     this.node = node;
-//     this.baseDir = `${rootDir}${this.getName()}`;
-//   }
+export interface BlockchainSetup extends BlockchainFactoryConfig {
+  name: string;
+  sidecars: SidecarEntry[];
+  // isReady? function
+}
 
-//   public static async new(
-//     this: StaticThis,
-//     network: string,
-//     extraNodeCfg: Record<string, any> = {},
-//   ): Promise<Blockchain> {
-//     const backend = Container.get(BackendServiceToken);
-//     const rootDir = await backend.appDir();
-//     const bc = new this(rootDir, network);
-//     const nodeCls = bc.getNodeCls();
+export class Blockchain {
+  private readonly setup: BlockchainSetup;
 
-//     if (nodeCls) {
-//       const nodeCfg: NodeSetup = {
-//         network,
-//         baseDir: bc.baseDir,
-//         ...extraNodeCfg,
-//       };
-//       // bc.node = await nodeCls.new(nodeCfg);
-//     }
+  constructor(setup: BlockchainSetup) {
+    this.setup = setup;
+  }
 
-//     return bc;
-//   }
+  public async initialize(): Promise<void> {
+    for (const { sidecar } of this.setup.sidecars) {
+      // what if one fails
+      sidecar.spawn();
+    }
+  }
 
-//   public withNode(): Blockchain {
-//     this.useNode = true;
+  public async shutdown(): Promise<void> {
+    for (const { sidecar } of this.setup.sidecars) {
+      sidecar.kill();
+    }
+  }
 
-//     return this;
-//   }
+  // is ready?
+  // get a api client?
+  // get node
+}
 
-//   public getNode(): Node | void {
-//     return this.node;
-//   }
-
-//   public async firstUseSetup(): Promise<void> {
-//     if (this.isNodeSupported) {
-//       await this.node?.firstUseSetup();
-//     }
-
-//     // get dependencies
-//     // mark as first time setup complete?
-//   }
-
-//   public async initialize(): Promise<void> {
-//     if (this.useNode) {
-//       await this.node?.spawn();
-//     }
-
-//     this.initialized = true;
-//   }
-
-//   public get isInitialized(): boolean {
-//     return this.initialized;
-//   }
-
-//   public get isNodeSupported(): boolean {
-//     return !!this.getNodeCls();
-//   }
-
-//   public abstract getName(): string;
-
-//   public getNodeCls<T>(): T | void {}
-
-//   protected get dependenciesList(): RemoteDependency[] {
-//     return [];
-//   }
-
-//   protected get backend(): BackendService {
-//     return Container.get(BackendServiceToken);
-//   }
-// }
+async function blockchainFactory() {
+  // create node
+  // create indexer using node stuff
+  // setup api client
+  // dependency manager
+  // determine if first run
+  // new Blockchain(sidecars, apiclient)
+}

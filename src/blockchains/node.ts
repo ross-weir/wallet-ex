@@ -7,14 +7,19 @@ import EventEmitter from 'events';
 import path from 'path';
 import { getExecutableExt } from '../utils/fs';
 
-// Extended by blockchain nodes with settings that are specific to that blockchain
-export interface NodeConfig {
+// The minimum args required for node factory functions
+// Other config parameters can often be calculated/determined in the factory function.
+export interface NodeFactoryConfig {
   baseDir: string;
-  cfgFileName?: string;
   network: string;
+}
+
+// Extended by blockchain nodes with settings that are specific to that blockchain
+export interface NodeConfig extends NodeFactoryConfig {
+  cfgFileName?: string;
   blockchain: string;
-  port: number;
-  rpcPort: number;
+  port?: number;
+  rpcPort?: number;
 }
 
 export interface NodeSetup<T extends NodeConfig> {
@@ -22,8 +27,6 @@ export interface NodeSetup<T extends NodeConfig> {
   cfgSerializer: DataSerializer<T>;
   buildEnvVars?: (cfg: T) => Record<string, any>;
   buildCliArgs?: (cfg: Node<T>) => string | string[];
-  onFirstUse?: (node: Node<T>) => void;
-  onBeforeSpawn?: (node: Node<T>) => void;
 }
 
 // Events: 'close' | 'error'
@@ -35,8 +38,6 @@ export class Node<T extends NodeConfig> extends EventEmitter {
     super();
     this.setup = setup;
   }
-
-  public async firstUseSetup(): Promise<void> {}
 
   public async spawn(): Promise<Sidecar> {
     await this.writeConfig();
@@ -59,12 +60,12 @@ export class Node<T extends NodeConfig> extends EventEmitter {
     return this._sidecar;
   }
 
-  public get config(): T {
-    return this.setup.cfg;
+  public async kill(): Promise<void> {
+    this._sidecar?.kill();
   }
 
-  public get sidecar(): Sidecar | undefined {
-    return this._sidecar;
+  public get config(): T {
+    return this.setup.cfg;
   }
 
   public get cfgFilePath(): string {
