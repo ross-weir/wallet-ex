@@ -1,9 +1,11 @@
-import { ErgoNode } from './ergo';
+// import { ErgoNode } from './ergo';
 
-export enum SupportedBlockchain {
-  Ergo = 'ergo',
-}
+// export enum SupportedBlockchain {
+//   Ergo = 'ergo',
+// }
 
-const nodeCtorMap = {
-  [SupportedBlockchain.Ergo]: ErgoNode,
-};
+// const nodeCtorMap = {
+//   [SupportedBlockchain.Ergo]: ErgoNode,
+// };
+
+export {};

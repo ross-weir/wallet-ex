@@ -1,101 +1,101 @@
-import { Container } from 'typedi';
-import { BackendService } from '../services';
-import { BackendServiceToken } from '../ioc';
-import { Node, NodeConfig } from './node';
+export {};
+// import { Container } from 'typedi';
+// import { BackendService, RemoteDependency } from '../services';
+// import { BackendServiceToken } from '../ioc';
+// import { Node, NodeSetup } from './node';
 
-export interface BlockchainDependency {
-  downloadUrl: string;
-  localPath: string;
-  checksum?: string;
-  metadataUrl?: string;
-  description?: string;
-}
+// type StaticThis = {
+//   new (rootDir: string, network: string): Blockchain;
+// };
 
-type StaticThis = {
-  new (rootDir: string, network: string): Blockchain;
-};
+// // TODO: create dependency manager
+// // dependencyManager.ensureDeps(); etc
 
-// TODO: create dependency manager
-// dependencyManager.ensureDeps(); etc
-export abstract class Blockchain {
-  protected readonly network: string;
-  protected readonly baseDir: string;
-  protected node?: Node;
-  protected initialized = false;
-  protected useNode = false;
+// /**
+//  * Maybe don't bother with subclasses
+//  * Pass everything as arguments should simplify this
+//  * Then each blockchain will have a factory function that wires it all up
+//  */
+// export abstract class Blockchain {
+//   protected readonly network: string;
+//   protected readonly baseDir: string;
+//   protected node?: Node;
+//   protected initialized = false;
+//   protected useNode = false;
 
-  public constructor(rootDir: string, network: string, node?: Node) {
-    this.network = network;
-    this.node = node;
-    this.baseDir = `${rootDir}${this.getName()}`;
-  }
+//   // pass node has arg,
+//   public constructor(rootDir: string, network: string, node?: Node) {
+//     this.network = network;
+//     this.node = node;
+//     this.baseDir = `${rootDir}${this.getName()}`;
+//   }
 
-  public static async new(
-    this: StaticThis,
-    network: string,
-    extraNodeCfg: Record<string, any> = {},
-  ): Promise<Blockchain> {
-    const backend = Container.get(BackendServiceToken);
-    const rootDir = await backend.appDir();
-    const bc = new this(rootDir, network);
-    const nodeCls = bc.getNodeCls();
+//   public static async new(
+//     this: StaticThis,
+//     network: string,
+//     extraNodeCfg: Record<string, any> = {},
+//   ): Promise<Blockchain> {
+//     const backend = Container.get(BackendServiceToken);
+//     const rootDir = await backend.appDir();
+//     const bc = new this(rootDir, network);
+//     const nodeCls = bc.getNodeCls();
 
-    if (nodeCls) {
-      const nodeCfg: NodeConfig = {
-        network,
-        baseDir: bc.baseDir,
-        ...extraNodeCfg,
-      };
-      bc.node = await nodeCls.new(nodeCfg);
-    }
+//     if (nodeCls) {
+//       const nodeCfg: NodeSetup = {
+//         network,
+//         baseDir: bc.baseDir,
+//         ...extraNodeCfg,
+//       };
+//       // bc.node = await nodeCls.new(nodeCfg);
+//     }
 
-    return bc;
-  }
+//     return bc;
+//   }
 
-  public withNode(): Blockchain {
-    this.useNode = true;
+//   public withNode(): Blockchain {
+//     this.useNode = true;
 
-    return this;
-  }
+//     return this;
+//   }
 
-  public getNode(): Node | void {
-    return this.node;
-  }
+//   public getNode(): Node | void {
+//     return this.node;
+//   }
 
-  public async firstUseSetup(): Promise<void> {
-    if (this.isNodeSupported) {
-      await this.node?.firstUseSetup();
-    }
+//   public async firstUseSetup(): Promise<void> {
+//     if (this.isNodeSupported) {
+//       await this.node?.firstUseSetup();
+//     }
 
-    // get dependencies
-    // mark as first time setup complete?
-  }
+//     // get dependencies
+//     // mark as first time setup complete?
+//   }
 
-  public async initialize(): Promise<void> {
-    if (this.useNode) {
-      await this.node?.spawn();
-    }
+//   public async initialize(): Promise<void> {
+//     if (this.useNode) {
+//       await this.node?.spawn();
+//     }
 
-    this.initialized = true;
-  }
+//     this.initialized = true;
+//   }
 
-  public get isInitialized(): boolean {
-    return this.initialized;
-  }
+//   public get isInitialized(): boolean {
+//     return this.initialized;
+//   }
 
-  public get isNodeSupported(): boolean {
-    return !!this.getNodeCls();
-  }
+//   public get isNodeSupported(): boolean {
+//     return !!this.getNodeCls();
+//   }
 
-  public abstract getName(): string;
+//   public abstract getName(): string;
 
-  public getNodeCls(): typeof Node | void {}
+//   public getNodeCls<T>(): T | void {}
 
-  protected dependenciesList(): BlockchainDependency[] {
-    return [];
-  }
+//   protected get dependenciesList(): RemoteDependency[] {
+//     return [];
+//   }
 
-  protected get backend(): BackendService {
-    return Container.get(BackendServiceToken);
-  }
-}
+//   protected get backend(): BackendService {
+//     return Container.get(BackendServiceToken);
+//   }
+// }

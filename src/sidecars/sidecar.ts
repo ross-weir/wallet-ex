@@ -1,4 +1,5 @@
 import { Child, Command } from '@tauri-apps/api/shell';
+import EventEmitter from 'events';
 
 export interface SidecarOptions {
   path: string;
@@ -7,25 +8,21 @@ export interface SidecarOptions {
   env?: Record<string, any>;
 }
 
-export interface SidecarExitData {
-  code: number;
-  signal?: number; // not sure on the type
-}
-
 // TODO: auto restart?
-export class Sidecar {
+export class Sidecar extends EventEmitter {
   private readonly maxLogCount = 1000;
   private readonly cmd: Command;
   private process?: Child;
   public readonly logs: string[] = [];
 
   constructor({ path, args, cwd, env }: SidecarOptions) {
+    super();
     this.cmd = new Command(path, args, { cwd, env });
   }
 
   public async spawn(): Promise<void> {
-    this.cmd.on('close', (data) => this.onClose(data));
-    this.cmd.on('error', (data) => this.onError(data));
+    this.cmd.on('close', (data) => this.emit('close', data));
+    this.cmd.on('error', (data) => this.emit('error', data));
     this.cmd.stderr.on('data', (data) => this.onData(data));
     this.cmd.stdout.on('data', (data) => this.onData(data));
 
@@ -43,13 +40,5 @@ export class Sidecar {
     if (this.logs.length > this.maxLogCount) {
       this.logs.length = this.maxLogCount;
     }
-  }
-
-  private onClose(data: SidecarExitData): void {
-    console.log('close', data);
-  }
-
-  private onError(data: any): void {
-    console.log('error', data);
   }
 }
