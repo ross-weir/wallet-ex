@@ -1,7 +1,8 @@
 import { Child, Command } from '@tauri-apps/api/shell';
 import EventEmitter from 'events';
+import { UninitializedError } from '../errors';
 
-export interface SidecarOptions {
+export interface SpawnOptions {
   path: string;
   args?: string | string[];
   cwd?: string;
@@ -10,17 +11,22 @@ export interface SidecarOptions {
 
 // TODO: auto restart?
 export class Sidecar extends EventEmitter {
-  private readonly maxLogCount = 1000;
-  private readonly cmd: Command;
+  private cmd?: Command;
   private process?: Child;
+  protected maxLogCount = 1000;
   public readonly logs: string[] = [];
 
-  constructor({ path, args, cwd, env }: SidecarOptions) {
-    super();
+  public initialize({ path, args, cwd, env }: SpawnOptions) {
     this.cmd = new Command(path, args, { cwd, env });
   }
 
   public async spawn(): Promise<void> {
+    if (!this.cmd) {
+      throw new UninitializedError(
+        'initialize() must be called before spawning sidecar',
+      );
+    }
+
     this.cmd.on('close', (data) => this.emit('close', data));
     this.cmd.on('error', (data) => this.emit('error', data));
     this.cmd.stderr.on('data', (data) => this.onData(data));
@@ -33,12 +39,19 @@ export class Sidecar extends EventEmitter {
     return this.process?.kill();
   }
 
-  private onData(data: any): void {
+  protected onData(data: any): void {
+    data = this.parseData(data);
+    this.emit('data', data);
+
     console.log('data', data);
     this.logs.push(data);
 
     if (this.logs.length > this.maxLogCount) {
       this.logs.length = this.maxLogCount;
     }
+  }
+
+  protected parseData(data: any): any {
+    return data;
   }
 }

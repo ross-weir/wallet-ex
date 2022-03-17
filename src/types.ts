@@ -9,3 +9,5 @@ export type OpMode = 'full' | 'light' | 'spv';
 export type AddressBase58 = string;
 
 export type Base16String = string;
+
+export type EnvironmentVariables = Record<string, any>;

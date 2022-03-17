@@ -1,2 +1,2 @@
 export * from './blockchainClient';
-export * from './node';
+export { getBlockchain } from './blockchainRegistry';

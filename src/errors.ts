@@ -13,3 +13,5 @@ export class DigestMismatchError extends ValidationError {
     super(message);
   }
 }
+
+export class UninitializedError extends CustomError {}

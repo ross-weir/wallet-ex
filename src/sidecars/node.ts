@@ -1,11 +1,11 @@
 import { Container } from 'typedi';
 import { BackendService } from '../services';
 import { BackendServiceToken } from '../ioc';
-import { Sidecar } from '../sidecars';
+import { Sidecar } from './sidecar';
 import { DataSerializer } from '../serialization';
-import EventEmitter from 'events';
 import path from 'path';
 import { getExecutableExt } from '../utils/fs';
+import { EnvironmentVariables } from '../types';
 
 // The minimum args required for node factory functions
 // Other config parameters can often be calculated/determined in the factory function.
@@ -18,20 +18,20 @@ export interface NodeFactoryConfig {
 export interface NodeConfig extends NodeFactoryConfig {
   cfgFileName?: string;
   blockchain: string;
-  port?: number;
-  rpcPort?: number;
+  port: number;
+  rpcPort: number;
 }
 
 export interface NodeSetup<T extends NodeConfig> {
   cfg: T;
   cfgSerializer: DataSerializer<T>;
-  buildEnvVars?: (cfg: T) => Record<string, any>;
-  buildCliArgs?: (cfg: Node<T>) => string | string[];
+  syncCheck: (node: Node<T>) => Promise<boolean>;
+  buildEnvVars?: (cfg: T) => EnvironmentVariables;
+  buildCliArgs?: (node: Node<T>) => string | string[];
 }
 
-// Events: 'close' | 'error'
-export class Node<T extends NodeConfig> extends EventEmitter {
-  private _sidecar?: Sidecar;
+// Events: 'close' | 'error' | 'data'
+export class Node<T extends NodeConfig> extends Sidecar {
   private readonly setup: NodeSetup<T>;
 
   public constructor(setup: NodeSetup<T>) {
@@ -39,29 +39,20 @@ export class Node<T extends NodeConfig> extends EventEmitter {
     this.setup = setup;
   }
 
-  public async spawn(): Promise<Sidecar> {
+  public async spawn(): Promise<void> {
     await this.writeConfig();
 
     const { buildCliArgs, buildEnvVars, cfg } = this.setup;
     const args = buildCliArgs ? buildCliArgs(this) : '';
     const env = buildEnvVars && buildEnvVars(cfg);
 
-    this._sidecar = new Sidecar({
-      path: this.binaryPath(),
+    this.initialize({
+      path: this.binaryPath,
       args,
       env,
     });
 
-    this._sidecar.on('close', (data) => this.emit('close', data));
-    this._sidecar.on('error', (data) => this.emit('error', data));
-
-    await this._sidecar.spawn();
-
-    return this._sidecar;
-  }
-
-  public async kill(): Promise<void> {
-    this._sidecar?.kill();
+    return super.spawn();
   }
 
   public get config(): T {
@@ -85,7 +76,7 @@ export class Node<T extends NodeConfig> extends EventEmitter {
     return this.backend.writeFile(this.cfgFilePath, cfgStr);
   }
 
-  private binaryPath(): string {
+  private get binaryPath(): string {
     const ext = getExecutableExt();
     const { baseDir, blockchain } = this.setup.cfg;
 

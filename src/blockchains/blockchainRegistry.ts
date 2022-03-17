@@ -1,11 +1,19 @@
-// import { ErgoNode } from './ergo';
+import { Blockchain, BlockchainFactoryConfig } from './blockchain';
+import { ergoBlockchainFactory } from './ergo/ergoBlockchain';
+import { SupportedBlockchain } from './types';
 
-// export enum SupportedBlockchain {
-//   Ergo = 'ergo',
-// }
+type BlockchainFactoryFn = (
+  cfg: BlockchainFactoryConfig,
+) => Promise<Blockchain>;
 
-// const nodeCtorMap = {
-//   [SupportedBlockchain.Ergo]: ErgoNode,
-// };
+const factoryMap: Record<SupportedBlockchain, BlockchainFactoryFn> = {
+  [SupportedBlockchain.Ergo]: ergoBlockchainFactory,
+};
 
-export {};
+export const getSupportedBlockchains = (): string[] =>
+  Object.keys(SupportedBlockchain);
+
+export const getBlockchain = async (
+  blockchain: SupportedBlockchain,
+  cfg: BlockchainFactoryConfig,
+): Promise<Blockchain> => factoryMap[blockchain](cfg);

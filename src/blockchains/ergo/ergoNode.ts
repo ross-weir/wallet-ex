@@ -1,7 +1,9 @@
 import Container from 'typedi';
 import { BackendServiceToken } from '../../ioc';
 import { DataSerializer } from '../../serialization';
-import { Node, NodeConfig, NodeFactoryConfig } from '../node';
+import { Node, NodeConfig, NodeFactoryConfig } from '../../sidecars';
+import { EnvironmentVariables } from '../../types';
+import { SupportedBlockchain } from '../types';
 
 export interface ErgoNodeConfig extends NodeConfig {
   rpcTokenHash: string;
@@ -10,9 +12,12 @@ export interface ErgoNodeConfig extends NodeConfig {
 
 export type ErgoNode = Node<ErgoNodeConfig>;
 
-const buildEnvVars = (cfg: ErgoNodeConfig): Record<string, any> => {
-  return { BLOCKCHAIN_NETWORK: cfg.network };
-};
+// call API, check if sync'd
+const syncCheck = async (node: ErgoNode): Promise<boolean> => false;
+
+const buildEnvVars = (cfg: ErgoNodeConfig): EnvironmentVariables => ({
+  BLOCKCHAIN_NETWORK: cfg.network,
+});
 
 const buildCliArgs = (node: ErgoNode): string | string[] => [
   `--${node.config.network}`,
@@ -48,12 +53,12 @@ export const ergoNodeFactory = async ({
   const b = Container.get(BackendServiceToken);
   const rpcPort = await b.getFreePort();
   const port = await b.getFreePort();
-  const ergoCfg: ErgoNodeConfig = {
+  const cfg: ErgoNodeConfig = {
     baseDir,
     network,
     rpcPort,
     port,
-    blockchain: 'ergo',
+    blockchain: SupportedBlockchain.Ergo,
     // Could probably auto-generate these token values
     rpcToken: 'hello',
     rpcTokenHash:
@@ -61,8 +66,9 @@ export const ergoNodeFactory = async ({
   };
 
   return new Node({
-    cfg: ergoCfg,
+    cfg,
     cfgSerializer: new ErgoConfigSerializer(),
+    syncCheck,
     buildEnvVars,
     buildCliArgs,
   });
