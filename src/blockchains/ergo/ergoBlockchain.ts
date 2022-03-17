@@ -8,6 +8,7 @@ import {
 import { SupportedBlockchain } from '../types';
 import { ergoNodeFactory } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
+import { ErgoExplorerClient } from './explorerClient';
 
 interface ErgoLocalDependencies {
   node: Sidecar;
@@ -33,6 +34,7 @@ export const ergoBlockchainFactory = async ({
   useLocalNode,
 }: BlockchainFactoryConfig): Promise<Blockchain> => {
   const sidecars: SidecarEntry[] = [];
+  let client = new ErgoExplorerClient(0);
 
   if (useLocalNode) {
     const { node, rosettaApi } = await setupLocalDependencies({
@@ -46,8 +48,7 @@ export const ergoBlockchainFactory = async ({
     );
 
     // TODO configure client from rosettaApi
-  } else {
-    // TODO use ergo explorer client
+    // client = new RosettaApiClient();
   }
 
   return new Blockchain({
@@ -55,6 +56,7 @@ export const ergoBlockchainFactory = async ({
     network,
     sidecars,
     useLocalNode,
+    client,
     name: SupportedBlockchain.Ergo,
   });
 };

@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { Sidecar } from '../sidecars';
+import { BlockchainClient } from './blockchainClient';
 
 export enum BlockchainState {
   Stopped = 'stopped',
@@ -23,7 +24,6 @@ export interface BlockchainFactoryConfig {
   baseDir: string;
   network: string;
   useLocalNode: boolean;
-  // TODO: blockchainClient
 }
 
 export interface SidecarEntry {
@@ -31,25 +31,26 @@ export interface SidecarEntry {
   sidecar: Sidecar;
 }
 
-export interface BlockchainSetup extends BlockchainFactoryConfig {
+export interface BlockchainConfig extends BlockchainFactoryConfig {
   name: string;
   sidecars: SidecarEntry[];
+  client: BlockchainClient;
   // isReady? function
 }
 
 export class Blockchain extends EventEmitter {
-  private readonly setup: BlockchainSetup;
+  private readonly config: BlockchainConfig;
   private state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
 
-  constructor(setup: BlockchainSetup) {
+  constructor(config: BlockchainConfig) {
     super();
-    this.setup = setup;
+    this.config = config;
   }
 
   public async initialize(): Promise<void> {
     this.updateState(BlockchainState.Initializing);
 
-    for (const { sidecar } of this.setup.sidecars) {
+    for (const { sidecar } of this.config.sidecars) {
       // what if one fails
       sidecar.spawn();
     }
@@ -58,9 +59,13 @@ export class Blockchain extends EventEmitter {
   public async shutdown(): Promise<void> {
     this.updateState(BlockchainState.ShuttingDown);
 
-    for (const { sidecar } of this.setup.sidecars) {
+    for (const { sidecar } of this.config.sidecars) {
       sidecar.kill();
     }
+  }
+
+  public get client(): BlockchainClient {
+    return this.config.client;
   }
 
   private updateState(newState: BlockchainState): void {
@@ -71,7 +76,6 @@ export class Blockchain extends EventEmitter {
   }
 
   // is ready? How do we know it's ready?
-  // get a api client?
   // get node
   // ensure deps
 }

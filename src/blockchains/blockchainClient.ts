@@ -2,7 +2,6 @@
 // Used to query data, etc
 // For example: explorer vs node etc
 
-// this is probably a service
 // should just return rosetta types, convert ergo explorer types to rosetta
 // just support one generic type of models
 export abstract class BlockchainClient {

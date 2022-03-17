@@ -1,7 +1,7 @@
 import { BlockchainClient } from '../blockchainClient';
 import { JSONBI } from '../../json';
 
-export class ExplorerClient extends BlockchainClient {
+export class ErgoExplorerClient extends BlockchainClient {
   private readonly baseEndpoint: string;
 
   constructor(network: number) {
