@@ -1,6 +1,7 @@
 import { Sidecar } from '../../sidecars';
 import {
   Blockchain,
+  BlockchainCapabilities,
   BlockchainFactoryConfig,
   BlockchainSidecarRole,
   SidecarEntry,
@@ -44,6 +45,7 @@ const getDependencyManager = ({
   const exeExt = getExecutableExt();
   const deps = [
     {
+      shortName: 'ergo node',
       downloadUrl: `https://github.com/ross-weir/ergo-portable/releases/download/v4.0.23/ergo-${os}-v4.0.23${exeExt}`,
       localPath: path.join(baseDir, getNodeFilename(SupportedBlockchain.Ergo)),
       digest:
@@ -53,6 +55,12 @@ const getDependencyManager = ({
   ];
 
   return new DependencyManager(deps);
+};
+
+const capabilities: BlockchainCapabilities = {
+  localNode: true,
+  multiSig: true,
+  staking: false,
 };
 
 export const ergoBlockchainFactory = async (
@@ -80,6 +88,7 @@ export const ergoBlockchainFactory = async (
     sidecars,
     useLocalNode,
     client,
+    capabilities,
     dependencyManager: getDependencyManager(cfg),
     name: SupportedBlockchain.Ergo,
   });

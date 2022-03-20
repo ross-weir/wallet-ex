@@ -3,6 +3,12 @@ import { DependencyManager } from '../services';
 import { Sidecar } from '../sidecars';
 import { BlockchainClient } from './blockchainClient';
 
+export interface BlockchainCapabilities {
+  localNode: boolean;
+  multiSig: boolean;
+  staking: boolean;
+}
+
 export enum BlockchainState {
   Stopped = 'stopped',
   CheckingDependencies = 'checkingDependencies',
@@ -39,9 +45,11 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   sidecars: SidecarEntry[];
   client: BlockchainClient;
   dependencyManager?: DependencyManager;
+  capabilities: BlockchainCapabilities;
   // isReady? function
 }
 
+// Events: 'stateChanged' | 'log'
 export class Blockchain extends EventEmitter {
   private readonly config: BlockchainConfig;
   private state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
@@ -49,6 +57,9 @@ export class Blockchain extends EventEmitter {
   constructor(config: BlockchainConfig) {
     super();
     this.config = config;
+
+    // forward events so we can show statuses to the user while loading
+    this.config.dependencyManager?.on('log', (msg) => this.emit('log', msg));
   }
 
   public async initialize(): Promise<void> {
