@@ -1,1 +1,1 @@
-export * from './ergoNode';
+export { ergoBlockchainFactory } from './ergoBlockchain';

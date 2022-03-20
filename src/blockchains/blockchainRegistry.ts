@@ -1,5 +1,5 @@
 import { Blockchain, BlockchainFactoryConfig } from './blockchain';
-import { ergoBlockchainFactory } from './ergo/ergoBlockchain';
+import { ergoBlockchainFactory } from './ergo';
 import { SupportedBlockchain } from './types';
 import path from 'path';
 
