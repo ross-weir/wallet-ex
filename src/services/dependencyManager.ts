@@ -1,32 +1,38 @@
-import { Inject, Service } from 'typedi';
+import EventEmitter from 'events';
 import { digestFile } from '../crypto';
 import { DigestMismatchError, FileSystemError } from '../errors';
 import { BackendServiceToken } from '../ioc';
-import { BackendService } from '.';
+import { BackendService } from './backend';
+import Container from 'typedi';
 
 export interface RemoteDependency {
+  shortName: string;
   downloadUrl: string;
   localPath: string;
   digest?: string;
   metadataUrl?: string;
 }
 
-@Service()
-export class DependencyManager {
-  constructor(@Inject(BackendServiceToken) private backend: BackendService) {}
+// Events: 'log'
+export class DependencyManager extends EventEmitter {
+  constructor(private readonly dependencies: RemoteDependency[]) {
+    super();
+  }
 
-  public async ensureDependencies(deps: RemoteDependency[]): Promise<void> {
-    for (const dep of deps) {
-      this.ensureDependency(dep);
-    }
+  public async ensureDependencies(): Promise<void> {
+    await Promise.all(
+      this.dependencies.map((dep) => this.ensureDependency(dep)),
+    );
   }
 
   private async ensureDependency(dep: RemoteDependency): Promise<void> {
     try {
+      this.log(`Validating ${dep.shortName}`);
       await this.validateDependency(dep);
     } catch (err) {
       // err is because of digest mismatch
       if (await this.backend.pathExists(dep.localPath)) {
+        this.log(`Corrupted dependency: ${dep.shortName}, removing`);
         this.backend.removeFile(dep.localPath);
       }
 
@@ -36,6 +42,7 @@ export class DependencyManager {
   }
 
   private async downloadDependency(dep: RemoteDependency): Promise<void> {
+    this.log(`Downloading ${dep.shortName}`);
     return this.backend.downloadFile(dep.downloadUrl, dep.localPath);
   }
 
@@ -60,5 +67,13 @@ export class DependencyManager {
         );
       }
     }
+  }
+
+  private log(msg: string): void {
+    this.emit('log', msg);
+  }
+
+  private get backend(): BackendService {
+    return Container.get(BackendServiceToken);
   }
 }

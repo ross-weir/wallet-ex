@@ -1,15 +1,24 @@
 import EventEmitter from 'events';
+import { DependencyManager } from '../services';
 import { Sidecar } from '../sidecars';
 import { BlockchainClient } from './blockchainClient';
+
+export interface BlockchainCapabilities {
+  localNode: boolean;
+  multiSig: boolean;
+  staking: boolean;
+}
 
 export enum BlockchainState {
   Stopped = 'stopped',
   CheckingDependencies = 'checkingDependencies',
-  InstallingDependencies = 'installingDependencies',
+  StartingDependencies = 'startingDependencies',
   Initializing = 'initializing',
+  Ready = 'ready',
   NodeSyncing = 'nodeSyncing',
   Indexing = 'indexing',
   ShuttingDown = 'shuttingDown',
+  Error = 'error',
 }
 
 export enum BlockchainSidecarRole {
@@ -35,9 +44,12 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   name: string;
   sidecars: SidecarEntry[];
   client: BlockchainClient;
+  dependencyManager?: DependencyManager;
+  capabilities: BlockchainCapabilities;
   // isReady? function
 }
 
+// Events: 'stateChanged' | 'log'
 export class Blockchain extends EventEmitter {
   private readonly config: BlockchainConfig;
   private state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
@@ -45,15 +57,24 @@ export class Blockchain extends EventEmitter {
   constructor(config: BlockchainConfig) {
     super();
     this.config = config;
+
+    // forward events so we can show statuses to the user while loading
+    this.config.dependencyManager?.on('log', (msg) => this.emit('log', msg));
   }
 
   public async initialize(): Promise<void> {
     this.updateState(BlockchainState.Initializing);
+    const { sidecars, dependencyManager } = this.config;
 
-    for (const { sidecar } of this.config.sidecars) {
-      // what if one fails
-      sidecar.spawn();
-    }
+    this.updateState(BlockchainState.CheckingDependencies);
+
+    await dependencyManager?.ensureDependencies();
+
+    this.updateState(BlockchainState.StartingDependencies);
+
+    await Promise.all(sidecars.map(({ sidecar }) => sidecar.spawn()));
+
+    this.updateState(BlockchainState.Ready);
   }
 
   public async shutdown(): Promise<void> {
@@ -68,14 +89,13 @@ export class Blockchain extends EventEmitter {
     return this.config.client;
   }
 
-  private updateState(newState: BlockchainState): void {
+  private updateState(newState: BlockchainState, eventData?: any): void {
     const prevState = this.state;
     this.state = newState;
 
-    this.emit('stateChanged', newState, prevState);
+    this.emit('stateChanged', newState, prevState, eventData);
   }
 
   // is ready? How do we know it's ready?
   // get node
-  // ensure deps
 }
