@@ -42,14 +42,10 @@ export class Node<T extends NodeConfig> extends Sidecar {
   public async spawn(): Promise<void> {
     await this.writeConfig();
 
-    const { buildCliArgs, buildEnvVars, cfg } = this.setup;
-    const args = buildCliArgs ? buildCliArgs(this) : '';
-    const env = buildEnvVars && buildEnvVars(cfg);
-
     this.initialize({
       path: this.binaryPath,
-      args,
-      env,
+      args: this.args,
+      env: this.env,
     });
 
     return super.spawn();
@@ -57,6 +53,18 @@ export class Node<T extends NodeConfig> extends Sidecar {
 
   public get config(): T {
     return this.setup.cfg;
+  }
+
+  public get args(): string | string[] {
+    const { buildCliArgs, } = this.setup;
+
+    return buildCliArgs ? buildCliArgs(this) : '';
+  }
+
+  public get env(): EnvironmentVariables {
+    const {buildEnvVars, cfg} = this.setup;
+
+    return buildEnvVars ? buildEnvVars(cfg) : {};
   }
 
   public get cfgFilePath(): string {

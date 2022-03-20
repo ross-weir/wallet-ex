@@ -8,7 +8,7 @@ import {
 import { SupportedBlockchain } from '../types';
 import { ergoNodeFactory } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
-import { ErgoExplorerClient } from './explorerClient';
+import { ErgoExplorerClient } from './ergoExplorerClient';
 
 interface ErgoLocalDependencies {
   node: Sidecar;
@@ -48,7 +48,7 @@ export const ergoBlockchainFactory = async ({
     );
 
     // TODO configure client from rosettaApi
-    // client = new RosettaApiClient();
+    // client = RosettaApiClient.FromSidecar(rosettaApi);
   }
 
   return new Blockchain({
