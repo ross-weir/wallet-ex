@@ -30,13 +30,11 @@ export class RosettaApi<T extends RosettaApiConfig> extends Sidecar {
   }
 
   public async spawn(): Promise<void> {
-    const { buildEnvVars } = this.setup;
-    const env = buildEnvVars && buildEnvVars(this);
-
     this.initialize({
       path: this.binaryPath,
       args: ['run'],
-      env,
+      env: this.env,
+      cwd: this.config.baseDir,
     });
 
     return super.spawn();
@@ -44,6 +42,12 @@ export class RosettaApi<T extends RosettaApiConfig> extends Sidecar {
 
   public get config(): T {
     return this.setup.cfg;
+  }
+
+  public get env(): EnvironmentVariables {
+    const { buildEnvVars } = this.setup;
+
+    return buildEnvVars ? buildEnvVars(this) : {};
   }
 
   public get binaryPath(): string {

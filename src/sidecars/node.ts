@@ -46,6 +46,7 @@ export class Node<T extends NodeConfig> extends Sidecar {
       path: this.binaryPath,
       args: this.args,
       env: this.env,
+      cwd: this.config.baseDir,
     });
 
     return super.spawn();
@@ -56,13 +57,13 @@ export class Node<T extends NodeConfig> extends Sidecar {
   }
 
   public get args(): string | string[] {
-    const { buildCliArgs, } = this.setup;
+    const { buildCliArgs } = this.setup;
 
     return buildCliArgs ? buildCliArgs(this) : '';
   }
 
   public get env(): EnvironmentVariables {
-    const {buildEnvVars, cfg} = this.setup;
+    const { buildEnvVars, cfg } = this.setup;
 
     return buildEnvVars ? buildEnvVars(cfg) : {};
   }
