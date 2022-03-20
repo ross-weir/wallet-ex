@@ -12,11 +12,9 @@ export interface BlockchainCapabilities {
 export enum BlockchainState {
   Stopped = 'stopped',
   CheckingDependencies = 'checkingDependencies',
-  StartingDependencies = 'startingDependencies',
   Initializing = 'initializing',
   Ready = 'ready',
-  NodeSyncing = 'nodeSyncing',
-  Indexing = 'indexing',
+  Syncing = 'syncing',
   ShuttingDown = 'shuttingDown',
   Error = 'error',
 }
@@ -46,20 +44,18 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   client: BlockchainClient;
   dependencyManager?: DependencyManager;
   capabilities: BlockchainCapabilities;
-  // isReady? function
 }
 
 // Events: 'stateChanged' | 'log'
 export class Blockchain extends EventEmitter {
   private readonly config: BlockchainConfig;
-  private state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
+  private monitorHandle?: number;
+  private _state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
+  private _lastLog = '';
 
   constructor(config: BlockchainConfig) {
     super();
     this.config = config;
-
-    // forward events so we can show statuses to the user while loading
-    this.config.dependencyManager?.on('log', (msg) => this.emit('log', msg));
   }
 
   public async initialize(): Promise<void> {
@@ -70,7 +66,7 @@ export class Blockchain extends EventEmitter {
 
     await dependencyManager?.ensureDependencies();
 
-    this.updateState(BlockchainState.StartingDependencies);
+    this.updateState(BlockchainState.Initializing);
 
     await Promise.all(sidecars.map(({ sidecar }) => sidecar.spawn()));
 
@@ -85,17 +81,37 @@ export class Blockchain extends EventEmitter {
     }
   }
 
+  public async monitor(): Promise<void> {
+    // check if synced, raise event if so
+    // raise event that we're syncing
+    // consider the situation where we aren't running a node - actually, do we need to?
+    this.monitorHandle = window.setInterval(() => {}, 3000);
+  }
+
   public get client(): BlockchainClient {
     return this.config.client;
   }
 
+  public get state(): BlockchainState {
+    return this._state;
+  }
+
+  public get lastLog(): string {
+    return this._lastLog;
+  }
+
+  public get isMonitoring(): boolean {
+    return !!this.monitorHandle;
+  }
+
+  public get hasLocalNode(): boolean {
+    return this.config.useLocalNode;
+  }
+
   private updateState(newState: BlockchainState, eventData?: any): void {
-    const prevState = this.state;
-    this.state = newState;
+    const prevState = this._state;
+    this._state = newState;
 
     this.emit('stateChanged', newState, prevState, eventData);
   }
-
-  // is ready? How do we know it's ready?
-  // get node
 }

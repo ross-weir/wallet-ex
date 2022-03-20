@@ -23,26 +23,31 @@ export class DependencyManager extends EventEmitter {
     await Promise.all(
       this.dependencies.map((dep) => this.ensureDependency(dep)),
     );
+
+    this.emit('success');
   }
 
   private async ensureDependency(dep: RemoteDependency): Promise<void> {
     try {
-      this.log(`Validating ${dep.shortName}`);
+      this.emit('validating', dep);
       await this.validateDependency(dep);
     } catch (err) {
       // err is because of digest mismatch
       if (await this.backend.pathExists(dep.localPath)) {
-        this.log(`Corrupted dependency: ${dep.shortName}, removing`);
+        this.emit('corrupt', dep);
         this.backend.removeFile(dep.localPath);
       }
 
       await this.downloadDependency(dep);
       await this.validateDependency(dep);
     }
+
+    this.emit('valid', dep);
   }
 
   private async downloadDependency(dep: RemoteDependency): Promise<void> {
-    this.log(`Downloading ${dep.shortName}`);
+    this.emit('download', dep);
+
     return this.backend.downloadFile(dep.downloadUrl, dep.localPath);
   }
 
@@ -67,10 +72,6 @@ export class DependencyManager extends EventEmitter {
         );
       }
     }
-  }
-
-  private log(msg: string): void {
-    this.emit('log', msg);
   }
 
   private get backend(): BackendService {

@@ -1,7 +1,7 @@
 {
   "package": {
-    "productName": "wallet-x",
-    "version": "0.1.0"
+    "productName": "wallet-ex",
+    "version": "0.0.1"
   },
   "build": {
     "distDir": "../build",
@@ -27,7 +27,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "wallet-x",
+      "identifier": "wallet-ex",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -67,7 +67,7 @@
     },
     "windows": [
       {
-        "title": "wallet-x",
+        "title": "wallet-ex",
         "width": 800,
         "height": 600,
         "resizable": true,

@@ -1,5 +1,6 @@
 const { addBeforeLoader, loaderByName } = require('@craco/craco');
 const webpack = require('webpack');
+const tauriConfig = require('./src-tauri/tauri.conf.json');
 
 module.exports = {
   babel: {
@@ -28,6 +29,13 @@ module.exports = {
 
       webpackConfig.plugins.push(
         new webpack.ContextReplacementPlugin(/ergo-lib-wasm-browser/),
+      );
+
+      // avoid using tauris async api by baking in the bundle
+      webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+          'process.env.VERSION': JSON.stringify(tauriConfig.package.version),
+        }),
       );
 
       return webpackConfig;
