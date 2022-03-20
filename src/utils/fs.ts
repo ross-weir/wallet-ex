@@ -1,9 +1,12 @@
-import Container from 'typedi';
-import { BackendServiceToken } from '../ioc';
-
-export const getFileExt = async (): Promise<string> => {
-  const backend = Container.get(BackendServiceToken);
-  let platform = await backend.getPlatform();
+/**
+ * Get the OS specific executable extension.
+ *
+ * @returns The file exetension used for executables on the current OS.
+ */
+export const getExecutableExt = (): string => {
+  // May not be supported on all platforms
+  // Doing this to try avoid async function
+  const platform = (navigator as any).userAgentData.platform.toLowerCase();
 
   return platform === 'windows' ? '.exe' : '';
 };

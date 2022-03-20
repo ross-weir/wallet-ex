@@ -1,6 +1,6 @@
 import { BackendService } from '../services';
 import { BlockchainClient } from '../blockchains';
-import { ExplorerClient } from '../blockchains/ergo/explorerClient'; // todo
+import { ErgoExplorerClient } from '../blockchains/ergo/ergoExplorerClient'; // todo
 import { TauriBackend } from '../services/backend/tauriBackend';
 import { Token, Container } from 'typedi';
 
@@ -11,5 +11,5 @@ export const BlockchainClientToken = new Token<BlockchainClient>(
 
 export function setupContainer() {
   Container.set(BackendServiceToken, new TauriBackend());
-  Container.set(BlockchainClientToken, new ExplorerClient(0));
+  Container.set(BlockchainClientToken, new ErgoExplorerClient(0));
 }

@@ -1,31 +1,34 @@
 import { Child, Command } from '@tauri-apps/api/shell';
+import EventEmitter from 'events';
+import { UninitializedError } from '../errors';
 
-export interface SidecarOptions {
+export interface SpawnOptions {
   path: string;
   args?: string | string[];
   cwd?: string;
   env?: Record<string, any>;
 }
 
-export interface SidecarExitData {
-  code: number;
-  signal?: number; // not sure on the type
-}
-
 // TODO: auto restart?
-export class Sidecar {
-  private readonly maxLogCount = 1000;
-  private readonly cmd: Command;
+export class Sidecar extends EventEmitter {
+  private cmd?: Command;
   private process?: Child;
+  protected maxLogCount = 1000;
   public readonly logs: string[] = [];
 
-  constructor({ path, args, cwd, env }: SidecarOptions) {
+  public initialize({ path, args, cwd, env }: SpawnOptions) {
     this.cmd = new Command(path, args, { cwd, env });
   }
 
   public async spawn(): Promise<void> {
-    this.cmd.on('close', (data) => this.onClose(data));
-    this.cmd.on('error', (data) => this.onError(data));
+    if (!this.cmd) {
+      throw new UninitializedError(
+        'initialize() must be called before spawning sidecar',
+      );
+    }
+
+    this.cmd.on('close', (data) => this.emit('close', data));
+    this.cmd.on('error', (data) => this.emit('error', data));
     this.cmd.stderr.on('data', (data) => this.onData(data));
     this.cmd.stdout.on('data', (data) => this.onData(data));
 
@@ -36,7 +39,10 @@ export class Sidecar {
     return this.process?.kill();
   }
 
-  private onData(data: any): void {
+  protected onData(data: any): void {
+    data = this.parseData(data);
+    this.emit('data', data);
+
     console.log('data', data);
     this.logs.push(data);
 
@@ -45,11 +51,7 @@ export class Sidecar {
     }
   }
 
-  private onClose(data: SidecarExitData): void {
-    console.log('close', data);
-  }
-
-  private onError(data: any): void {
-    console.log('error', data);
+  protected parseData(data: any): any {
+    return data;
   }
 }

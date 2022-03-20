@@ -2,6 +2,8 @@
 // Used to query data, etc
 // For example: explorer vs node etc
 
+// should just return rosetta types, convert ergo explorer types to rosetta
+// just support one generic type of models
 export abstract class BlockchainClient {
   /**
    * Get the CONFIRMED balance of an address.

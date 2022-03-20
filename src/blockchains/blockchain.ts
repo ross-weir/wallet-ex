@@ -1,101 +1,81 @@
-import { Container } from 'typedi';
-import { BackendService } from '../services';
-import { BackendServiceToken } from '../ioc';
-import { Node, NodeConfig } from './node';
+import EventEmitter from 'events';
+import { Sidecar } from '../sidecars';
+import { BlockchainClient } from './blockchainClient';
 
-export interface BlockchainDependency {
-  downloadUrl: string;
-  localPath: string;
-  checksum?: string;
-  metadataUrl?: string;
-  description?: string;
+export enum BlockchainState {
+  Stopped = 'stopped',
+  CheckingDependencies = 'checkingDependencies',
+  InstallingDependencies = 'installingDependencies',
+  Initializing = 'initializing',
+  NodeSyncing = 'nodeSyncing',
+  Indexing = 'indexing',
+  ShuttingDown = 'shuttingDown',
 }
 
-type StaticThis = {
-  new (rootDir: string, network: string): Blockchain;
-};
+export enum BlockchainSidecarRole {
+  Node = 'node',
+  RosettaApi = 'rosettaApi',
+  Unknown = 'unknown',
+}
 
-// TODO: create dependency manager
-// dependencyManager.ensureDeps(); etc
-export abstract class Blockchain {
-  protected readonly network: string;
-  protected readonly baseDir: string;
-  protected node?: Node;
-  protected initialized = false;
-  protected useNode = false;
+export type BlockchainEvent = 'stateChanged';
 
-  public constructor(rootDir: string, network: string, node?: Node) {
-    this.network = network;
-    this.node = node;
-    this.baseDir = `${rootDir}${this.getName()}`;
-  }
+export interface BlockchainFactoryConfig {
+  baseDir: string;
+  network: string;
+  useLocalNode: boolean;
+}
 
-  public static async new(
-    this: StaticThis,
-    network: string,
-    extraNodeCfg: Record<string, any> = {},
-  ): Promise<Blockchain> {
-    const backend = Container.get(BackendServiceToken);
-    const rootDir = await backend.appDir();
-    const bc = new this(rootDir, network);
-    const nodeCls = bc.getNodeCls();
+export interface SidecarEntry {
+  role: BlockchainSidecarRole;
+  sidecar: Sidecar;
+}
 
-    if (nodeCls) {
-      const nodeCfg: NodeConfig = {
-        network,
-        baseDir: bc.baseDir,
-        ...extraNodeCfg,
-      };
-      bc.node = await nodeCls.new(nodeCfg);
-    }
+export interface BlockchainConfig extends BlockchainFactoryConfig {
+  name: string;
+  sidecars: SidecarEntry[];
+  client: BlockchainClient;
+  // isReady? function
+}
 
-    return bc;
-  }
+export class Blockchain extends EventEmitter {
+  private readonly config: BlockchainConfig;
+  private state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
 
-  public withNode(): Blockchain {
-    this.useNode = true;
-
-    return this;
-  }
-
-  public getNode(): Node | void {
-    return this.node;
-  }
-
-  public async firstUseSetup(): Promise<void> {
-    if (this.isNodeSupported) {
-      await this.node?.firstUseSetup();
-    }
-
-    // get dependencies
-    // mark as first time setup complete?
+  constructor(config: BlockchainConfig) {
+    super();
+    this.config = config;
   }
 
   public async initialize(): Promise<void> {
-    if (this.useNode) {
-      await this.node?.spawn();
+    this.updateState(BlockchainState.Initializing);
+
+    for (const { sidecar } of this.config.sidecars) {
+      // what if one fails
+      sidecar.spawn();
     }
-
-    this.initialized = true;
   }
 
-  public get isInitialized(): boolean {
-    return this.initialized;
+  public async shutdown(): Promise<void> {
+    this.updateState(BlockchainState.ShuttingDown);
+
+    for (const { sidecar } of this.config.sidecars) {
+      sidecar.kill();
+    }
   }
 
-  public get isNodeSupported(): boolean {
-    return !!this.getNodeCls();
+  public get client(): BlockchainClient {
+    return this.config.client;
   }
 
-  public abstract getName(): string;
+  private updateState(newState: BlockchainState): void {
+    const prevState = this.state;
+    this.state = newState;
 
-  public getNodeCls(): typeof Node | void {}
-
-  protected dependenciesList(): BlockchainDependency[] {
-    return [];
+    this.emit('stateChanged', newState, prevState);
   }
 
-  protected get backend(): BackendService {
-    return Container.get(BackendServiceToken);
-  }
+  // is ready? How do we know it's ready?
+  // get node
+  // ensure deps
 }
