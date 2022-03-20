@@ -1,15 +1,18 @@
 import EventEmitter from 'events';
+import { DependencyManager } from '../services';
 import { Sidecar } from '../sidecars';
 import { BlockchainClient } from './blockchainClient';
 
 export enum BlockchainState {
   Stopped = 'stopped',
   CheckingDependencies = 'checkingDependencies',
-  InstallingDependencies = 'installingDependencies',
+  StartingDependencies = 'startingDependencies',
   Initializing = 'initializing',
+  Ready = 'ready',
   NodeSyncing = 'nodeSyncing',
   Indexing = 'indexing',
   ShuttingDown = 'shuttingDown',
+  Error = 'error',
 }
 
 export enum BlockchainSidecarRole {
@@ -35,6 +38,7 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   name: string;
   sidecars: SidecarEntry[];
   client: BlockchainClient;
+  dependencyManager?: DependencyManager;
   // isReady? function
 }
 
@@ -49,11 +53,17 @@ export class Blockchain extends EventEmitter {
 
   public async initialize(): Promise<void> {
     this.updateState(BlockchainState.Initializing);
+    const { sidecars, dependencyManager } = this.config;
 
-    for (const { sidecar } of this.config.sidecars) {
-      // what if one fails
-      sidecar.spawn();
-    }
+    this.updateState(BlockchainState.CheckingDependencies);
+
+    await dependencyManager?.ensureDependencies();
+
+    this.updateState(BlockchainState.StartingDependencies);
+
+    await Promise.all(sidecars.map(({ sidecar }) => sidecar.spawn()));
+
+    this.updateState(BlockchainState.Ready);
   }
 
   public async shutdown(): Promise<void> {
@@ -68,14 +78,13 @@ export class Blockchain extends EventEmitter {
     return this.config.client;
   }
 
-  private updateState(newState: BlockchainState): void {
+  private updateState(newState: BlockchainState, eventData?: any): void {
     const prevState = this.state;
     this.state = newState;
 
-    this.emit('stateChanged', newState, prevState);
+    this.emit('stateChanged', newState, prevState, eventData);
   }
 
   // is ready? How do we know it's ready?
   // get node
-  // ensure deps
 }

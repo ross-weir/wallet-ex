@@ -1,8 +1,8 @@
-import { Inject, Service } from 'typedi';
 import { digestFile } from '../crypto';
 import { DigestMismatchError, FileSystemError } from '../errors';
 import { BackendServiceToken } from '../ioc';
-import { BackendService } from '.';
+import { BackendService } from './backend';
+import Container from 'typedi';
 
 export interface RemoteDependency {
   downloadUrl: string;
@@ -11,14 +11,13 @@ export interface RemoteDependency {
   metadataUrl?: string;
 }
 
-@Service()
 export class DependencyManager {
-  constructor(@Inject(BackendServiceToken) private backend: BackendService) {}
+  constructor(private readonly dependencies: RemoteDependency[]) {}
 
-  public async ensureDependencies(deps: RemoteDependency[]): Promise<void> {
-    for (const dep of deps) {
-      this.ensureDependency(dep);
-    }
+  public async ensureDependencies(): Promise<void> {
+    await Promise.all(
+      this.dependencies.map((dep) => this.ensureDependency(dep)),
+    );
   }
 
   private async ensureDependency(dep: RemoteDependency): Promise<void> {
@@ -60,5 +59,9 @@ export class DependencyManager {
         );
       }
     }
+  }
+
+  private get backend(): BackendService {
+    return Container.get(BackendServiceToken);
   }
 }

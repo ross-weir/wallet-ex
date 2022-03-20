@@ -4,7 +4,7 @@ import { BackendServiceToken } from '../ioc';
 import { Sidecar } from './sidecar';
 import { DataSerializer } from '../serialization';
 import path from 'path';
-import { getExecutableExt } from '../utils/fs';
+import { getNodeFilename } from '../utils/fs';
 import { EnvironmentVariables } from '../types';
 
 // The minimum args required for node factory functions
@@ -86,9 +86,8 @@ export class Node<T extends NodeConfig> extends Sidecar {
   }
 
   private get binaryPath(): string {
-    const ext = getExecutableExt();
     const { baseDir, blockchain } = this.setup.cfg;
 
-    return path.join(baseDir, `${blockchain}_node${ext}`);
+    return path.join(baseDir, getNodeFilename(blockchain));
   }
 }

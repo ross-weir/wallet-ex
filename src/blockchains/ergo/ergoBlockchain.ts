@@ -9,6 +9,10 @@ import { SupportedBlockchain } from '../types';
 import { ergoNodeFactory } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
 import { ErgoExplorerClient } from './ergoExplorerClient';
+import { DependencyManager } from '../../services';
+import { getExecutableExt, getNodeFilename } from '../../utils/fs';
+import { getOsString } from '../../utils/os';
+import path from 'path';
 
 interface ErgoLocalDependencies {
   node: Sidecar;
@@ -28,19 +32,38 @@ const setupLocalDependencies = async (
   return { node, rosettaApi };
 };
 
-export const ergoBlockchainFactory = async ({
+const getDependencyManager = ({
   baseDir,
-  network,
   useLocalNode,
-}: BlockchainFactoryConfig): Promise<Blockchain> => {
+}: BlockchainFactoryConfig): DependencyManager | undefined => {
+  if (!useLocalNode) {
+    return;
+  }
+
+  const os = getOsString();
+  const exeExt = getExecutableExt();
+  const deps = [
+    {
+      downloadUrl: `https://github.com/ross-weir/ergo-portable/releases/download/v4.0.23/ergo-${os}-v4.0.23${exeExt}`,
+      localPath: path.join(baseDir, getNodeFilename(SupportedBlockchain.Ergo)),
+      digest:
+        '523119fdcd15ce5eaeb17a299ecdce60f212e0ee643a598a7762c264d3cd752d',
+    },
+    // TODO: rosetta api
+  ];
+
+  return new DependencyManager(deps);
+};
+
+export const ergoBlockchainFactory = async (
+  cfg: BlockchainFactoryConfig,
+): Promise<Blockchain> => {
+  const { baseDir, useLocalNode, network } = cfg;
   const sidecars: SidecarEntry[] = [];
   let client = new ErgoExplorerClient(0);
 
   if (useLocalNode) {
-    const { node, rosettaApi } = await setupLocalDependencies({
-      baseDir,
-      network,
-    });
+    const { node, rosettaApi } = await setupLocalDependencies(cfg);
 
     sidecars.push(
       { role: BlockchainSidecarRole.Node, sidecar: node },
@@ -57,6 +80,7 @@ export const ergoBlockchainFactory = async ({
     sidecars,
     useLocalNode,
     client,
+    dependencyManager: getDependencyManager(cfg),
     name: SupportedBlockchain.Ergo,
   });
 };
