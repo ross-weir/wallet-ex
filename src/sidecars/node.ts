@@ -25,7 +25,6 @@ export interface NodeConfig extends NodeFactoryConfig {
 export interface NodeSetup<T extends NodeConfig> {
   cfg: T;
   cfgSerializer: DataSerializer<T>;
-  syncCheck: (node: Node<T>) => Promise<boolean>;
   buildEnvVars?: (cfg: T) => EnvironmentVariables;
   buildCliArgs?: (node: Node<T>) => string | string[];
 }

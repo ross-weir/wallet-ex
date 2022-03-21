@@ -15,3 +15,7 @@ export class DigestMismatchError extends ValidationError {
 }
 
 export class UninitializedError extends CustomError {}
+
+export class ImproperlyConfiguredError extends CustomError {}
+
+export class UnsupportedOperationError extends CustomError {}

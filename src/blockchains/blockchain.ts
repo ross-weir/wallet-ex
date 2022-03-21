@@ -1,41 +1,21 @@
 import EventEmitter from 'events';
 import { DependencyManager } from '../services';
-import { Sidecar } from '../sidecars';
+import {
+  BlockchainCapabilities,
+  SidecarEntry,
+  BlockchainStatus,
+  BlockchainState,
+} from './types';
 import { BlockchainClient } from './blockchainClient';
-
-export interface BlockchainCapabilities {
-  localNode: boolean;
-  multiSig: boolean;
-  staking: boolean;
-}
-
-export enum BlockchainState {
-  Stopped = 'stopped',
-  CheckingDependencies = 'checkingDependencies',
-  Initializing = 'initializing',
-  Ready = 'ready',
-  Syncing = 'syncing',
-  ShuttingDown = 'shuttingDown',
-  Error = 'error',
-}
-
-export enum BlockchainSidecarRole {
-  Node = 'node',
-  RosettaApi = 'rosettaApi',
-  Unknown = 'unknown',
-}
-
-export type BlockchainEvent = 'stateChanged';
+import {
+  ImproperlyConfiguredError,
+  UnsupportedOperationError,
+} from '../errors';
 
 export interface BlockchainFactoryConfig {
   baseDir: string;
   network: string;
   useLocalNode: boolean;
-}
-
-export interface SidecarEntry {
-  role: BlockchainSidecarRole;
-  sidecar: Sidecar;
 }
 
 export interface BlockchainConfig extends BlockchainFactoryConfig {
@@ -44,14 +24,15 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   client: BlockchainClient;
   dependencyManager?: DependencyManager;
   capabilities: BlockchainCapabilities;
+  statusInterval?: number;
+  // Only used for local infrastructure
+  getStatus?: (b: Blockchain) => Promise<BlockchainStatus>;
 }
 
-// Events: 'stateChanged' | 'log'
+// Events: 'stateChanged'
 export class Blockchain extends EventEmitter {
   private readonly config: BlockchainConfig;
-  private monitorHandle?: number;
   private _state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
-  private _lastLog = '';
 
   constructor(config: BlockchainConfig) {
     super();
@@ -81,11 +62,22 @@ export class Blockchain extends EventEmitter {
     }
   }
 
-  public async monitor(): Promise<void> {
-    // check if synced, raise event if so
-    // raise event that we're syncing
-    // consider the situation where we aren't running a node - actually, do we need to?
-    this.monitorHandle = window.setInterval(() => {}, 3000);
+  public async getStatus(): Promise<BlockchainStatus> {
+    if (!this.hasLocalNode) {
+      throw new UnsupportedOperationError(
+        `getStatus is not supported for ${this.config.name}, no local node`,
+      );
+    }
+
+    const { getStatus } = this.config;
+
+    if (!getStatus) {
+      throw new ImproperlyConfiguredError(
+        `getStatus function not provided for blockchain: ${this.config.name}`,
+      );
+    }
+
+    return getStatus(this);
   }
 
   public get client(): BlockchainClient {
@@ -94,14 +86,6 @@ export class Blockchain extends EventEmitter {
 
   public get state(): BlockchainState {
     return this._state;
-  }
-
-  public get lastLog(): string {
-    return this._lastLog;
-  }
-
-  public get isMonitoring(): boolean {
-    return !!this.monitorHandle;
   }
 
   public get hasLocalNode(): boolean {

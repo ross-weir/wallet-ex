@@ -13,6 +13,7 @@ import {
   ModeSelection,
   FirstUse,
 } from './routes';
+import { Test } from './routes/Test';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +44,8 @@ function App() {
                 <Route path=":action" element={<WalletActionForm />} />
               </Route>
               <Route path="/wallets/:walletId" element={<WalletView />} />
+
+              <Route path="/test" element={<Test />} />
 
               <Route path="*" element={<p>How did you get hur?</p>} />
             </Routes>

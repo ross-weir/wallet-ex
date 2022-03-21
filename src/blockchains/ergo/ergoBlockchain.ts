@@ -1,12 +1,12 @@
 import { Sidecar } from '../../sidecars';
+import { Blockchain, BlockchainFactoryConfig } from '../blockchain';
 import {
-  Blockchain,
   BlockchainCapabilities,
-  BlockchainFactoryConfig,
   BlockchainSidecarRole,
+  BlockchainStatus,
   SidecarEntry,
-} from '../blockchain';
-import { SupportedBlockchain } from '../types';
+  SupportedBlockchain,
+} from '../types';
 import { ergoNodeFactory } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
 import { ErgoExplorerClient } from './ergoExplorerClient';
@@ -63,6 +63,17 @@ const capabilities: BlockchainCapabilities = {
   staking: false,
 };
 
+let counter = 0;
+
+const getStatus = async (b: Blockchain): Promise<BlockchainStatus> => {
+  counter += 100;
+  return {
+    isSynced: false,
+    height: 400,
+    description: `New height ${counter}`,
+  };
+};
+
 export const ergoBlockchainFactory = async (
   cfg: BlockchainFactoryConfig,
 ): Promise<Blockchain> => {
@@ -89,6 +100,7 @@ export const ergoBlockchainFactory = async (
     useLocalNode,
     client,
     capabilities,
+    getStatus,
     dependencyManager: getDependencyManager(cfg),
     name: SupportedBlockchain.Ergo,
   });

@@ -12,9 +12,6 @@ export interface ErgoNodeConfig extends NodeConfig {
 
 export type ErgoNode = Node<ErgoNodeConfig>;
 
-// call API, check if sync'd
-const syncCheck = async (node: ErgoNode): Promise<boolean> => false;
-
 const buildEnvVars = (cfg: ErgoNodeConfig): EnvironmentVariables => ({
   BLOCKCHAIN_NETWORK: cfg.network,
 });
@@ -31,7 +28,7 @@ class ErgoConfigSerializer implements DataSerializer<ErgoNodeConfig> {
     // required for ergos config parser
     const dataDir = obj.baseDir.replaceAll('\\', '/');
     const cfgLines = [
-      `ergo.directory = "${dataDir}/."$\{BLOCKCHAIN_NETWORK}`,
+      `ergo.directory = "${dataDir}/."$\{\BLOCKCHAIN_NETWORK}`,
       `scorex.restApi.bindAddress = "127.0.0.1:${obj.rpcPort}"`,
       `scorex.restApi.apiKeyHash = "${obj.rpcTokenHash}"`,
       `scorex.network.bindAddress = "0.0.0.0:${obj.port}"`,
@@ -68,7 +65,6 @@ export const ergoNodeFactory = async ({
   return new Node({
     cfg,
     cfgSerializer: new ErgoConfigSerializer(),
-    syncCheck,
     buildEnvVars,
     buildCliArgs,
   });

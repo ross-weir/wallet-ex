@@ -29,7 +29,7 @@ export function ModeSelection() {
       operatingMode: OperatingMode.FullNode,
       useLocalNode: true,
       blockchain: SupportedBlockchain.Ergo,
-      network: 'mainnet',
+      network: 'testnet',
     });
     const stateUpdate = appState.update('state', ApplicationState.Initializing);
 
