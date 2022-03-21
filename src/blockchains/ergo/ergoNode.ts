@@ -12,9 +12,6 @@ export interface ErgoNodeConfig extends NodeConfig {
 
 export type ErgoNode = Node<ErgoNodeConfig>;
 
-// call API, check if sync'd
-const syncCheck = async (node: ErgoNode): Promise<boolean> => false;
-
 const buildEnvVars = (cfg: ErgoNodeConfig): EnvironmentVariables => ({
   BLOCKCHAIN_NETWORK: cfg.network,
 });
@@ -68,7 +65,6 @@ export const ergoNodeFactory = async ({
   return new Node({
     cfg,
     cfgSerializer: new ErgoConfigSerializer(),
-    syncCheck,
     buildEnvVars,
     buildCliArgs,
   });

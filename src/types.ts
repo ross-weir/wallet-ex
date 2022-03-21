@@ -6,6 +6,11 @@
 // the rust SPV library is currently WIP/I need to research to even see how this would fit into a wallet
 export type OpMode = 'full' | 'light' | 'spv';
 
+export enum OperatingMode {
+  FullNode = 'fullNode',
+  Simple = 'simple',
+}
+
 export type AddressBase58 = string;
 
 export type Base16String = string;

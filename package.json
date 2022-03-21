@@ -1,6 +1,6 @@
 {
-  "name": "wallet-x",
-  "version": "0.0.0",
+  "name": "wallet-ex",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.4.3",

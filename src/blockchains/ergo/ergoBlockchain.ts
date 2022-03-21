@@ -1,12 +1,12 @@
 import { Sidecar } from '../../sidecars';
+import { Blockchain, BlockchainFactoryConfig } from '../blockchain';
 import {
-  Blockchain,
   BlockchainCapabilities,
-  BlockchainFactoryConfig,
   BlockchainSidecarRole,
+  BlockchainStatus,
   SidecarEntry,
-} from '../blockchain';
-import { SupportedBlockchain } from '../types';
+  SupportedBlockchain,
+} from '../types';
 import { ergoNodeFactory } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
 import { ErgoExplorerClient } from './ergoExplorerClient';
@@ -63,6 +63,34 @@ const capabilities: BlockchainCapabilities = {
   staking: false,
 };
 
+let counter = 0;
+
+const getStatus = async (b: Blockchain): Promise<BlockchainStatus> => {
+  // create a node api client
+  // create a rosetta api client
+
+  // if node fullHeight is null && headerHeight is null
+  // return 'node starting up'
+
+  // if node fullHeight is null && headerHeight has value
+  // return 'node syncing headers'
+
+  // if node fullHeight has value < headerHeight
+  // return 'node syncing blocks'
+
+  // if rosetta has height within 5 blocks of node
+  // return 'all synced'
+  // else
+  // return 'indexer syncing'
+
+  counter += 100;
+  return {
+    isSynced: false,
+    height: 400,
+    description: `New height ${counter}`,
+  };
+};
+
 export const ergoBlockchainFactory = async (
   cfg: BlockchainFactoryConfig,
 ): Promise<Blockchain> => {
@@ -89,6 +117,7 @@ export const ergoBlockchainFactory = async (
     useLocalNode,
     client,
     capabilities,
+    getStatus,
     dependencyManager: getDependencyManager(cfg),
     name: SupportedBlockchain.Ergo,
   });

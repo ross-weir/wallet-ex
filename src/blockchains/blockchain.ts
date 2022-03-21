@@ -1,43 +1,21 @@
 import EventEmitter from 'events';
 import { DependencyManager } from '../services';
-import { Sidecar } from '../sidecars';
+import {
+  BlockchainCapabilities,
+  SidecarEntry,
+  BlockchainStatus,
+  BlockchainState,
+} from './types';
 import { BlockchainClient } from './blockchainClient';
-
-export interface BlockchainCapabilities {
-  localNode: boolean;
-  multiSig: boolean;
-  staking: boolean;
-}
-
-export enum BlockchainState {
-  Stopped = 'stopped',
-  CheckingDependencies = 'checkingDependencies',
-  StartingDependencies = 'startingDependencies',
-  Initializing = 'initializing',
-  Ready = 'ready',
-  NodeSyncing = 'nodeSyncing',
-  Indexing = 'indexing',
-  ShuttingDown = 'shuttingDown',
-  Error = 'error',
-}
-
-export enum BlockchainSidecarRole {
-  Node = 'node',
-  RosettaApi = 'rosettaApi',
-  Unknown = 'unknown',
-}
-
-export type BlockchainEvent = 'stateChanged';
+import {
+  ImproperlyConfiguredError,
+  UnsupportedOperationError,
+} from '../errors';
 
 export interface BlockchainFactoryConfig {
   baseDir: string;
   network: string;
   useLocalNode: boolean;
-}
-
-export interface SidecarEntry {
-  role: BlockchainSidecarRole;
-  sidecar: Sidecar;
 }
 
 export interface BlockchainConfig extends BlockchainFactoryConfig {
@@ -46,20 +24,19 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   client: BlockchainClient;
   dependencyManager?: DependencyManager;
   capabilities: BlockchainCapabilities;
-  // isReady? function
+  statusInterval?: number;
+  // Only used for local infrastructure, this is basically the status of the blockchain syncing
+  getStatus?: (b: Blockchain) => Promise<BlockchainStatus>;
 }
 
-// Events: 'stateChanged' | 'log'
+// Events: 'stateChanged'
 export class Blockchain extends EventEmitter {
   private readonly config: BlockchainConfig;
-  private state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
+  private _state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
 
   constructor(config: BlockchainConfig) {
     super();
     this.config = config;
-
-    // forward events so we can show statuses to the user while loading
-    this.config.dependencyManager?.on('log', (msg) => this.emit('log', msg));
   }
 
   public async initialize(): Promise<void> {
@@ -70,7 +47,7 @@ export class Blockchain extends EventEmitter {
 
     await dependencyManager?.ensureDependencies();
 
-    this.updateState(BlockchainState.StartingDependencies);
+    this.updateState(BlockchainState.Initializing);
 
     await Promise.all(sidecars.map(({ sidecar }) => sidecar.spawn()));
 
@@ -85,17 +62,40 @@ export class Blockchain extends EventEmitter {
     }
   }
 
+  public async getStatus(): Promise<BlockchainStatus> {
+    if (!this.hasLocalNode) {
+      throw new UnsupportedOperationError(
+        `getStatus is not supported for ${this.config.name}, no local node`,
+      );
+    }
+
+    const { getStatus } = this.config;
+
+    if (!getStatus) {
+      throw new ImproperlyConfiguredError(
+        `getStatus function not provided for blockchain: ${this.config.name}`,
+      );
+    }
+
+    return getStatus(this);
+  }
+
   public get client(): BlockchainClient {
     return this.config.client;
   }
 
+  public get state(): BlockchainState {
+    return this._state;
+  }
+
+  public get hasLocalNode(): boolean {
+    return this.config.useLocalNode;
+  }
+
   private updateState(newState: BlockchainState, eventData?: any): void {
-    const prevState = this.state;
-    this.state = newState;
+    const prevState = this._state;
+    this._state = newState;
 
     this.emit('stateChanged', newState, prevState, eventData);
   }
-
-  // is ready? How do we know it's ready?
-  // get node
 }

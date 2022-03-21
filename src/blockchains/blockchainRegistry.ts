@@ -2,6 +2,10 @@ import { Blockchain, BlockchainFactoryConfig } from './blockchain';
 import { ergoBlockchainFactory } from './ergo';
 import { SupportedBlockchain } from './types';
 import path from 'path';
+import { BackendServiceToken } from '../ioc';
+import Container from 'typedi';
+import { getAppConfig } from '../appConfig';
+import { UninitializedError } from '../errors';
 
 type BlockchainFactoryFn = (
   cfg: BlockchainFactoryConfig,
@@ -16,9 +20,41 @@ export const getSupportedBlockchains = (): string[] =>
 
 export const getBlockchain = async (
   blockchain: SupportedBlockchain,
-  cfg: BlockchainFactoryConfig,
+  cfg: Omit<BlockchainFactoryConfig, 'baseDir'>,
 ): Promise<Blockchain> => {
-  cfg.baseDir = path.join(cfg.baseDir, blockchain);
+  const b = Container.get(BackendServiceToken);
+  const appDir = await b.appDir();
+  const baseDir = path.join(appDir, blockchain);
 
-  return factoryMap[blockchain](cfg);
+  return factoryMap[blockchain]({
+    baseDir,
+    ...cfg,
+  });
+};
+
+const blockchainCache: Partial<Record<SupportedBlockchain, Blockchain>> = {};
+
+export const getConfiguredBlockchain = async (): Promise<Blockchain> => {
+  const appConfig = getAppConfig();
+  const cfg = await appConfig.get();
+
+  if (!cfg) {
+    throw new UninitializedError();
+  }
+
+  const { blockchain, useLocalNode, network } = cfg;
+  const cachedEntry = blockchainCache[blockchain!];
+
+  if (cachedEntry) {
+    return cachedEntry;
+  }
+
+  const bc = await getBlockchain(blockchain!, {
+    useLocalNode,
+    network,
+  });
+
+  blockchainCache[blockchain!] = bc;
+
+  return bc;
 };

@@ -1,7 +1,8 @@
-import Loading from './loading';
-import Welcome from './welcome';
 import WalletView from './WalletView';
 import WalletsList from './WalletsList';
 import AddWallet from './AddWallet';
+export * from './FirstUse';
+export * from './Initializing';
+export * from './ModeSelection';
 
-export { AddWallet, Loading, Welcome, WalletView, WalletsList };
+export { AddWallet, WalletView, WalletsList };

@@ -5,7 +5,15 @@ import InitWalletView from './components/InitWalletView';
 import WalletActionForm from './components/InitWalletView/WalletActionForm';
 import { initErgo } from './ergo';
 import { SensitiveModeProvider } from './hooks';
-import { WalletsList, AddWallet, WalletView } from './routes';
+import {
+  WalletsList,
+  AddWallet,
+  WalletView,
+  Initializing,
+  ModeSelection,
+  FirstUse,
+} from './routes';
+import { Test } from './routes/Test';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,13 +32,21 @@ function App() {
         <React.StrictMode>
           <Suspense fallback="loading">
             <Routes>
-              <Route path="/" element={<Navigate to="/wallets" />} />
+              <Route path="/" element={<Navigate to="/modeSelect" />} />
+
+              <Route path="/initializing" element={<Initializing />} />
+              <Route path="/firstUse" element={<FirstUse />} />
+              <Route path="/modeSelect" element={<ModeSelection />} />
+
               <Route path="/wallets" element={<WalletsList />} />
               <Route path="/wallets/add" element={<AddWallet />}>
                 <Route index element={<InitWalletView />} />
                 <Route path=":action" element={<WalletActionForm />} />
               </Route>
               <Route path="/wallets/:walletId" element={<WalletView />} />
+
+              <Route path="/test" element={<Test />} />
+
               <Route path="*" element={<p>How did you get hur?</p>} />
             </Routes>
           </Suspense>

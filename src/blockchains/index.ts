@@ -1,2 +1,4 @@
 export * from './blockchainClient';
-export { getBlockchain } from './blockchainRegistry';
+export { getBlockchain, getConfiguredBlockchain } from './blockchainRegistry';
+export { Blockchain } from './blockchain';
+export { BlockchainState } from './types';
