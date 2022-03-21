@@ -41,6 +41,7 @@ export function Initializing() {
       setBlockchain(bc);
       setState(readableStateMap[bc.state]);
 
+      // also get dependencyManager events and update the state
       bc.on('stateChanged', onBlockchainStateChanged(bc));
       bc.initialize();
     };

@@ -66,6 +66,23 @@ const capabilities: BlockchainCapabilities = {
 let counter = 0;
 
 const getStatus = async (b: Blockchain): Promise<BlockchainStatus> => {
+  // create a node api client
+  // create a rosetta api client
+
+  // if node fullHeight is null && headerHeight is null
+  // return 'node starting up'
+
+  // if node fullHeight is null && headerHeight has value
+  // return 'node syncing headers'
+
+  // if node fullHeight has value < headerHeight
+  // return 'node syncing blocks'
+
+  // if rosetta has height within 5 blocks of node
+  // return 'all synced'
+  // else
+  // return 'indexer syncing'
+
   counter += 100;
   return {
     isSynced: false,

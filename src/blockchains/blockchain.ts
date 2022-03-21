@@ -25,7 +25,7 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   dependencyManager?: DependencyManager;
   capabilities: BlockchainCapabilities;
   statusInterval?: number;
-  // Only used for local infrastructure
+  // Only used for local infrastructure, this is basically the status of the blockchain syncing
   getStatus?: (b: Blockchain) => Promise<BlockchainStatus>;
 }
 
