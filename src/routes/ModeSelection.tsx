@@ -7,7 +7,6 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import { useNavigate } from 'react-router';
-import AppBarTop from '../components/AppBarTop';
 import { getAppConfig } from '../appConfig';
 import { OperatingMode } from '../types';
 import { SupportedBlockchain } from '../blockchains/types';
@@ -42,7 +41,6 @@ export function ModeSelection() {
 
   return (
     <>
-      <AppBarTop />
       <Container content style={{ marginTop: 30 }}>
         <Header as="h1">
           {t('title')}

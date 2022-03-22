@@ -43,6 +43,20 @@ class ErgoConfigSerializer implements DataSerializer<ErgoNodeConfig> {
   }
 }
 
+interface NodeStatus {
+  headersHeight: number | null;
+  fullHeight: number | null;
+}
+
+export const getErgoNodeStatus = async (
+  node: ErgoNode,
+): Promise<NodeStatus> => {
+  const response = await fetch(`http://127.0.0.1:${node.config.rpcPort}/info`);
+  const { headersHeight, fullHeight } = await response.json();
+
+  return { headersHeight, fullHeight };
+};
+
 export const ergoNodeFactory = async ({
   baseDir,
   network,

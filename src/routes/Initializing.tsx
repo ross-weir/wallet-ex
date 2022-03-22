@@ -12,6 +12,7 @@ export function Initializing() {
   const { t } = useTranslation('initializing');
   const navigate = useNavigate();
   const [state, setState] = useState('Loading');
+  const [height, setHeight] = useState(0);
   const [blockchain, setBlockchain] = useState<Blockchain>();
 
   const getStateText = (state: string): string => t(`state.${state}`);
@@ -60,9 +61,10 @@ export function Initializing() {
       }
 
       try {
-        const status = await blockchain.getStatus();
+        const { description, height } = await blockchain.getStatus();
 
-        setState(status.description);
+        setState(description);
+        setHeight(height);
 
         // if synced, navigate to wallet
       } catch (e) {}
@@ -78,7 +80,8 @@ export function Initializing() {
   return (
     <>
       <Loader active indeterminate size="massive">
-        {state}
+        <p style={{ marginBottom: 0 }}>{state}</p>
+        {!!height && <p>{height}</p>}
       </Loader>
     </>
   );

@@ -128,6 +128,7 @@ function WalletView() {
 
   return (
     <>
+      {/* TODO: move this elsewhere, leaving here so the double appbar is a reminder */}
       <AppBarTop onLogout={onLogoutWallet} />
       <Grid stackable padded>
         <Grid.Column width={4}>

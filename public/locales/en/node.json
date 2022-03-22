@@ -1,0 +1,5 @@
+{
+  "starting": "Node is starting up",
+  "syncHeaders": "Node is syncing block headers",
+  "syncBlocks": "Node is syncing full blocks"
+}

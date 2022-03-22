@@ -1,6 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { Container, Header, Breadcrumb } from 'semantic-ui-react';
-import AppBarTop from '../components/AppBarTop';
 import { capitalize } from '../utils/formatting';
 
 function AddWallet() {
@@ -55,7 +54,6 @@ function AddWallet() {
 
   return (
     <>
-      <AppBarTop />
       <Container style={{ marginTop: 30 }}>
         <Header as="h2" content="Add Wallet" />
         {Breadcrumbs()}
