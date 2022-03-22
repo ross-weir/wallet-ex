@@ -11,6 +11,8 @@ export const initCfg = {
     'walletReceiveTab',
     'walletView',
     'walletsList',
+    'modeSelection',
+    'initializing',
   ],
   defaultNS: 'common',
   fallbackLng: 'en',
@@ -43,3 +45,5 @@ export const initI18n = () => {
       .init(initCfg)
   );
 };
+
+export { i18n };

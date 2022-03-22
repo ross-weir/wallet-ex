@@ -12,8 +12,10 @@ import { getAppConfig } from '../appConfig';
 import { OperatingMode } from '../types';
 import { SupportedBlockchain } from '../blockchains/types';
 import { ApplicationState, getAppState } from '../appState';
+import { useTranslation } from 'react-i18next';
 
 export function ModeSelection() {
+  const { t } = useTranslation('modeSelection');
   const navigate = useNavigate();
   const appConfig = getAppConfig();
   const appState = getAppState();
@@ -43,11 +45,8 @@ export function ModeSelection() {
       <AppBarTop />
       <Container content style={{ marginTop: 30 }}>
         <Header as="h1">
-          Mode Selection
-          <Header.Subheader>
-            Select the operating mode for Wallet Ex, this can be changed at any
-            time on the settings page.
-          </Header.Subheader>
+          {t('title')}
+          <Header.Subheader>{t('subheader')}</Header.Subheader>
         </Header>
         <Segment padded="very">
           <div
@@ -57,12 +56,8 @@ export function ModeSelection() {
             <Header as="h2" disabled>
               <Icon name="cloud" />
               <Header.Content>
-                Simple Mode
-                <Header.Subheader>
-                  Easy sending, receiving and viewing of wallets. Uses a remote
-                  node or service and does not download the blockchain to your
-                  computer. Recommended if you're new to cryptocurrency.
-                </Header.Subheader>
+                {t('simpleMode.title')}
+                <Header.Subheader>{t('simpleMode.subheader')}</Header.Subheader>
               </Header.Content>
             </Header>
           </div>
@@ -71,10 +66,9 @@ export function ModeSelection() {
             <Header as="h2">
               <Icon name="download" />
               <Header.Content>
-                Full Node Mode
+                {t('fullNodeMode.title')}
                 <Header.Subheader>
-                  Runs a full node to aid with decentralization and security.
-                  Downloads the entire blockchain to your computer.
+                  {t('fullNodeMode.subheader')}
                 </Header.Subheader>
               </Header.Content>
             </Header>

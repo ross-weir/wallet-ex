@@ -1,0 +1,12 @@
+{
+  "title": "Mode Selection",
+  "subheader": "Select the operating mode for $t(common:productName), this can be changed at any time on the settings page.",
+  "simpleMode": {
+    "title": "Simple Mode",
+    "subheader": "Easy sending, receiving and viewing of wallets. Uses a remote node or service and does not download the blockchain to your computer. Recommended if you're new to cryptocurrency."
+  },
+  "fullNodeMode": {
+    "title": "Full Node Mode",
+    "subheader": "Runs a full node to aid with decentralization and security. Downloads the entire blockchain to your computer."
+  }
+}

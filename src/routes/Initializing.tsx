@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from 'semantic-ui-react';
 import {
@@ -8,9 +9,12 @@ import {
 } from '../blockchains';
 
 export function Initializing() {
+  const { t } = useTranslation('initializing');
   const navigate = useNavigate();
   const [state, setState] = useState('Loading');
   const [blockchain, setBlockchain] = useState<Blockchain>();
+
+  const getStateText = (state: string): string => t(`state.${state}`);
 
   const onBlockchainReady = (bc: Blockchain) => {
     if (!bc.hasLocalNode) {
@@ -25,7 +29,7 @@ export function Initializing() {
 
   const onBlockchainStateChanged =
     (b: Blockchain) => (newState: BlockchainState) => {
-      setState(readableStateMap[newState]);
+      setState(getStateText(newState));
 
       const handler = handlerMap[newState];
 
@@ -39,7 +43,7 @@ export function Initializing() {
       const bc = await getConfiguredBlockchain();
 
       setBlockchain(bc);
-      setState(readableStateMap[bc.state]);
+      setState(getStateText(bc.state));
 
       // also get dependencyManager events and update the state
       bc.on('stateChanged', onBlockchainStateChanged(bc));
@@ -48,15 +52,6 @@ export function Initializing() {
 
     fn();
   }, []);
-
-  const readableStateMap: Record<BlockchainState, string> = {
-    [BlockchainState.Stopped]: 'Stopped',
-    [BlockchainState.CheckingDependencies]: 'Checking blockchain dependencies',
-    [BlockchainState.Ready]: 'Beginning blockchain sync...',
-    [BlockchainState.Initializing]: 'Starting blockchain resources',
-    [BlockchainState.ShuttingDown]: 'Shutting down blockchain resources',
-    [BlockchainState.Error]: 'Something went wrong',
-  };
 
   useEffect(() => {
     const handle = setInterval(async () => {
