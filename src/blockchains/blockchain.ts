@@ -5,12 +5,14 @@ import {
   SidecarEntry,
   BlockchainStatus,
   BlockchainState,
+  BlockchainSidecarRole,
 } from './types';
 import { BlockchainClient } from './blockchainClient';
 import {
   ImproperlyConfiguredError,
   UnsupportedOperationError,
 } from '../errors';
+import { Node, NodeConfig } from '../sidecars';
 
 export interface BlockchainFactoryConfig {
   baseDir: string;
@@ -90,6 +92,22 @@ export class Blockchain extends EventEmitter {
 
   public get hasLocalNode(): boolean {
     return this.config.useLocalNode;
+  }
+
+  public getNode<T extends NodeConfig>(): Node<T> {
+    if (!this.hasLocalNode) {
+      throw new UnsupportedOperationError('local node is not supported');
+    }
+
+    const sidecarEntry = this.config.sidecars.find(
+      (s) => s.role === BlockchainSidecarRole.Node,
+    );
+
+    if (!sidecarEntry) {
+      throw new ImproperlyConfiguredError('unable to find node sidecar');
+    }
+
+    return sidecarEntry.sidecar as Node<T>;
   }
 
   private updateState(newState: BlockchainState, eventData?: any): void {

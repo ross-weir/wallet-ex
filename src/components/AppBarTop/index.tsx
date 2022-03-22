@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Dropdown, Icon, Menu, Segment } from 'semantic-ui-react';
 import { useSensitiveMode } from '../../hooks';
@@ -14,6 +15,7 @@ export interface AppBarTopProps {
 }
 
 function AppBarTop({ attached, onLogout }: AppBarTopProps) {
+  const { t } = useTranslation('common');
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const { network, operatingMode } = getSettings();
   const navigate = useNavigate();
@@ -30,7 +32,7 @@ function AppBarTop({ attached, onLogout }: AppBarTopProps) {
     <>
       <Segment inverted attached={attached}>
         <Menu inverted secondary>
-          <Menu.Item header>Wallet X</Menu.Item>
+          <Menu.Item header>{t('productName')}</Menu.Item>
           <Menu.Menu position="right">
             <Menu.Item>{network}</Menu.Item>
             <Menu.Item>{operatingMode} mode</Menu.Item>

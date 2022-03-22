@@ -13,6 +13,7 @@ export const initCfg = {
     'walletsList',
     'modeSelection',
     'initializing',
+    'node',
   ],
   defaultNS: 'common',
   fallbackLng: 'en',

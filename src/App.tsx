@@ -12,6 +12,7 @@ import {
   Initializing,
   ModeSelection,
   FirstUse,
+  Root,
 } from './routes';
 import { Test } from './routes/Test';
 
@@ -32,22 +33,24 @@ function App() {
         <React.StrictMode>
           <Suspense fallback="loading">
             <Routes>
-              <Route path="/" element={<Navigate to="/modeSelect" />} />
+              <Route path="/" element={<Root />}>
+                <Route index element={<Navigate to="/modeSelect" />} />
 
-              <Route path="/initializing" element={<Initializing />} />
-              <Route path="/firstUse" element={<FirstUse />} />
-              <Route path="/modeSelect" element={<ModeSelection />} />
+                <Route path="modeSelect" element={<ModeSelection />} />
+                <Route path="initializing" element={<Initializing />} />
+                <Route path="firstUse" element={<FirstUse />} />
 
-              <Route path="/wallets" element={<WalletsList />} />
-              <Route path="/wallets/add" element={<AddWallet />}>
-                <Route index element={<InitWalletView />} />
-                <Route path=":action" element={<WalletActionForm />} />
+                <Route path="wallets" element={<WalletsList />} />
+                <Route path="wallets/add" element={<AddWallet />}>
+                  <Route index element={<InitWalletView />} />
+                  <Route path=":action" element={<WalletActionForm />} />
+                </Route>
+                <Route path="wallets/:walletId" element={<WalletView />} />
+
+                <Route path="test" element={<Test />} />
+
+                <Route path="*" element={<p>How did you get hur?</p>} />
               </Route>
-              <Route path="/wallets/:walletId" element={<WalletView />} />
-
-              <Route path="/test" element={<Test />} />
-
-              <Route path="*" element={<p>How did you get hur?</p>} />
             </Routes>
           </Suspense>
         </React.StrictMode>

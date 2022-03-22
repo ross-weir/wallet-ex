@@ -14,7 +14,6 @@ import {
   Grid,
   Icon,
 } from 'semantic-ui-react';
-import AppBarTop from '../components/AppBarTop';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
 import { Wallet, WalletService } from '../entities';
 import { capitalize } from '../utils/formatting';
@@ -37,7 +36,6 @@ function WalletsList() {
 
   return (
     <>
-      <AppBarTop />
       <Container text style={{ marginTop: 30 }}>
         <Grid columns={2}>
           <Grid.Column verticalAlign="middle">

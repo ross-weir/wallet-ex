@@ -7,13 +7,16 @@ import {
   SidecarEntry,
   SupportedBlockchain,
 } from '../types';
-import { ergoNodeFactory } from './ergoNode';
+import { ergoNodeFactory, getErgoNodeStatus } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
 import { ErgoExplorerClient } from './ergoExplorerClient';
 import { DependencyManager } from '../../services';
 import { getExecutableExt, getNodeFilename } from '../../utils/fs';
 import { getOsString } from '../../utils/os';
+import { i18n } from '../../i18n';
 import path from 'path';
+
+const t = i18n.t;
 
 interface ErgoLocalDependencies {
   node: Sidecar;
@@ -68,15 +71,39 @@ let counter = 0;
 const getStatus = async (b: Blockchain): Promise<BlockchainStatus> => {
   // create a node api client
   // create a rosetta api client
+  const { headersHeight, fullHeight } = await getErgoNodeStatus(b.getNode());
+  const status: BlockchainStatus = {
+    isSynced: false,
+    height: 0,
+    description: t('node:starting'),
+  };
 
   // if node fullHeight is null && headerHeight is null
   // return 'node starting up'
+  if (!headersHeight && !fullHeight) {
+    return status;
+  }
 
   // if node fullHeight is null && headerHeight has value
   // return 'node syncing headers'
+  if (!fullHeight && headersHeight) {
+    return {
+      ...status,
+      height: headersHeight,
+      description: t('node:syncHeaders'),
+    };
+  }
 
+  // If we're here then fullHeight & headersHeight must have values
   // if node fullHeight has value < headerHeight
   // return 'node syncing blocks'
+  if (fullHeight! < headersHeight!) {
+    return {
+      ...status,
+      height: fullHeight!,
+      description: t('node:syncBlocks'),
+    };
+  }
 
   // if rosetta has height within 5 blocks of node
   // return 'all synced'
