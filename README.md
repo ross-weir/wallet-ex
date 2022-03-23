@@ -21,14 +21,3 @@ Run the app like so:
 ```
 ./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json
 ```
-
-## Design decisions
-
-- Do as much on the frontend as possible to achieve the highest level of portability. Tauri is built around WebView so hopefully it might not be too hard to port to other devices that use WebView (like mobile).
-
-
-
-## Make accounts
-Make accounts the way of using different blockchains/coins, users probably won't have a need for more accounts
-within a single blockchain and it will simplify the multiple blockchain setup. We get a blockchain client
-per account, etc
