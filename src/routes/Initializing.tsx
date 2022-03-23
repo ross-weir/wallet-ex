@@ -61,7 +61,7 @@ export function Initializing() {
       }
 
       try {
-        const { description, height } = await blockchain.getStatus();
+        const { description, height } = await blockchain.getSyncStatus();
 
         setState(description);
         setHeight(height);

@@ -3,7 +3,7 @@ import { DependencyManager } from '../services';
 import {
   BlockchainCapabilities,
   SidecarEntry,
-  BlockchainStatus,
+  BlockchainSyncStatus,
   BlockchainState,
   BlockchainSidecarRole,
 } from './types';
@@ -28,7 +28,7 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   capabilities: BlockchainCapabilities;
   statusInterval?: number;
   // Only used for local infrastructure, this is basically the status of the blockchain syncing
-  getSyncStatus?: (b: Blockchain) => Promise<BlockchainStatus>;
+  getSyncStatus?: (b: Blockchain) => Promise<BlockchainSyncStatus>;
 }
 
 // Events: 'stateChanged'
@@ -64,7 +64,7 @@ export class Blockchain extends EventEmitter {
     }
   }
 
-  public async getSyncStatus(): Promise<BlockchainStatus> {
+  public async getSyncStatus(): Promise<BlockchainSyncStatus> {
     if (!this.hasLocalNode) {
       throw new UnsupportedOperationError(
         `getStatus is not supported for ${this.config.name}, no local node`,
