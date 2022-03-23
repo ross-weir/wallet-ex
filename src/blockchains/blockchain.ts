@@ -28,7 +28,7 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   capabilities: BlockchainCapabilities;
   statusInterval?: number;
   // Only used for local infrastructure, this is basically the status of the blockchain syncing
-  getStatus?: (b: Blockchain) => Promise<BlockchainStatus>;
+  getSyncStatus?: (b: Blockchain) => Promise<BlockchainStatus>;
 }
 
 // Events: 'stateChanged'
@@ -64,22 +64,22 @@ export class Blockchain extends EventEmitter {
     }
   }
 
-  public async getStatus(): Promise<BlockchainStatus> {
+  public async getSyncStatus(): Promise<BlockchainStatus> {
     if (!this.hasLocalNode) {
       throw new UnsupportedOperationError(
         `getStatus is not supported for ${this.config.name}, no local node`,
       );
     }
 
-    const { getStatus } = this.config;
+    const { getSyncStatus } = this.config;
 
-    if (!getStatus) {
+    if (!getSyncStatus) {
       throw new ImproperlyConfiguredError(
         `getStatus function not provided for blockchain: ${this.config.name}`,
       );
     }
 
-    return getStatus(this);
+    return getSyncStatus(this);
   }
 
   public get client(): BlockchainClient {

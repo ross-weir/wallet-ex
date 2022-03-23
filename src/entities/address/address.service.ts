@@ -3,7 +3,7 @@ import { Address } from './address.entity';
 import { Inject, Service } from 'typedi';
 import { BackendServiceToken, BlockchainClientToken } from '../../ioc';
 import { BackendService } from '../../services';
-import { BlockchainClient } from '../../blockchains';
+import type { BlockchainClient } from '../../blockchains';
 
 @Service()
 export class AddressService {
@@ -13,9 +13,13 @@ export class AddressService {
   ) {}
 
   public async create(dto: CreateAddressDto): Promise<Address> {
-    return this.chain
-      .balanceForAddress(dto.address)
-      .then((balance) => this.backend.createAddress({ ...dto, balance }))
+    const balanceResponse = await this.chain.accountBalance({
+      accountIdentifier: { address: dto.address },
+    });
+    const balance = Number(balanceResponse.balances[0].value);
+
+    return this.backend
+      .createAddress({ ...dto, balance })
       .then(Address.fromJson);
   }
 
