@@ -6,20 +6,30 @@ import { getBlockchain } from '../blockchains';
 import { SupportedBlockchain } from '../blockchains/types';
 import { useEffect } from 'react';
 import Container from 'typedi';
+import * as api from '@wallet-ex/rosetta-api-client';
 
 export function Test() {
   useEffect(() => {
     const run = async () => {
       const backend = Container.get(BackendServiceToken);
 
-      const bcCfg = {
-        network: 'testnet',
-        useLocalNode: true,
-      };
-      const bc = await getBlockchain(SupportedBlockchain.Ergo, bcCfg);
-      bc.on('stateChanged', (state) => console.log(state));
-      bc.on('log', console.log);
-      bc.initialize().catch(console.log);
+      const serverConf = new api.ServerConfiguration(
+        'http://localhost:8080',
+        {},
+      );
+      const conf = api.createConfiguration({ baseServer: serverConf });
+      const networkApi = new api.NetworkApi(conf);
+
+      try {
+        const res = await networkApi.networkStatus({
+          networkIdentifier: {
+            blockchain: 'Ergo',
+            network: 'mainnet',
+          },
+        });
+
+        console.log(res);
+      } catch {}
 
       // const cfg = { baseDir: `${appDir}ergo`, network: 'testnet' };
       // const node = await ergoNodeFactory(cfg);
