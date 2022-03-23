@@ -22,7 +22,7 @@ export interface SidecarEntry {
 }
 
 // When running full node/local infra.
-export interface BlockchainStatus {
+export interface BlockchainSyncStatus {
   isSynced: boolean;
   height: number;
   // Human readable description of the blockchain status.

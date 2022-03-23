@@ -34,7 +34,7 @@ function App() {
           <Suspense fallback="loading">
             <Routes>
               <Route path="/" element={<Root />}>
-                <Route index element={<Navigate to="/test" />} />
+                <Route index element={<Navigate to="/modeSelect" />} />
 
                 <Route path="modeSelect" element={<ModeSelection />} />
                 <Route path="initializing" element={<Initializing />} />

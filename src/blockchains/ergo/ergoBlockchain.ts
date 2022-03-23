@@ -3,7 +3,7 @@ import { Blockchain, BlockchainFactoryConfig } from '../blockchain';
 import {
   BlockchainCapabilities,
   BlockchainSidecarRole,
-  BlockchainStatus,
+  BlockchainSyncStatus,
   SidecarEntry,
   SupportedBlockchain,
 } from '../types';
@@ -15,12 +15,14 @@ import { getExecutableExt, getNodeFilename } from '../../utils/fs';
 import { getOsString } from '../../utils/os';
 import { i18n } from '../../i18n';
 import path from 'path';
+import { BlockchainClient, RosettaBlockchainClient } from '../blockchainClient';
 
 const t = i18n.t;
 
 interface ErgoLocalDependencies {
   node: Sidecar;
   rosettaApi: Sidecar;
+  client: BlockchainClient;
 }
 
 const setupLocalDependencies = async (
@@ -32,8 +34,13 @@ const setupLocalDependencies = async (
     nodePort: node.config.rpcPort,
     nodeToken: node.config.rpcToken,
   });
+  const client = new RosettaBlockchainClient(
+    `http://127.0.0.1:${rosettaApi.config.port}`,
+    'Ergo',
+    cfg.network,
+  );
 
-  return { node, rosettaApi };
+  return { node, rosettaApi, client };
 };
 
 const getDependencyManager = ({
@@ -66,13 +73,11 @@ const capabilities: BlockchainCapabilities = {
   staking: false,
 };
 
-let counter = 0;
-
-const getStatus = async (b: Blockchain): Promise<BlockchainStatus> => {
+const getSyncStatus = async (b: Blockchain): Promise<BlockchainSyncStatus> => {
   // create a node api client
   // create a rosetta api client
   const { headersHeight, fullHeight } = await getErgoNodeStatus(b.getNode());
-  const status: BlockchainStatus = {
+  const status: BlockchainSyncStatus = {
     isSynced: false,
     height: 0,
     description: t('node:starting'),
@@ -105,16 +110,21 @@ const getStatus = async (b: Blockchain): Promise<BlockchainStatus> => {
     };
   }
 
-  // if rosetta has height within 5 blocks of node
-  // return 'all synced'
-  // else
-  // return 'indexer syncing'
+  const networkStatus = await b.client.networkStatus();
+  const indexerHeight = networkStatus.currentBlockIdentifier.index;
 
-  counter += 100;
+  if (fullHeight! - indexerHeight > 2) {
+    return {
+      isSynced: false,
+      height: indexerHeight,
+      description: t('node:indexingBlocks'),
+    };
+  }
+
   return {
-    isSynced: false,
-    height: 400,
-    description: `New height ${counter}`,
+    isSynced: true,
+    height: indexerHeight,
+    description: t('node:synced'),
   };
 };
 
@@ -123,18 +133,21 @@ export const ergoBlockchainFactory = async (
 ): Promise<Blockchain> => {
   const { baseDir, useLocalNode, network } = cfg;
   const sidecars: SidecarEntry[] = [];
-  let client = new ErgoExplorerClient(0);
+  let client: BlockchainClient = new ErgoExplorerClient(network);
 
   if (useLocalNode) {
-    const { node, rosettaApi } = await setupLocalDependencies(cfg);
+    const {
+      node,
+      rosettaApi,
+      client: rosettaClient,
+    } = await setupLocalDependencies(cfg);
 
     sidecars.push(
       { role: BlockchainSidecarRole.Node, sidecar: node },
       { role: BlockchainSidecarRole.RosettaApi, sidecar: rosettaApi },
     );
 
-    // TODO configure client from rosettaApi
-    // client = RosettaApiClient.FromSidecar(rosettaApi);
+    client = rosettaClient;
   }
 
   return new Blockchain({
@@ -144,7 +157,7 @@ export const ergoBlockchainFactory = async (
     useLocalNode,
     client,
     capabilities,
-    getStatus,
+    getSyncStatus,
     dependencyManager: getDependencyManager(cfg),
     name: SupportedBlockchain.Ergo,
   });

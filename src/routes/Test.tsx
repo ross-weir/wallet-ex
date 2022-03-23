@@ -20,6 +20,8 @@ export function Test() {
       const conf = api.createConfiguration({ baseServer: serverConf });
       const networkApi = new api.NetworkApi(conf);
 
+      // const coins = await accountsApi.accountBalance()
+
       try {
         const res = await networkApi.networkStatus({
           networkIdentifier: {
