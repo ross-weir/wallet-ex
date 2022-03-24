@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Menu, Popup, Segment } from 'semantic-ui-react';
-import { useAuthenticatedWallet, useSensitiveMode } from '../../hooks';
+import { useAuthenticatedWallet, useSensitiveMode } from '@/hooks';
 
 export interface AppBarTopProps {
   attached?: boolean | 'top' | 'bottom' | undefined;

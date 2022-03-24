@@ -1,5 +1,5 @@
 import Container from 'typedi';
-import { BackendServiceToken } from '../ioc';
+import { BackendServiceToken } from '@/ioc';
 
 export type Digest = string;
 

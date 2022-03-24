@@ -2,10 +2,10 @@ import { Blockchain, BlockchainFactoryConfig } from './blockchain';
 import { ergoBlockchainFactory } from './ergo';
 import { SupportedBlockchain } from './types';
 import path from 'path';
-import { BackendServiceToken } from '../ioc';
+import { BackendServiceToken } from '@/ioc';
 import Container from 'typedi';
-import { getAppConfig } from '../storage';
-import { UninitializedError } from '../errors';
+import { getAppConfig } from '@/storage';
+import { UninitializedError } from '@/errors';
 
 type BlockchainFactoryFn = (
   cfg: BlockchainFactoryConfig,

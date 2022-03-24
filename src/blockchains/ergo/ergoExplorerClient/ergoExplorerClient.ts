@@ -1,5 +1,5 @@
-import { BlockchainClient, OmitNetwork } from '../../blockchainClient';
-import { JSONBI } from '../../../json';
+import { BlockchainClient, OmitNetwork } from '@/blockchains/blockchainClient';
+import { JSONBI } from '@/json';
 import {
   NetworkRequest,
   NetworkStatusResponse,
@@ -11,7 +11,7 @@ import {
   BlockIdentifier,
 } from '@wallet-ex/rosetta-api-client';
 import { ExplorerBalanceConfirmedResponse } from './types';
-import { ERG_DECIMAL_PLACES } from '../../../ergo';
+import { ERG_DECIMAL_PLACES } from '@/ergo';
 
 // Ergo explorer implementation of Blockchain client,
 // this is required to support light clients.

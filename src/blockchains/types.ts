@@ -1,4 +1,4 @@
-import { Sidecar } from '../sidecars';
+import { Sidecar } from '@/sidecars';
 
 export enum SupportedBlockchain {
   Ergo = 'Ergo',

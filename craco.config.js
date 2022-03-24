@@ -1,5 +1,6 @@
 const { addBeforeLoader, loaderByName } = require('@craco/craco');
 const webpack = require('webpack');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const tauriConfig = require('./src-tauri/tauri.conf.json');
 
 module.exports = {
@@ -30,6 +31,8 @@ module.exports = {
       webpackConfig.plugins.push(
         new webpack.ContextReplacementPlugin(/ergo-lib-wasm-browser/),
       );
+
+      webpackConfig.resolve.plugins.push(new TsconfigPathsPlugin());
 
       // avoid using tauris async api by baking in the bundle
       webpackConfig.plugins.push(
