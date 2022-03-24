@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { Dropdown, Icon, Menu, Popup, Segment } from 'semantic-ui-react';
+import { Menu, Popup, Segment } from 'semantic-ui-react';
 import { useAuthenticatedWallet, useSensitiveMode } from '../../hooks';
 
 // placeholder
