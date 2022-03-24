@@ -61,12 +61,15 @@ export function Initializing() {
       }
 
       try {
-        const { description, height } = await blockchain.getSyncStatus();
+        const { description, height, isSynced } =
+          await blockchain.getSyncStatus();
+
+        if (isSynced) {
+          navigate('/wallets');
+        }
 
         setState(description);
         setHeight(height);
-
-        // if synced, navigate to wallet
       } catch (e) {}
     }, 3000);
 

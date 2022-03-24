@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { Dropdown, Icon, Menu, Segment } from 'semantic-ui-react';
-import { useSensitiveMode } from '../../hooks';
+import { Menu, Popup, Segment } from 'semantic-ui-react';
+import { useAuthenticatedWallet, useSensitiveMode } from '../../hooks';
 
 // placeholder
 const getSettings = () => ({
@@ -11,18 +11,25 @@ const getSettings = () => ({
 
 export interface AppBarTopProps {
   attached?: boolean | 'top' | 'bottom' | undefined;
-  onLogout?: () => void;
 }
 
-function AppBarTop({ attached, onLogout }: AppBarTopProps) {
+function AppBarTop({ attached }: AppBarTopProps) {
   const { t } = useTranslation('common');
+  const { wallet, setAuthenticatedWallet } = useAuthenticatedWallet();
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const { network, operatingMode } = getSettings();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
+    if (wallet) {
+      const usr = {
+        ...window.history.state.usr,
+        seed: undefined,
+      };
+
+      window.history.replaceState({ ...window.history.state, usr }, '');
+      wallet.zeroSeed();
+      setAuthenticatedWallet(undefined);
     }
 
     navigate('/wallets');
@@ -40,19 +47,12 @@ function AppBarTop({ attached, onLogout }: AppBarTopProps) {
               icon={sensitiveModeEnabled ? 'eye slash' : 'eye'}
               onClick={() => setSensitiveMode(!sensitiveModeEnabled)}
             />
-            <Dropdown item icon="user">
-              <Dropdown.Menu>
-                <Dropdown.Item>
-                  <Icon name="wrench" />
-                  <span className="text">Settings</span>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={handleLogout}>
-                  <Icon name="sign-out" />
-                  <span className="text">Sign out of wallet</span>
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <Menu.Item icon="cog" />
+            <Popup
+              trigger={<Menu.Item icon="log out" onClick={handleLogout} />}
+              size="small"
+              content="Logout of wallet"
+            />
           </Menu.Menu>
         </Menu>
       </Segment>
