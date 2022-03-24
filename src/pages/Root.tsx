@@ -1,14 +1,20 @@
 import { Outlet } from 'react-router-dom';
 import AppBarTop from '@/components/AppBarTop';
-import { AuthenticatedWalletProvider, SensitiveModeProvider } from '@/hooks';
+import {
+  AuthenticatedWalletProvider,
+  SensitiveModeProvider,
+  WalletExProvider,
+} from '@/hooks';
 
 export function Root() {
   return (
     <SensitiveModeProvider>
-      <AuthenticatedWalletProvider>
-        <AppBarTop />
-        <Outlet />
-      </AuthenticatedWalletProvider>
+      <WalletExProvider>
+        <AuthenticatedWalletProvider>
+          <AppBarTop />
+          <Outlet />
+        </AuthenticatedWalletProvider>
+      </WalletExProvider>
     </SensitiveModeProvider>
   );
 }
