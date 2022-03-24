@@ -1,4 +1,4 @@
-import { fs, invoke, os,path } from '@tauri-apps/api';
+import { fs, invoke, os, path } from '@tauri-apps/api';
 import localforage from 'localforage';
 
 import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
@@ -77,6 +77,7 @@ export class TauriBackend extends BackendService {
     return invoke('accounts_for_wallet', { walletId });
   }
 
+  // done wallet ones
   listWallets(): BackendOpResult<any[]> {
     return invoke('list_wallets');
   }
