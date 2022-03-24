@@ -1,7 +1,6 @@
 use super::wallet::Wallet;
 use crate::schema::accounts;
 use anyhow::Result;
-use chrono::NaiveDateTime;
 use diesel::{dsl::sql, insert_into, prelude::*, result::Error, SqliteConnection};
 use serde::{Deserialize, Serialize};
 
@@ -18,7 +17,6 @@ pub struct Account {
   // TODO: should this be a string so we can represent hardended vs soft indices?
   // In EIP3 this is always hardened but we want to be flexible.
   derive_idx: i32,
-  created_at: Option<NaiveDateTime>,
   wallet_id: i32,
 }
 

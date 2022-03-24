@@ -3,6 +3,10 @@ import * as api from '@wallet-ex/rosetta-api-client';
 import { useEffect } from 'react';
 import Container from 'typedi';
 
+import { IWalletExDatabase } from '@/storage/db';
+import { dxDb } from '@/storage/db/dexie';
+import { TauriDatabase } from '@/storage/db/tauri';
+
 import { getBlockchain } from '../blockchains';
 import { SupportedBlockchain } from '../blockchains/types';
 import { BackendServiceToken } from '../ioc';
@@ -13,26 +17,23 @@ export function Test() {
   useEffect(() => {
     const run = async () => {
       const backend = Container.get(BackendServiceToken);
-
-      const serverConf = new api.ServerConfiguration(
-        'http://localhost:8080',
-        {},
-      );
-      const conf = api.createConfiguration({ baseServer: serverConf });
-      const networkApi = new api.NetworkApi(conf);
-
-      // const coins = await accountsApi.accountBalance()
+      const db: IWalletExDatabase = new TauriDatabase();
 
       try {
-        const res = await networkApi.networkStatus({
-          networkIdentifier: {
-            blockchain: 'Ergo',
-            network: 'mainnet',
-          },
+        const wallet = await db.wallets.add({
+          name: 'test',
+          interface: 'local',
+          password: 'testing123',
         });
+        console.log(wallet);
+        const wallet3 = await db.wallets.get(wallet);
+        console.log(wallet3);
 
-        console.log(res);
-      } catch {}
+        const listWallets = await db.wallets.toArray();
+        console.log(listWallets);
+      } catch (e) {
+        console.log(e);
+      }
 
       // const cfg = { baseDir: `${appDir}ergo`, network: 'testnet' };
       // const node = await ergoNodeFactory(cfg);

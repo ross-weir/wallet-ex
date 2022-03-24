@@ -4,7 +4,6 @@ table! {
         name -> Text,
         coin_type -> Integer,
         derive_idx -> Integer,
-        created_at -> Nullable<Timestamp>,
         wallet_id -> Integer,
     }
 }
@@ -25,8 +24,6 @@ table! {
         name -> Text,
         password -> Text,
         interface -> Text,
-        hd_standard -> Text,
-        created_at -> Nullable<Timestamp>,
     }
 }
 

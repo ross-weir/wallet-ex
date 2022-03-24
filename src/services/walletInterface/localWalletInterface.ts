@@ -15,7 +15,7 @@ export class LocalWalletInterface implements WalletInterface {
   private readonly hdStandard: HdStandard;
 
   constructor(wallet: Wallet) {
-    this.hdStandard = getHdStandardForWallet(wallet);
+    this.hdStandard = getHdStandardForWallet();
     this.ergo = getErgo();
   }
 

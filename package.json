@@ -19,6 +19,8 @@
     "bcryptjs": "^2.4.3",
     "bip39": "^3.0.4",
     "class-transformer": "^0.5.1",
+    "dexie": "^3.2.1",
+    "dexie-react-hooks": "^1.1.1",
     "ergo-lib-wasm-browser": "0.15.0-alpha-3392017",
     "ergo-lib-wasm-nodejs": "0.15.0-alpha-fdf4ef3",
     "formik": "^2.2.9",

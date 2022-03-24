@@ -1,6 +1,6 @@
-import { ComponentMeta,ComponentStory } from '@storybook/react';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import { Wallet } from '../../entities';
+import { IWallet, Wallet } from '../../entities';
 import WalletDetailCard from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -21,10 +21,8 @@ const Template: ComponentStory<typeof WalletDetailCard> = (args) => (
 export const WalletDetailCardStory = Template.bind({});
 
 const mockWallet = {
-  createdAt: '2021-12-06T03:04:43',
   id: 2,
   interface: 'local',
-  hdStandard: 'eip3',
   name: 'Ergo Wallet',
 };
 

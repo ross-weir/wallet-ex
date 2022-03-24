@@ -1,0 +1,1 @@
+export { dxDb } from './dexieDatabase';

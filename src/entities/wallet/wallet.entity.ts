@@ -1,14 +1,20 @@
 import { plainToClass } from 'class-transformer';
 
-import { getInterfaceForWallet } from '../../services';
-import { toBase16 } from '../../utils/fmt';
-import { BaseEntity } from '../baseEntity';
+import { BaseEntity } from '@/entities/baseEntity';
+import { getInterfaceForWallet } from '@/services';
+import { toBase16 } from '@/utils/fmt';
 
-export class Wallet extends BaseEntity {
+export interface IWallet {
+  id?: number;
+  name: string;
+  password: string;
+  interface: 'local' | 'ledger';
+}
+
+export class Wallet extends BaseEntity implements IWallet {
   name!: string;
+  password!: string;
   interface!: 'local' | 'ledger';
-  hdStandard!: 'eip3';
-  createdAt!: string;
 
   private seed?: Uint8Array;
 
@@ -58,7 +64,7 @@ export class Wallet extends BaseEntity {
   }
 
   private async seedStorageKey(): Promise<string> {
-    const key = new TextEncoder().encode(`${this.id}-${this.createdAt}`);
+    const key = new TextEncoder().encode(`${this.id}-${this.name}`);
     const hashedKey = await crypto.subtle.digest('SHA-256', key);
 
     return toBase16(new Uint8Array(hashedKey));

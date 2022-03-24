@@ -2,7 +2,15 @@ import { plainToClass } from 'class-transformer';
 
 import { BaseEntity } from '../baseEntity';
 
-export class Address extends BaseEntity {
+export interface IAddress {
+  id?: number;
+  address: string;
+  deriveIdx: number;
+  accountId: number;
+  balance: number;
+}
+
+export class Address extends BaseEntity implements IAddress {
   address!: string;
   deriveIdx!: number;
   accountId!: number;

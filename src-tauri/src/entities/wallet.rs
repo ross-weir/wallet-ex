@@ -1,6 +1,5 @@
 use crate::schema::wallets;
 use anyhow::Result;
-use chrono::NaiveDateTime;
 use diesel::{dsl::sql, insert_into, prelude::*, result::Error, SqliteConnection};
 use serde::{Deserialize, Serialize};
 
@@ -13,11 +12,6 @@ pub struct Wallet {
   #[serde(skip_serializing)]
   password: String,
   interface: String,
-  // Describes the standard to use for HD wallets
-  // For example: https://github.com/ergoplatform/eips/blob/master/eip-0003.md
-  // todo, remove this, we want to use multiple standards for a wallet (eg "regular" derviation + things like stealth addrs, etc)
-  hd_standard: String,
-  created_at: Option<NaiveDateTime>,
 }
 
 #[derive(Deserialize, Insertable)]
@@ -27,7 +21,6 @@ pub struct CreateWalletArgs<'a> {
   name: &'a str,
   password: &'a str,
   interface: &'a str,
-  hd_standard: &'a str,
 }
 
 impl Wallet {

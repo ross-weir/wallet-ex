@@ -4,7 +4,6 @@ CREATE TABLE accounts (
     name TEXT NOT NULL,
     coin_type INTEGER NOT NULL,
     derive_idx INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     wallet_id INTEGER NOT NULL,
     FOREIGN KEY (wallet_id)
     REFERENCES wallets (id)
