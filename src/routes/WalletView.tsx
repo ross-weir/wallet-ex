@@ -15,7 +15,6 @@ import {
   Menu,
   Tab,
 } from 'semantic-ui-react';
-import AppBarTop from '../components/AppBarTop';
 import CreateAccountModal from '../components/CreateAccountModal';
 import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
@@ -43,17 +42,6 @@ function WalletView() {
   const { state } = useLocation();
   const walletService = IocContainer.get(WalletService);
   const accountService = IocContainer.get(AccountService);
-
-  const onLogoutWallet = () => {
-    // Remove the seed from browser history state so users can't
-    // navigate backwards and preserve access to wallet seed
-    const usr = {
-      ...window.history.state.usr,
-      seed: undefined,
-    };
-    window.history.replaceState({ ...window.history.state, usr }, '');
-    wallet?.zeroSeed();
-  };
 
   // TODO: loading indicator/state
   // TODO: we probably actually need to fetch a list of accounts
@@ -128,8 +116,6 @@ function WalletView() {
 
   return (
     <>
-      {/* TODO: move this elsewhere, leaving here so the double appbar is a reminder */}
-      <AppBarTop onLogout={onLogoutWallet} />
       <Grid stackable padded>
         <Grid.Column width={4}>
           <Card onClick={() => null} fluid>

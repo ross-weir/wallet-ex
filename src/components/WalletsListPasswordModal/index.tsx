@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Button, Form, Modal } from 'semantic-ui-react';
 import { Wallet } from '../../entities';
+import { useAuthenticatedWallet } from '../../hooks';
 import { capitalize } from '../../utils/formatting';
 
 export interface WalletsListPasswordProps {
@@ -16,6 +17,7 @@ function WalletsListPasswordModal({
   onCancel,
 }: WalletsListPasswordProps) {
   const { t } = useTranslation(['common', 'walletsList']);
+  const { setAuthenticatedWallet } = useAuthenticatedWallet();
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +36,7 @@ function WalletsListPasswordModal({
         }
 
         const seed = await wallet.retrieveSeed(password);
+        setAuthenticatedWallet(wallet);
 
         navigate(`/wallets/${wallet.id}`, { state: { seed } });
       })
