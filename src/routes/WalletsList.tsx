@@ -16,7 +16,7 @@ import {
 } from 'semantic-ui-react';
 import WalletsListPasswordModal from '../components/WalletsListPasswordModal';
 import { Wallet, WalletService } from '../entities';
-import { capitalize } from '../utils/formatting';
+import { capitalize } from '../utils/fmt';
 import { Container as IocContainer } from 'typedi';
 
 function WalletsList() {

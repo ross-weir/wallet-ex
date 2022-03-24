@@ -4,7 +4,7 @@ import { SupportedBlockchain } from './types';
 import path from 'path';
 import { BackendServiceToken } from '../ioc';
 import Container from 'typedi';
-import { getAppConfig } from '../appConfig';
+import { getAppConfig } from '../storage';
 import { UninitializedError } from '../errors';
 
 type BlockchainFactoryFn = (

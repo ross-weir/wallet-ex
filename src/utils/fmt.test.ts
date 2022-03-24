@@ -1,4 +1,4 @@
-import { capitalize, toBase16, fromBase16, insertDecimal } from './formatting';
+import { capitalize, toBase16, fromBase16, insertDecimal } from './fmt';
 
 export {};
 

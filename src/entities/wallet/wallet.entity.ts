@@ -1,6 +1,6 @@
 import { plainToClass } from 'class-transformer';
 import { getInterfaceForWallet } from '../../services';
-import { toBase16 } from '../../utils/formatting';
+import { toBase16 } from '../../utils/fmt';
 import { BaseEntity } from '../baseEntity';
 
 export class Wallet extends BaseEntity {

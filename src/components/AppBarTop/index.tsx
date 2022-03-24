@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router';
 import { Menu, Popup, Segment } from 'semantic-ui-react';
 import { useAuthenticatedWallet, useSensitiveMode } from '../../hooks';
 
-// placeholder
-const getSettings = () => ({
-  network: 'Testnet',
-  operatingMode: 'Light client',
-});
-
 export interface AppBarTopProps {
   attached?: boolean | 'top' | 'bottom' | undefined;
 }
@@ -17,7 +11,6 @@ function AppBarTop({ attached }: AppBarTopProps) {
   const { t } = useTranslation('common');
   const { wallet, setAuthenticatedWallet } = useAuthenticatedWallet();
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
-  const { network, operatingMode } = getSettings();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -41,8 +34,6 @@ function AppBarTop({ attached }: AppBarTopProps) {
         <Menu inverted secondary>
           <Menu.Item header>{t('productName')}</Menu.Item>
           <Menu.Menu position="right">
-            <Menu.Item>{network}</Menu.Item>
-            <Menu.Item>{operatingMode} mode</Menu.Item>
             <Menu.Item
               icon={sensitiveModeEnabled ? 'eye slash' : 'eye'}
               onClick={() => setSensitiveMode(!sensitiveModeEnabled)}
