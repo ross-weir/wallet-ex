@@ -9,7 +9,7 @@ import {
   Segment,
   Image,
 } from 'semantic-ui-react';
-import { capitalize } from '../../utils/formatting';
+import { capitalize } from '../../utils/fmt';
 import ledgerImg from '../../img/ledger.svg';
 
 function InitWalletView() {

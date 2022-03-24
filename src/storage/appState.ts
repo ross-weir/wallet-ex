@@ -1,4 +1,4 @@
-import { ObjectStorage } from './storage';
+import { ObjectStorage } from './objectStorage';
 
 export enum ApplicationState {
   // first use

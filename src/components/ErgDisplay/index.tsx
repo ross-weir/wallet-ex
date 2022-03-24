@@ -1,5 +1,5 @@
 import { ERG_DECIMAL_PLACES } from '../../ergo';
-import { insertDecimal } from '../../utils/formatting';
+import { insertDecimal } from '../../utils/fmt';
 import SensitiveComponent from '../SensitiveComponent';
 
 export interface ErgDisplayProps {

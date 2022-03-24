@@ -20,7 +20,7 @@ import SensitiveComponent from '../components/SensitiveComponent';
 import walletImg from '../components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
 import { Account, AccountService, Wallet, WalletService } from '../entities';
-import { capitalize } from '../utils/formatting';
+import { capitalize } from '../utils/fmt';
 import { Container as IocContainer } from 'typedi';
 
 function WalletView() {

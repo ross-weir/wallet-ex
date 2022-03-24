@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { Button, Form, Modal } from 'semantic-ui-react';
 import { Wallet } from '../../entities';
 import { useAuthenticatedWallet } from '../../hooks';
-import { capitalize } from '../../utils/formatting';
+import { capitalize } from '../../utils/fmt';
 
 export interface WalletsListPasswordProps {
   onCancel: () => void;

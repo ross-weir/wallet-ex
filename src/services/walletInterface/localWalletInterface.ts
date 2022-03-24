@@ -2,6 +2,7 @@ import { DeriveAddressArgs, WalletInterface } from './walletInterface';
 import { Wallet } from '../../entities';
 import { getHdStandardForWallet, HdStandard } from './hdStandard';
 import { Ergo, getErgo } from '../../ergo';
+import { getAppConfig } from '../../storage';
 
 /**
  * App-local wallet interface
@@ -25,16 +26,25 @@ export class LocalWalletInterface implements WalletInterface {
       );
     }
 
+    const conf = await getAppConfig().get();
+
+    const network = conf?.network;
+
+    if (!network) {
+      throw new Error('Failed to retrieve network');
+    }
+
+    const networkPrefix =
+      network === 'mainnet'
+        ? this.ergo.NetworkPrefix.Mainnet
+        : this.ergo.NetworkPrefix.Testnet;
+
     const rootSk = this.ergo.ExtSecretKey.derive_master(args.seedBytes);
     const hdPathStr = this.hdStandard.deriviationPath(args.hdStandardArgs);
     const path = this.ergo.DerivationPath.from_string(hdPathStr);
     const addr = rootSk.derive(path);
 
-    // TODO: base58 param is the network byte (mainnet vs testnet)
-    return addr
-      .public_key()
-      .to_address()
-      .to_base58(this.ergo.NetworkPrefix.Mainnet);
+    return addr.public_key().to_address().to_base58(networkPrefix);
   }
 
   signTx(): Promise<void> {

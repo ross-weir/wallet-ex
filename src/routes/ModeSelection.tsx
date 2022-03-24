@@ -7,17 +7,17 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import { useNavigate } from 'react-router';
-import { getAppConfig } from '../appConfig';
 import { OperatingMode } from '../types';
 import { SupportedBlockchain } from '../blockchains/types';
-import { ApplicationState, getAppState } from '../appState';
+import { ApplicationState } from '../storage';
 import { useTranslation } from 'react-i18next';
+import { useWalletEx } from '../hooks';
+import { capitalize } from '../utils/fmt';
 
 export function ModeSelection() {
-  const { t } = useTranslation('modeSelection');
+  const { t } = useTranslation(['modeSelection']);
   const navigate = useNavigate();
-  const appConfig = getAppConfig();
-  const appState = getAppState();
+  const { stateStore, configStore } = useWalletEx();
 
   // on select simple mode, go to create wallet page if first use otherwise go back to previous page
   const onSimpleSelection = () => {
@@ -26,13 +26,16 @@ export function ModeSelection() {
   };
 
   const onFullNodeSelection = async () => {
-    const cfgUpdate = appConfig.updatePartial({
+    const cfgUpdate = configStore.updatePartial({
       operatingMode: OperatingMode.FullNode,
       useLocalNode: true,
       blockchain: SupportedBlockchain.Ergo,
       network: 'testnet',
     });
-    const stateUpdate = appState.update('state', ApplicationState.Initializing);
+    const stateUpdate = stateStore.update(
+      'state',
+      ApplicationState.Initializing,
+    );
 
     await Promise.all([cfgUpdate, stateUpdate]);
 
@@ -44,7 +47,7 @@ export function ModeSelection() {
       <Container content style={{ marginTop: 30 }}>
         <Header as="h1">
           {t('title')}
-          <Header.Subheader>{t('subheader')}</Header.Subheader>
+          <Header.Subheader>{t('modeSelection:subheader')}</Header.Subheader>
         </Header>
         <Segment padded="very">
           <div
@@ -54,8 +57,10 @@ export function ModeSelection() {
             <Header as="h2" disabled>
               <Icon name="cloud" />
               <Header.Content>
-                {t('simpleMode.title')}
-                <Header.Subheader>{t('simpleMode.subheader')}</Header.Subheader>
+                {t('modeSelection:simpleMode.title')}
+                <Header.Subheader>
+                  {t('modeSelection:simpleMode.subheader')}
+                </Header.Subheader>
               </Header.Content>
             </Header>
           </div>
@@ -64,9 +69,9 @@ export function ModeSelection() {
             <Header as="h2">
               <Icon name="download" />
               <Header.Content>
-                {t('fullNodeMode.title')}
+                {t('modeSelection:fullNodeMode.title')}
                 <Header.Subheader>
-                  {t('fullNodeMode.subheader')}
+                  {t('modeSelection:fullNodeMode.subheader')}
                 </Header.Subheader>
               </Header.Content>
             </Header>
@@ -77,7 +82,7 @@ export function ModeSelection() {
           secondary
           onClick={() => navigate(-1)}
         >
-          Back
+          {capitalize(t('common:back'))}
         </Button>
       </Container>
     </>

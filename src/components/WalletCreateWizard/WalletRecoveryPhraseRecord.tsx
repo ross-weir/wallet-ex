@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Message } from 'semantic-ui-react';
-import { capitalize } from '../../utils/formatting';
+import { capitalize } from '../../utils/fmt';
 import RecoveryPhraseView from '../RecoveryPhraseView';
 import { generateMnemonic } from 'bip39';
 import { useFormikContext } from 'formik';

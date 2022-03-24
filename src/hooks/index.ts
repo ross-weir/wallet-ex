@@ -4,3 +4,4 @@ export {
   useAuthenticatedWallet,
 } from './useAuthenticatedWallet';
 export * from './useBlocker';
+export { WalletExProvider, useWalletEx } from './useWalletEx';
