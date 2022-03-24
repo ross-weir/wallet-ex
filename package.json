@@ -60,7 +60,8 @@
     "build-storybook": "build-storybook -s public",
     "schema:update": "cd src-tauri && diesel migration run --database-url schema.sqlite3 && rm schema.sqlite3",
     "db:seed": "./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json",
-    "wdio": "cross-env WALLET_X_DB_URL=./test.sqlite3 wdio run wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.e2e.json"
+    "wdio": "cross-env WALLET_X_DB_URL=./test.sqlite3 wdio run wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.e2e.json",
+    "bench": "echo testing"
   },
   "eslintConfig": {
     "extends": [
