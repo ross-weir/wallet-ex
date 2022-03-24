@@ -1,11 +1,11 @@
 import Container from 'typedi';
-import { BackendServiceToken } from '../../ioc';
+import { BackendServiceToken } from '@/ioc';
 import {
   RosettaApi,
   RosettaApiConfig,
   RosettaApiFactoryConfig,
-} from '../../sidecars/rosettaApi';
-import { EnvironmentVariables } from '../../types';
+} from '@/sidecars/rosettaApi';
+import { EnvironmentVariables } from '@/types';
 import path from 'path';
 import { SupportedBlockchain } from '../types';
 

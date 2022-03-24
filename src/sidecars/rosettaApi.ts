@@ -1,5 +1,5 @@
-import { EnvironmentVariables } from '../types';
-import { getExecutableExt } from '../utils/fs';
+import { EnvironmentVariables } from '@/types';
+import { getExecutableExt } from '@/utils/fs';
 import { Sidecar } from './sidecar';
 import path from 'path';
 

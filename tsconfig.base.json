@@ -1,0 +1,9 @@
+{
+  // https://github.com/facebook/create-react-app/issues/10178#issuecomment-860247467
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  }
+}

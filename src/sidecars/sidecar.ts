@@ -1,6 +1,6 @@
 import { Child, Command } from '@tauri-apps/api/shell';
 import EventEmitter from 'events';
-import { UninitializedError } from '../errors';
+import { UninitializedError } from '@/errors';
 
 export interface SpawnOptions {
   path: string;
