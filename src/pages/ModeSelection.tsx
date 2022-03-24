@@ -7,12 +7,12 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import { useNavigate } from 'react-router';
-import { OperatingMode } from '../types';
-import { SupportedBlockchain } from '../blockchains/types';
-import { ApplicationState } from '../storage';
+import { OperatingMode } from '@/types';
+import { SupportedBlockchain } from '@/blockchains/types';
+import { ApplicationState } from '@/storage';
 import { useTranslation } from 'react-i18next';
-import { useWalletEx } from '../hooks';
-import { capitalize } from '../utils/fmt';
+import { useWalletEx } from '@/hooks';
+import { capitalize } from '@/utils/fmt';
 
 export function ModeSelection() {
   const { t } = useTranslation(['modeSelection']);
