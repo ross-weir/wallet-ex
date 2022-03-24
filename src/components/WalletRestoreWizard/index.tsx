@@ -1,17 +1,18 @@
+import { useTranslation } from 'react-i18next';
+import { Step } from 'semantic-ui-react';
+
 import WalletDetailsForm, {
   walletDetailsInitialValues,
   walletDetailsValidationSchema,
 } from '../WalletDetailsForm';
-import WalletRecoveryPhraseForm, {
-  walletRecoveryPhraseInitialState,
-  walletRecoveryPhraseValidationSchema,
-} from './WalletRecoveryPhraseForm';
 import WalletRecoveryPassphraseForm, {
   walletRecoveryPassphraseInitialValues,
   walletRecoveryPassphraseValidationSchema,
 } from '../WalletRecoveryPassphraseForm';
-import { Step } from 'semantic-ui-react';
-import { useTranslation } from 'react-i18next';
+import WalletRecoveryPhraseForm, {
+  walletRecoveryPhraseInitialState,
+  walletRecoveryPhraseValidationSchema,
+} from './WalletRecoveryPhraseForm';
 
 interface Props {
   activeStep: number;

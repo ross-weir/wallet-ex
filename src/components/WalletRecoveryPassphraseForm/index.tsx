@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { Form, Icon, Message } from 'semantic-ui-react';
 import { useFormikContext } from 'formik';
+import { useTranslation } from 'react-i18next';
+import { Form, Icon, Message } from 'semantic-ui-react';
+import * as Yup from 'yup';
 
 export const walletRecoveryPassphraseValidationSchema = Yup.object({
   mnemonicPassphrase: Yup.string(),

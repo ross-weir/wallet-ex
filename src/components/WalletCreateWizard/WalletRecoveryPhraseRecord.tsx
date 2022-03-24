@@ -1,11 +1,12 @@
 // Generate a new recovery phrase for the user to write down
+import { generateMnemonic } from 'bip39';
+import { useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Message } from 'semantic-ui-react';
+
 import { capitalize } from '../../utils/fmt';
 import RecoveryPhraseView from '../RecoveryPhraseView';
-import { generateMnemonic } from 'bip39';
-import { useFormikContext } from 'formik';
 
 // 15 words
 // TODO: make this configurable

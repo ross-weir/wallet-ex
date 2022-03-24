@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Form, Segment } from 'semantic-ui-react';
 import { Container } from 'typedi';
+
 import { WalletService } from '../../entities';
 import { capitalize } from '../../utils/fmt';
 import WalletCreateWizard, {

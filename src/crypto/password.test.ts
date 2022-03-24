@@ -1,4 +1,4 @@
-import { hashPassword, checkPassword } from './password';
+import { checkPassword,hashPassword } from './password';
 
 export {};
 

@@ -1,4 +1,5 @@
 import { Dimmer } from 'semantic-ui-react';
+
 import { useSensitiveMode } from '../../hooks';
 
 // Blurs text for sensitive elements

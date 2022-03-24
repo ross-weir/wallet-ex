@@ -1,7 +1,7 @@
 // nested routes:
 // - send, recv, transactions inside <Outlet />
 
-import { useState, useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
 import {
@@ -15,13 +15,14 @@ import {
   Menu,
   Tab,
 } from 'semantic-ui-react';
-import CreateAccountModal from '../components/CreateAccountModal';
-import SensitiveComponent from '../components/SensitiveComponent';
-import walletImg from '../components/WalletDetailCard/wallet.svg';
-import WalletViewReceiveTab from '../components/WalletViewReceiveTab';
-import { Account, AccountService, Wallet, WalletService } from '../entities';
-import { capitalize } from '../utils/fmt';
 import { Container as IocContainer } from 'typedi';
+
+import CreateAccountModal from '@/components/CreateAccountModal';
+import SensitiveComponent from '@/components/SensitiveComponent';
+import walletImg from '@/components/WalletDetailCard/wallet.svg';
+import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
+import { Account, AccountService, Wallet, WalletService } from '@/entities';
+import { capitalize } from '@/utils/fmt';
 
 function WalletView() {
   // at this point we should be at /wallets/{id}/accounts/{accountId}

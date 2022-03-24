@@ -1,4 +1,5 @@
 import { plainToClass } from 'class-transformer';
+
 import { BaseEntity } from '../baseEntity';
 
 export class Address extends BaseEntity {

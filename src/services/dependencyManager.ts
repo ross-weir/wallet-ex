@@ -1,9 +1,10 @@
 import EventEmitter from 'events';
+import Container from 'typedi';
+
 import { digestFile } from '../crypto';
 import { DigestMismatchError, FileSystemError } from '../errors';
 import { BackendServiceToken } from '../ioc';
 import { BackendService } from './backend';
-import Container from 'typedi';
 
 export interface RemoteDependency {
   shortName: string;

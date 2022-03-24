@@ -6,11 +6,12 @@ import {
   Grid,
   Header,
   Icon,
-  Segment,
   Image,
+  Segment,
 } from 'semantic-ui-react';
-import { capitalize } from '../../utils/fmt';
+
 import ledgerImg from '../../img/ledger.svg';
+import { capitalize } from '../../utils/fmt';
 
 function InitWalletView() {
   const { t } = useTranslation(['common', 'walletCreateRestore']);

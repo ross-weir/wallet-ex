@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { Container, Header, Breadcrumb } from 'semantic-ui-react';
-import { capitalize } from '../utils/fmt';
+import { Breadcrumb,Container, Header } from 'semantic-ui-react';
+
+import { capitalize } from '@/utils/fmt';
 
 function AddWallet() {
   const navigate = useNavigate();

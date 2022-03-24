@@ -1,4 +1,6 @@
+import path from 'path';
 import Container from 'typedi';
+
 import { BackendServiceToken } from '@/ioc';
 import {
   RosettaApi,
@@ -6,7 +8,7 @@ import {
   RosettaApiFactoryConfig,
 } from '@/sidecars/rosettaApi';
 import { EnvironmentVariables } from '@/types';
-import path from 'path';
+
 import { SupportedBlockchain } from '../types';
 
 export interface ErgoRosettaApiConfig extends RosettaApiConfig {

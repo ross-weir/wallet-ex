@@ -9,6 +9,7 @@ import {
   Table,
 } from 'semantic-ui-react';
 import Container from 'typedi';
+
 import { Account, Address, AddressService, Wallet } from '../../entities';
 import CopyIcon from '../CopyIcon';
 import ErgDisplay from '../ErgDisplay';

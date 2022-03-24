@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Step } from 'semantic-ui-react';
+
 import WalletDetailsForm, {
   walletDetailsInitialValues,
   walletDetailsValidationSchema,

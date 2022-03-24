@@ -1,8 +1,10 @@
 import Container from 'typedi';
+
 import { BackendServiceToken } from '@/ioc';
 import { DataSerializer } from '@/serialization';
 import { Node, NodeConfig, NodeFactoryConfig } from '@/sidecars';
 import { EnvironmentVariables } from '@/types';
+
 import { SupportedBlockchain } from '../types';
 
 export interface ErgoNodeConfig extends NodeConfig {

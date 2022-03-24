@@ -1,5 +1,5 @@
-import { Icon, Popup } from 'semantic-ui-react';
 import QRCode from 'qrcode.react';
+import { Icon, Popup } from 'semantic-ui-react';
 
 export interface QrIconPopupProps {
   value: string;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
 import Container from 'typedi';
+
 import { Account, AccountService, Wallet } from '../../entities';
 import { capitalize } from '../../utils/fmt';
 

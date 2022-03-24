@@ -1,4 +1,5 @@
 import { plainToInstance } from 'class-transformer';
+
 import { BaseEntity } from '../baseEntity';
 
 export class Account extends BaseEntity {

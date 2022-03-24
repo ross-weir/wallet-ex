@@ -1,8 +1,9 @@
-import { BackendService } from '../services';
+import { Container,Token } from 'typedi';
+
 import { BlockchainClient } from '../blockchains';
 import { ErgoExplorerClient } from '../blockchains/ergo/ergoExplorerClient/ergoExplorerClient'; // todo
+import { BackendService } from '../services';
 import { TauriBackend } from '../services/backend/tauriBackend';
-import { Token, Container } from 'typedi';
 
 export const BackendServiceToken = new Token<BackendService>('BackendService');
 export const BlockchainClientToken = new Token<BlockchainClient>(

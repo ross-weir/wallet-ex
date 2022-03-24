@@ -1,11 +1,13 @@
-import { Container } from 'typedi';
-import { BackendService } from '@/services';
-import { BackendServiceToken } from '@/ioc';
-import { Sidecar } from './sidecar';
-import { DataSerializer } from '@/serialization';
 import path from 'path';
-import { getNodeFilename } from '@/utils/fs';
+import { Container } from 'typedi';
+
+import { BackendServiceToken } from '@/ioc';
+import { DataSerializer } from '@/serialization';
+import { BackendService } from '@/services';
 import { EnvironmentVariables } from '@/types';
+import { getNodeFilename } from '@/utils/fs';
+
+import { Sidecar } from './sidecar';
 
 // The minimum args required for node factory functions
 // Other config parameters can often be calculated/determined in the factory function.
