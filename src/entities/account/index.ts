@@ -1,3 +1,3 @@
-export * from './dto';
-export { AccountService } from './account.service';
 export { Account } from './account.entity';
+export { AccountService } from './account.service';
+export * from './dto';

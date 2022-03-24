@@ -4,15 +4,16 @@ import {
   Route,
   Routes as ReactRoutes,
 } from 'react-router-dom';
+
 import InitWalletView from './components/InitWalletView';
 import WalletActionForm from './components/InitWalletView/WalletActionForm';
 import {
-  Root,
-  ModeSelection,
-  Initializing,
-  FirstUse,
-  WalletsList,
   AddWallet,
+  FirstUse,
+  Initializing,
+  ModeSelection,
+  Root,
+  WalletsList,
   WalletView,
 } from './pages';
 import { Test } from './pages/Test';

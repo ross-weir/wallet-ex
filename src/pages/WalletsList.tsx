@@ -2,22 +2,23 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import {
+  Button,
   Card,
   Container,
   Dimmer,
-  Header,
-  Loader,
-  Segment,
-  Image,
-  Button,
   Divider,
   Grid,
+  Header,
   Icon,
+  Image,
+  Loader,
+  Segment,
 } from 'semantic-ui-react';
+import { Container as IocContainer } from 'typedi';
+
 import WalletsListPasswordModal from '@/components/WalletsListPasswordModal';
 import { Wallet, WalletService } from '@/entities';
 import { capitalize } from '@/utils/fmt';
-import { Container as IocContainer } from 'typedi';
 
 function WalletsList() {
   const { t } = useTranslation(['walletsList', 'common']);

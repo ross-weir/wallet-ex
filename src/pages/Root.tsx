@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+
 import AppBarTop from '@/components/AppBarTop';
 import {
   AuthenticatedWalletProvider,

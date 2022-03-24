@@ -1,9 +1,10 @@
+import { useFormikContext } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import RecoveryPhraseView from '../RecoveryPhraseView';
-import { Grid, Form } from 'semantic-ui-react';
+import { Form,Grid } from 'semantic-ui-react';
 import * as Yup from 'yup';
-import { useFormikContext } from 'formik';
+
+import RecoveryPhraseView from '../RecoveryPhraseView';
 
 export interface WalletRecoveryPhraseInput {
   phrase: string[];

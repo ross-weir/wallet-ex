@@ -1,6 +1,6 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { Wallet } from '../../entities';
+import { ComponentMeta,ComponentStory } from '@storybook/react';
 
+import { Wallet } from '../../entities';
 import WalletDetailCard from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

@@ -1,6 +1,7 @@
 import { Container } from 'typedi';
-import { BackendService } from '../services';
+
 import { BackendServiceToken } from '../ioc';
+import { BackendService } from '../services';
 
 export abstract class BaseEntity {
   id!: number;

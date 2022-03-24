@@ -1,4 +1,16 @@
+import path from 'path';
+
+import {
+  Blockchain,
+  BlockchainClient,
+  RosettaBlockchainClient,
+} from '@/blockchains';
+import { i18n } from '@/i18n';
+import { DependencyManager } from '@/services';
 import { Sidecar } from '@/sidecars';
+import { getExecutableExt, getNodeFilename } from '@/utils/fs';
+import { getOsString } from '@/utils/os';
+
 import { BlockchainFactoryConfig } from '../blockchain';
 import {
   BlockchainCapabilities,
@@ -7,19 +19,9 @@ import {
   SidecarEntry,
   SupportedBlockchain,
 } from '../types';
+import { ErgoExplorerClient } from './ergoExplorerClient';
 import { ergoNodeFactory, getErgoNodeStatus } from './ergoNode';
 import { ergoRosettaApiFactory } from './ergoRosetta';
-import { ErgoExplorerClient } from './ergoExplorerClient';
-import { DependencyManager } from '@/services';
-import { getExecutableExt, getNodeFilename } from '@/utils/fs';
-import { getOsString } from '@/utils/os';
-import { i18n } from '@/i18n';
-import path from 'path';
-import {
-  Blockchain,
-  BlockchainClient,
-  RosettaBlockchainClient,
-} from '@/blockchains';
 
 const t = i18n.t;
 

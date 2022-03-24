@@ -1,4 +1,5 @@
 import { Grid, Image, Segment } from 'semantic-ui-react';
+
 import { Wallet } from '../../entities';
 import walletImg from './wallet.svg';
 

@@ -1,2 +1,2 @@
-export * from './sidecar';
 export * from './node';
+export * from './sidecar';

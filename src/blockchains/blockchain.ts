@@ -1,15 +1,17 @@
 import EventEmitter from 'events';
+
+import { ImproperlyConfiguredError, UnsupportedOperationError } from '@/errors';
 import { DependencyManager } from '@/services';
+import { Node, NodeConfig } from '@/sidecars';
+
+import { BlockchainClient } from './blockchainClient';
 import {
   BlockchainCapabilities,
-  SidecarEntry,
-  BlockchainSyncStatus,
-  BlockchainState,
   BlockchainSidecarRole,
+  BlockchainState,
+  BlockchainSyncStatus,
+  SidecarEntry,
 } from './types';
-import { BlockchainClient } from './blockchainClient';
-import { ImproperlyConfiguredError, UnsupportedOperationError } from '@/errors';
-import { Node, NodeConfig } from '@/sidecars';
 
 export interface BlockchainFactoryConfig {
   baseDir: string;

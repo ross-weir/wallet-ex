@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
-import * as Yup from 'yup';
-import { Form } from 'semantic-ui-react';
 import { useFormikContext } from 'formik';
+import { useTranslation } from 'react-i18next';
+import { Form } from 'semantic-ui-react';
+import * as Yup from 'yup';
 
 export const walletDetailsValidationSchema = Yup.object({
   name: Yup.string().required(),

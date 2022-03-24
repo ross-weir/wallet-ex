@@ -1,4 +1,5 @@
 import { Inject, Service } from 'typedi';
+
 import { hashPassword } from '../../crypto';
 import { getErgo } from '../../ergo';
 import { BackendServiceToken } from '../../ioc';

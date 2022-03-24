@@ -5,6 +5,7 @@ import { Field, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form } from 'semantic-ui-react';
+
 import { rand } from '../../utils/num';
 
 export interface WalletRecoveryPhraseConfirmInput {

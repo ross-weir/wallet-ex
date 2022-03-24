@@ -1,8 +1,8 @@
-import { DeriveAddressArgs, WalletInterface } from './walletInterface';
 import { Wallet } from '../../entities';
-import { getHdStandardForWallet, HdStandard } from './hdStandard';
 import { Ergo, getErgo } from '../../ergo';
 import { getAppConfig } from '../../storage';
+import { getHdStandardForWallet, HdStandard } from './hdStandard';
+import { DeriveAddressArgs, WalletInterface } from './walletInterface';
 
 /**
  * App-local wallet interface

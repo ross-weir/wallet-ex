@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import {
   Button,
   Container,
@@ -6,12 +8,11 @@ import {
   Icon,
   Segment,
 } from 'semantic-ui-react';
-import { useNavigate } from 'react-router';
-import { OperatingMode } from '@/types';
+
 import { SupportedBlockchain } from '@/blockchains/types';
-import { ApplicationState } from '@/storage';
-import { useTranslation } from 'react-i18next';
 import { useWalletEx } from '@/hooks';
+import { ApplicationState } from '@/storage';
+import { OperatingMode } from '@/types';
 import { capitalize } from '@/utils/fmt';
 
 export function ModeSelection() {

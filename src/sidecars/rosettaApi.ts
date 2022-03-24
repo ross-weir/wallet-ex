@@ -1,7 +1,9 @@
+import path from 'path';
+
 import { EnvironmentVariables } from '@/types';
 import { getExecutableExt } from '@/utils/fs';
+
 import { Sidecar } from './sidecar';
-import path from 'path';
 
 export type RosettaApiFactoryConfig = Pick<
   RosettaApiConfig,

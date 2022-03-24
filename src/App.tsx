@@ -1,5 +1,6 @@
 import React from 'react';
 import { Suspense, useEffect, useState } from 'react';
+
 import { initErgo } from './ergo';
 import { Routes } from './Routes';
 

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Wallet } from '../entities';
 
 interface IAuthenticatedWalletContext {

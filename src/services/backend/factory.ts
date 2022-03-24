@@ -1,4 +1,5 @@
 import Container from 'typedi';
+
 import { BackendServiceToken } from '../../ioc';
 import { BackendService } from './backend';
 

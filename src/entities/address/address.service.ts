@@ -1,9 +1,10 @@
-import { CreateAddressDto } from './dto';
-import { Address } from './address.entity';
 import { Inject, Service } from 'typedi';
+
+import type { BlockchainClient } from '../../blockchains';
 import { BackendServiceToken, BlockchainClientToken } from '../../ioc';
 import { BackendService } from '../../services';
-import type { BlockchainClient } from '../../blockchains';
+import { Address } from './address.entity';
+import { CreateAddressDto } from './dto';
 
 @Service()
 export class AddressService {

@@ -1,6 +1,7 @@
 import { SupportedBlockchain } from '@/blockchains';
-import { ObjectStorage } from './objectStorage';
 import { OperatingMode } from '@/types';
+
+import { ObjectStorage } from './objectStorage';
 
 export interface AppConfig {
   network: string;

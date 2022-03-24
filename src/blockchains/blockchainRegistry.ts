@@ -1,11 +1,13 @@
+import path from 'path';
+import Container from 'typedi';
+
+import { UninitializedError } from '@/errors';
+import { BackendServiceToken } from '@/ioc';
+import { getAppConfig } from '@/storage';
+
 import { Blockchain, BlockchainFactoryConfig } from './blockchain';
 import { ergoBlockchainFactory } from './ergo';
 import { SupportedBlockchain } from './types';
-import path from 'path';
-import { BackendServiceToken } from '@/ioc';
-import Container from 'typedi';
-import { getAppConfig } from '@/storage';
-import { UninitializedError } from '@/errors';
 
 type BlockchainFactoryFn = (
   cfg: BlockchainFactoryConfig,

@@ -1,12 +1,13 @@
 import { path } from '@tauri-apps/api';
+import * as api from '@wallet-ex/rosetta-api-client';
+import { useEffect } from 'react';
+import Container from 'typedi';
+
+import { getBlockchain } from '../blockchains';
+import { SupportedBlockchain } from '../blockchains/types';
 import { BackendServiceToken } from '../ioc';
 import { DependencyManager, RemoteDependency } from '../services';
 import { getExecutableExt } from '../utils/fs';
-import { getBlockchain } from '../blockchains';
-import { SupportedBlockchain } from '../blockchains/types';
-import { useEffect } from 'react';
-import Container from 'typedi';
-import * as api from '@wallet-ex/rosetta-api-client';
 
 export function Test() {
   useEffect(() => {

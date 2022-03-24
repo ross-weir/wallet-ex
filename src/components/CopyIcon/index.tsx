@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Popup, Icon } from 'semantic-ui-react';
+import { Icon,Popup } from 'semantic-ui-react';
 
 // Resolve conflict between web vs nodejs typings
 // This makes things work in browser and jest

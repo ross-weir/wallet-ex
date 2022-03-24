@@ -1,4 +1,5 @@
 import { Inject, Service } from 'typedi';
+
 import { BackendServiceToken } from '../../ioc';
 import { BackendService } from '../../services/backend/backend';
 import { AddressService } from '../address';
