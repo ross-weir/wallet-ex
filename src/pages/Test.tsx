@@ -23,13 +23,11 @@ export function Test() {
         password: 'test',
         interface: 'local',
       });
-      wallet.seed = new Uint8Array([1]);
 
       const walletId = await db.wallets.add(wallet);
 
       const wallet2 = await db.wallets.get(walletId);
       console.log('test', wallet2);
-      console.log(wallet?.seed);
 
       const acct = Account.fromJson({
         name: 'test',

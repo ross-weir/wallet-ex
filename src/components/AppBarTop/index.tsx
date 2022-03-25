@@ -10,21 +10,12 @@ export interface AppBarTopProps {
 
 function AppBarTop({ attached }: AppBarTopProps) {
   const { t } = useTranslation('common');
-  const { wallet, setAuthenticatedWallet } = useAuthenticatedWallet();
+  const { wallet, clearWallet } = useAuthenticatedWallet();
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (wallet) {
-      const usr = {
-        ...window.history.state.usr,
-        seed: undefined,
-      };
-
-      window.history.replaceState({ ...window.history.state, usr }, '');
-      wallet.zeroSeed();
-      setAuthenticatedWallet(undefined);
-    }
+    clearWallet();
 
     navigate('/wallets');
   };
@@ -40,11 +31,13 @@ function AppBarTop({ attached }: AppBarTopProps) {
               onClick={() => setSensitiveMode(!sensitiveModeEnabled)}
             />
             <Menu.Item icon="cog" />
-            <Popup
-              trigger={<Menu.Item icon="log out" onClick={handleLogout} />}
-              size="small"
-              content="Logout of wallet"
-            />
+            {!!wallet && (
+              <Popup
+                trigger={<Menu.Item icon="log out" onClick={handleLogout} />}
+                size="small"
+                content="Logout of wallet"
+              />
+            )}
           </Menu.Menu>
         </Menu>
       </Segment>

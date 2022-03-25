@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Form, Segment } from 'semantic-ui-react';
 import { Container } from 'typedi';
 
+import { useAuthenticatedWallet } from '@/hooks';
 import { WalletService } from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
@@ -28,6 +29,7 @@ function WalletActionForm() {
   const params = useParams();
   const walletService = Container.get(WalletService);
   const action = params.action as 'create' | 'restore';
+  const { setAuthenticatedWallet } = useAuthenticatedWallet();
 
   /**
    * Handle create/restore wallet submission. Performs the following actions:
@@ -51,14 +53,16 @@ function WalletActionForm() {
    *  }
    */
   const handleSubmit = async (values: Record<string, any>) => {
-    const wallet = await walletService.create({
+    const { wallet, seed } = await walletService.create({
       name: values.name,
       password: values.password,
       mnemonic: values.phrase.join(' '),
       mnemonicPass: values.mnemonicPassphrase,
     });
 
-    navigate(`/wallets/${wallet.id}`, { state: { seed: wallet.seed } });
+    setAuthenticatedWallet({ wallet, seed });
+
+    navigate(`/wallets/${wallet.id}`);
   };
 
   const totalSteps = {

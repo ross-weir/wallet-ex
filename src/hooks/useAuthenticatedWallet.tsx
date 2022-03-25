@@ -1,12 +1,17 @@
 import React from 'react';
 
-import { Wallet } from '../entities';
+import { Wallet } from '@/internal';
+
+interface AuthenticatedWallet {
+  wallet: Wallet;
+  seed: Uint8Array;
+}
 
 interface IAuthenticatedWalletContext {
   wallet?: Wallet;
-  setAuthenticatedWallet: React.Dispatch<
-    React.SetStateAction<Wallet | undefined>
-  >;
+  seed?: Uint8Array;
+  setAuthenticatedWallet: (state: AuthenticatedWallet) => void;
+  clearWallet: () => void;
 }
 
 const AuthenticatedWalletContext = React.createContext<
@@ -20,13 +25,22 @@ interface AuthenticatedWalletProviderProps {
 function AuthenticatedWalletProvider({
   children,
 }: AuthenticatedWalletProviderProps) {
-  const [wallet, setAuthenticatedWallet] = React.useState<Wallet | undefined>(
-    undefined,
-  );
+  const [wallet, setWallet] = React.useState<Wallet | undefined>(undefined);
+  const [seed, setSeed] = React.useState<Uint8Array | undefined>(undefined);
+
+  const clearWallet = () => {
+    setWallet(undefined);
+    setSeed(undefined);
+  };
+
+  const setAuthenticatedWallet = ({ wallet, seed }: AuthenticatedWallet) => {
+    setWallet(wallet);
+    setSeed(seed);
+  };
 
   return (
     <AuthenticatedWalletContext.Provider
-      value={{ wallet, setAuthenticatedWallet }}
+      value={{ wallet, seed, setAuthenticatedWallet, clearWallet }}
     >
       {children}
     </AuthenticatedWalletContext.Provider>
