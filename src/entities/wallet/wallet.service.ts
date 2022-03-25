@@ -4,7 +4,7 @@ import { hashPassword } from '@/crypto';
 import { getErgo } from '@/ergo';
 import { AccountService, db, Wallet, WalletExDatabase } from '@/internal';
 
-import { CreateWalletDto } from './dto';
+import { CreateWalletDto, CreateWalletResultDto } from './dto';
 
 @Service()
 export class WalletService {
@@ -13,21 +13,22 @@ export class WalletService {
 
   constructor(private accountService: AccountService) {}
 
-  public async create(dto: CreateWalletDto): Promise<Wallet> {
+  public async create(dto: CreateWalletDto): Promise<CreateWalletResultDto> {
     const password = await hashPassword(dto.password);
     const wallet = Wallet.fromJson({
       name: dto.name,
       password,
       interface: 'local',
     });
-    wallet.seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
+    const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
     const walletId = await db.wallets.add(wallet);
     // Id is used when storing the secret seed to get a unique storage key
     wallet.id = walletId;
 
     await Promise.all([
-      wallet.storeSeed(dto.password, wallet.seed),
+      // storeSeed needs the wallet.id to be set
+      wallet.storeSeed(dto.password, seed),
       // If we support other coins we probably will stop creating accounts when creating wallets
       this.accountService.create(wallet, {
         deriveIdx: 1, // dxie
@@ -36,7 +37,7 @@ export class WalletService {
       }),
     ]);
 
-    return wallet;
+    return { wallet, seed };
   }
 
   public async findOne(id: number): Promise<Wallet | undefined> {

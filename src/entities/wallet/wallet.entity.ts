@@ -16,23 +16,9 @@ export class Wallet extends BaseEntity implements IWallet {
   name!: string;
   password!: string;
   interface!: 'local' | 'ledger';
-  seed = new Uint8Array([]);
-
-  constructor() {
-    super();
-    Object.defineProperty(this, 'seed', { enumerable: false });
-  }
 
   public static fromJson(obj: IWallet): Wallet {
     return plainToClass(Wallet, obj);
-  }
-
-  public hasSeed(): boolean {
-    return !this.seed.length;
-  }
-
-  public zeroSeed() {
-    this.seed = new Uint8Array([]);
   }
 
   public async retrieveSeed(password: string): Promise<Uint8Array> {
@@ -51,15 +37,19 @@ export class Wallet extends BaseEntity implements IWallet {
     return checkPassword(plainTextPassword, this.password);
   }
 
-  public async deriveAddress(hdStandardArgs: object): Promise<string> {
-    if (!this.seed) {
+  public async deriveAddress(
+    hdStandardArgs: Record<string, any>,
+  ): Promise<string> {
+    const seed = hdStandardArgs.seed;
+
+    if (!seed) {
       throw new Error('Wallet.deriveAddress: seed not set for wallet');
     }
 
     const walletInterface = getInterfaceForWallet(this);
 
     return walletInterface.deriveAddress({
-      seedBytes: this.seed,
+      seedBytes: seed,
       hdStandardArgs,
     });
   }

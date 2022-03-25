@@ -21,7 +21,8 @@ import CreateAccountModal from '@/components/CreateAccountModal';
 import SensitiveComponent from '@/components/SensitiveComponent';
 import walletImg from '@/components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
-import { Account, AccountService, Wallet, WalletService } from '@/entities';
+import { useAuthenticatedWallet } from '@/hooks';
+import { Account, AccountService, Wallet } from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
 function WalletView() {
@@ -35,43 +36,24 @@ function WalletView() {
   // There should always be a selected account, not sure when we wouldn't want that to be the case
   // Default to the first account for the wallet, there should always be one when creating wallet
   const { t } = useTranslation(['common', 'walletView']);
-  const { walletId: walletIdParam } = useParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [wallet, setWallet] = useState<Wallet | undefined>();
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
-  const { state } = useLocation();
-  const walletService = IocContainer.get(WalletService);
   const accountService = IocContainer.get(AccountService);
+  const { wallet } = useAuthenticatedWallet();
 
   // TODO: loading indicator/state
-  // TODO: we probably actually need to fetch a list of accounts
-  // TODO: could be done in 1 request - don't bother until there's actual perf issues
   useEffect(() => {
-    const fetchEntities = async () => {
-      const walletId = parseInt(walletIdParam as string, 10);
-
-      const walletsRequest = walletService.findOne(walletId).then((wallet) => {
-        if (state.seed && !wallet?.hasSeed()) {
-          wallet!.seed = state.seed;
-        }
-
-        setWallet(wallet);
-      });
-
-      const accountsRequest = accountService
-        .filterByWalletId(walletId)
-        .then((accounts) => {
-          setAccountList(accounts);
-          setSelectedAccount(accounts[0]);
-        });
-
-      await Promise.allSettled([walletsRequest, accountsRequest]);
-    };
-
     setIsLoading(true);
-    fetchEntities().finally(() => setIsLoading(false));
-  }, [walletIdParam]);
+
+    accountService
+      .filterByWalletId(wallet!.id)
+      .then((accounts) => {
+        setAccountList(accounts);
+        setSelectedAccount(accounts[0]);
+      })
+      .finally(() => setIsLoading(false));
+  }, [wallet, accountService]);
 
   const panes = () => [
     {
