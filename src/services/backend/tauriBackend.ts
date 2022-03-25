@@ -1,13 +1,11 @@
-import { fs, invoke, os,path } from '@tauri-apps/api';
+import { fs, invoke, os, path } from '@tauri-apps/api';
 import localforage from 'localforage';
 
-import { AesCrypto, checkPassword, EncryptResult } from '../../crypto';
+import { AesCrypto, EncryptResult } from '@/crypto';
+
 import {
   BackendOpResult,
   BackendService,
-  CreateAccountArgs,
-  CreateAddressArgs,
-  CreateWalletArgs,
   GetSecretSeedArgs,
   StoreSecretSeedArgs,
 } from './backend';
@@ -17,6 +15,7 @@ const cfgPath = async () => {
   return `${appDir}${path.sep}.wallet-x.json`;
 };
 
+// TODO: dynamically import tauri
 export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
 
@@ -57,38 +56,6 @@ export class TauriBackend extends BackendService {
     return fs.writeFile(file);
   }
 
-  createAddress(args: CreateAddressArgs): BackendOpResult<any> {
-    return invoke('create_address', { args });
-  }
-
-  addressesForAccount(accountId: number): BackendOpResult<any[]> {
-    return invoke('addresses_for_account', { accountId });
-  }
-
-  createAccount(args: CreateAccountArgs): BackendOpResult<any> {
-    return invoke('create_account', { args });
-  }
-
-  findAccount(id: number): BackendOpResult<any> {
-    return invoke('find_account', { id });
-  }
-
-  accountsForWallet(walletId: number): BackendOpResult<any[]> {
-    return invoke('accounts_for_wallet', { walletId });
-  }
-
-  listWallets(): BackendOpResult<any[]> {
-    return invoke('list_wallets');
-  }
-
-  createWallet(args: CreateWalletArgs): BackendOpResult<any> {
-    return invoke('create_wallet', { args });
-  }
-
-  findWallet(id: number): BackendOpResult<any> {
-    return invoke('find_wallet', { id });
-  }
-
   async storeSecretSeed({
     storageKey,
     password,
@@ -118,25 +85,6 @@ export class TauriBackend extends BackendService {
       iv: decryptParams.iv,
       salt: decryptParams.salt,
     });
-  }
-
-  async checkCredentialsForWallet(
-    walletId: number,
-    args: Record<string, any>,
-  ): BackendOpResult<boolean> {
-    if (!args.password) {
-      console.warn(
-        'TauriBackend: "password" field is required to check wallet credentials',
-      );
-
-      return false;
-    }
-
-    const walletPassword = await invoke<string>('get_wallet_password', {
-      walletId,
-    });
-
-    return checkPassword(args.password, walletPassword);
   }
 
   async storeData<T>(descriptor: string, data: T): BackendOpResult<T> {

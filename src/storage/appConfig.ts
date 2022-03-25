@@ -22,7 +22,7 @@ const getDefault = (): AppConfig => ({
   useLocalNode: false,
   accountDiscoveryGap: 20,
   addressDiscoveryGap: 20,
-  network: 'mainnet',
+  network: 'testnet',
 });
 
 const appConfig = new ObjectStorage('wallet-ex-config', getDefault());

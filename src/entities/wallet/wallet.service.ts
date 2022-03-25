@@ -1,50 +1,49 @@
-import { Inject, Service } from 'typedi';
+import { Service } from 'typedi';
 
-import { hashPassword } from '../../crypto';
-import { getErgo } from '../../ergo';
-import { BackendServiceToken } from '../../ioc';
-import { BackendService } from '../../services/backend';
-import { AccountService } from '../account';
+import { hashPassword } from '@/crypto';
+import { getErgo } from '@/ergo';
+import { AccountService, db, Wallet, WalletExDatabase } from '@/internal';
+
 import { CreateWalletDto } from './dto';
-import { Wallet } from './wallet.entity';
 
 @Service()
 export class WalletService {
+  private readonly db: WalletExDatabase = db;
   private readonly ergo = getErgo();
 
-  constructor(
-    @Inject(BackendServiceToken) private backend: BackendService,
-    private accountService: AccountService,
-  ) {}
+  constructor(private accountService: AccountService) {}
 
   public async create(dto: CreateWalletDto): Promise<Wallet> {
     const password = await hashPassword(dto.password);
-    const wallet = await this.backend
-      .createWallet({
-        name: dto.name,
-        password,
-        interface: 'local',
-        hdStandard: 'eip3',
-      })
-      .then(Wallet.fromJson);
-    const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
+    const wallet = Wallet.fromJson({
+      name: dto.name,
+      password,
+      interface: 'local',
+    });
+    wallet.seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
-    wallet.setSeed(seed);
-    await wallet.storeSeed(dto.password, seed);
+    const walletId = await db.wallets.add(wallet);
+    // Id is used when storing the secret seed to get a unique storage key
+    wallet.id = walletId;
 
-    // If we support other coins we probably will stop creating accounts when creating wallets
-    await this.accountService.create(wallet, { name: 'Main', coinType: 429 });
+    await Promise.all([
+      wallet.storeSeed(dto.password, wallet.seed),
+      // If we support other coins we probably will stop creating accounts when creating wallets
+      this.accountService.create(wallet, {
+        deriveIdx: 1, // dxie
+        name: 'Main',
+        coinType: 429,
+      }),
+    ]);
 
     return wallet;
   }
 
-  public async findOne(id: number): Promise<Wallet> {
-    return this.backend.findWallet(id).then(Wallet.fromJson);
+  public async findOne(id: number): Promise<Wallet | undefined> {
+    return this.db.wallets.get(id);
   }
 
   public async list(): Promise<Wallet[]> {
-    return this.backend
-      .listWallets()
-      .then((wallets) => wallets.map(Wallet.fromJson));
+    return this.db.wallets.toArray();
   }
 }

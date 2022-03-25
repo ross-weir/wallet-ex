@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Button, Form, Modal } from 'semantic-ui-react';
 
-import { Wallet } from '../../entities';
-import { useAuthenticatedWallet } from '../../hooks';
-import { capitalize } from '../../utils/fmt';
+import { Wallet } from '@/entities';
+import { useAuthenticatedWallet } from '@/hooks';
+import { capitalize } from '@/utils/fmt';
 
 export interface WalletsListPasswordProps {
   onCancel: () => void;
@@ -28,7 +28,7 @@ function WalletsListPasswordModal({
     setIsLoading(true);
 
     wallet
-      .checkCredentials({ password })
+      .checkCredentials(password)
       .then(async (isValid: boolean) => {
         if (!isValid) {
           setPasswordError(t('common:incorrectPassword'));

@@ -17,7 +17,7 @@ import {
 import { Container as IocContainer } from 'typedi';
 
 import WalletsListPasswordModal from '@/components/WalletsListPasswordModal';
-import { Wallet, WalletService } from '@/entities';
+import { Wallet, WalletService } from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
 function WalletsList() {
@@ -72,7 +72,7 @@ function WalletsList() {
             </Card.Group>
             {!!selectedWallet && (
               <WalletsListPasswordModal
-                wallet={selectedWallet}
+                wallet={selectedWallet!}
                 onCancel={() => setSelectedWallet(undefined)}
               />
             )}

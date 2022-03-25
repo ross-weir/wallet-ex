@@ -1,23 +1,34 @@
 import { plainToClass } from 'class-transformer';
 
-import { getInterfaceForWallet } from '../../services';
-import { toBase16 } from '../../utils/fmt';
-import { BaseEntity } from '../baseEntity';
+import { checkPassword } from '@/crypto';
+import { BaseEntity } from '@/internal';
+import { getInterfaceForWallet } from '@/services';
+import { toBase16 } from '@/utils/fmt';
 
-export class Wallet extends BaseEntity {
+export interface IWallet {
+  id?: number;
+  name: string;
+  password: string;
+  interface: 'local' | 'ledger';
+}
+
+export class Wallet extends BaseEntity implements IWallet {
   name!: string;
+  password!: string;
   interface!: 'local' | 'ledger';
-  hdStandard!: 'eip3';
-  createdAt!: string;
+  seed = new Uint8Array([]);
 
-  private seed?: Uint8Array;
-
-  public hasSeed(): boolean {
-    return !!this.seed;
+  constructor() {
+    super();
+    Object.defineProperty(this, 'seed', { enumerable: false });
   }
 
-  public setSeed(seed: Uint8Array) {
-    this.seed = seed;
+  public static fromJson(obj: IWallet): Wallet {
+    return plainToClass(Wallet, obj);
+  }
+
+  public hasSeed(): boolean {
+    return !this.seed.length;
   }
 
   public zeroSeed() {
@@ -36,8 +47,8 @@ export class Wallet extends BaseEntity {
     );
   }
 
-  public async checkCredentials(args: Record<string, any>): Promise<boolean> {
-    return this.backend.checkCredentialsForWallet(this.id, args);
+  public async checkCredentials(plainTextPassword: string): Promise<boolean> {
+    return checkPassword(plainTextPassword, this.password);
   }
 
   public async deriveAddress(hdStandardArgs: object): Promise<string> {
@@ -53,12 +64,8 @@ export class Wallet extends BaseEntity {
     });
   }
 
-  public static fromJson(obj: object): Wallet {
-    return plainToClass(Wallet, obj);
-  }
-
   private async seedStorageKey(): Promise<string> {
-    const key = new TextEncoder().encode(`${this.id}-${this.createdAt}`);
+    const key = new TextEncoder().encode(`${this.id}-${this.name}`);
     const hashedKey = await crypto.subtle.digest('SHA-256', key);
 
     return toBase16(new Uint8Array(hashedKey));

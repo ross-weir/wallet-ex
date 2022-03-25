@@ -10,20 +10,6 @@
     "beforeBuildCommand": "yarn build"
   },
   "tauri": {
-    "cli": {
-      "description": "",
-      "longDescription": "",
-      "beforeHelp": "",
-      "afterHelp": "",
-      "args": [
-        {
-          "name": "seed_db",
-          "takesValue": true,
-          "description": "Path to a json file used to seed the database"
-        }
-      ],
-      "subcommands": {}
-    },
     "bundle": {
       "active": true,
       "targets": "all",

@@ -19,6 +19,8 @@
     "bcryptjs": "^2.4.3",
     "bip39": "^3.0.4",
     "class-transformer": "^0.5.1",
+    "dexie": "^3.2.1",
+    "dexie-react-hooks": "^1.1.1",
     "ergo-lib-wasm-browser": "0.15.0-alpha-3392017",
     "ergo-lib-wasm-nodejs": "0.15.0-alpha-fdf4ef3",
     "formik": "^2.2.9",
@@ -58,7 +60,7 @@
     "build-storybook": "build-storybook -s public",
     "schema:update": "cd src-tauri && diesel migration run --database-url schema.sqlite3 && rm schema.sqlite3",
     "db:seed": "./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json",
-    "wdio": "cross-env WALLET_X_DB_URL=./test.sqlite3 wdio run wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.e2e.json"
+    "wdio": "wdio run wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.e2e.json"
   },
   "eslintConfig": {
     "extends": [
@@ -79,8 +81,8 @@
       "simple-import-sort"
     ],
     "rules": {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error"
+      "simple-import-sort/imports": "warn",
+      "simple-import-sort/exports": "warn"
     }
   },
   "browserslist": {

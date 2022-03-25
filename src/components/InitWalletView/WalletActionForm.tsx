@@ -5,8 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Form, Segment } from 'semantic-ui-react';
 import { Container } from 'typedi';
 
-import { WalletService } from '../../entities';
-import { capitalize } from '../../utils/fmt';
+import { WalletService } from '@/internal';
+import { capitalize } from '@/utils/fmt';
+
 import WalletCreateWizard, {
   createInitialValues,
   createValidations,
@@ -56,9 +57,8 @@ function WalletActionForm() {
       mnemonic: values.phrase.join(' '),
       mnemonicPass: values.mnemonicPassphrase,
     });
-    const seed = await wallet.retrieveSeed(values.password);
 
-    navigate(`/wallets/${wallet.id}`, { state: { seed } });
+    navigate(`/wallets/${wallet.id}`, { state: { seed: wallet.seed } });
   };
 
   const totalSteps = {

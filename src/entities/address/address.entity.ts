@@ -1,14 +1,22 @@
 import { plainToClass } from 'class-transformer';
 
-import { BaseEntity } from '../baseEntity';
+import { BaseEntity } from '@/internal';
 
-export class Address extends BaseEntity {
+export interface IAddress {
+  id?: number;
+  address: string;
+  deriveIdx: number;
+  accountId: number;
+  balance: number;
+}
+
+export class Address extends BaseEntity implements IAddress {
   address!: string;
   deriveIdx!: number;
   accountId!: number;
   balance!: number;
 
-  public static fromJson(obj: object): Address {
+  public static fromJson(obj: IAddress): Address {
     return plainToClass(Address, obj);
   }
 }

@@ -23,7 +23,7 @@ export function Routes() {
     <BrowserRouter>
       <ReactRoutes>
         <Route path="/" element={<Root />}>
-          <Route index element={<Navigate to="/modeSelect" />} />
+          <Route index element={<Navigate to="/wallets" />} />
 
           <Route path="modeSelect" element={<ModeSelection />} />
           <Route path="initializing" element={<Initializing />} />

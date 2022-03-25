@@ -1,11 +1,12 @@
-import { Wallet } from '../../entities';
+import { Wallet } from '@/internal';
+
 import { LocalWalletInterface } from './localWalletInterface';
 import { WalletInterface } from './walletInterface';
 
 export const getInterfaceForWallet = (wallet: Wallet): WalletInterface => {
   switch (wallet.interface) {
     case 'local':
-      return new LocalWalletInterface(wallet);
+      return new LocalWalletInterface();
     case 'ledger':
       throw new Error('WalletInterface: Ledger not supported yet');
   }
