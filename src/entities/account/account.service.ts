@@ -1,31 +1,36 @@
-import { Inject, Service } from 'typedi';
+import { Service } from 'typedi';
 
-import { BackendServiceToken } from '../../ioc';
-import { BackendService } from '../../services/backend/backend';
-import { AddressService } from '../address';
-import { Wallet } from '../wallet';
+import { AddressService, Wallet } from '@/entities';
+
 import { Account } from './account.entity';
 import { CreateAccountDto } from './dto';
+import { db, WalletExDatabase } from '@/storage';
 
 @Service()
 export class AccountService {
-  constructor(
-    @Inject(BackendServiceToken) private backend: BackendService,
-    private addressService: AddressService,
-  ) {}
+  private readonly db: WalletExDatabase;
+
+  constructor(private addressService: AddressService) {
+    this.db = db;
+  }
 
   public async create(wallet: Wallet, dto: CreateAccountDto): Promise<Account> {
-    const account = await this.backend.createAccount({
+    const account = Account.fromJson({
       ...dto,
       walletId: wallet.id,
     });
-    const addressStr = await wallet.deriveAddress({
-      addressIdx: 0,
-      accountIdx: account.deriveIdx,
-    });
-    this.addressService.create({
+
+    const [accountId, addressStr] = await Promise.all([
+      this.db.accounts.add(account),
+      wallet.deriveAddress({
+        addressIdx: 0,
+        accountIdx: account.deriveIdx,
+      }),
+    ]);
+
+    await this.addressService.create({
       deriveIdx: 0,
-      accountId: account.id,
+      accountId,
       address: addressStr,
     });
 
@@ -33,8 +38,6 @@ export class AccountService {
   }
 
   public async filterByWalletId(walletId: number): Promise<Account[]> {
-    return this.backend
-      .accountsForWallet(walletId)
-      .then((accts) => accts.map(Account.fromJson));
+    return this.db.accounts.where('walletId').equals(walletId).toArray();
   }
 }

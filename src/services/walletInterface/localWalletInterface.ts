@@ -1,6 +1,6 @@
-import { Wallet } from '../../entities';
-import { Ergo, getErgo } from '../../ergo';
-import { getAppConfig } from '../../storage';
+import { Ergo, getErgo } from '@/ergo';
+import { getAppConfig } from '@/storage';
+
 import { getHdStandardForWallet, HdStandard } from './hdStandard';
 import { DeriveAddressArgs, WalletInterface } from './walletInterface';
 
@@ -14,8 +14,8 @@ export class LocalWalletInterface implements WalletInterface {
   private readonly ergo: Ergo;
   private readonly hdStandard: HdStandard;
 
-  constructor(wallet: Wallet) {
-    this.hdStandard = getHdStandardForWallet(wallet);
+  constructor() {
+    this.hdStandard = getHdStandardForWallet();
     this.ergo = getErgo();
   }
 

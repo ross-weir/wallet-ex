@@ -1,50 +1,54 @@
-import { Inject, Service } from 'typedi';
+import { Service } from 'typedi';
 
-import { hashPassword } from '../../crypto';
-import { getErgo } from '../../ergo';
-import { BackendServiceToken } from '../../ioc';
-import { BackendService } from '../../services/backend';
-import { AccountService } from '../account';
+import { hashPassword } from '@/crypto';
+import { AccountService } from '@/entities';
+import { getErgo } from '@/ergo';
+
 import { CreateWalletDto } from './dto';
 import { Wallet } from './wallet.entity';
+import { db, WalletExDatabase } from '@/storage';
 
 @Service()
 export class WalletService {
+  private readonly db: WalletExDatabase;
   private readonly ergo = getErgo();
 
-  constructor(
-    @Inject(BackendServiceToken) private backend: BackendService,
-    private accountService: AccountService,
-  ) {}
+  constructor(private accountService: AccountService) {
+    this.db = db;
+  }
 
   public async create(dto: CreateWalletDto): Promise<Wallet> {
     const password = await hashPassword(dto.password);
-    const wallet = await this.backend
-      .createWallet({
-        name: dto.name,
-        password,
-        interface: 'local',
-        hdStandard: 'eip3',
-      })
-      .then(Wallet.fromJson);
+    const wallet = Wallet.fromJson({
+      name: dto.name,
+      password,
+      interface: 'local',
+    });
     const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
-    wallet.setSeed(seed);
-    await wallet.storeSeed(dto.password, seed);
+    wallet.seed = seed;
 
-    // If we support other coins we probably will stop creating accounts when creating wallets
-    await this.accountService.create(wallet, { name: 'Main', coinType: 429 });
+    await Promise.all([
+      this.db.wallets.add(wallet),
+      wallet.storeSeed(dto.password, seed),
+      // If we support other coins we probably will stop creating accounts when creating wallets
+      this.accountService.create(wallet, {
+        deriveIdx: 1, // dxie
+        name: 'Main',
+        coinType: 429,
+      }),
+    ]);
 
     return wallet;
   }
 
-  public async findOne(id: number): Promise<Wallet> {
-    return this.backend.findWallet(id).then(Wallet.fromJson);
+  public async findOne(id: number): Promise<Wallet | undefined> {
+    return this.db.wallets.get(id);
   }
 
   public async list(): Promise<Wallet[]> {
-    return this.backend
-      .listWallets()
-      .then((wallets) => wallets.map(Wallet.fromJson));
+    const wallets = await this.db.wallets.toArray();
+    console.log(wallets);
+    return wallets;
   }
 }

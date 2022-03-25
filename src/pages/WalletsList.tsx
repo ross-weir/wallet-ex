@@ -28,12 +28,27 @@ function WalletsList() {
   const navigate = useNavigate();
   const walletService = IocContainer.get(WalletService);
 
-  useEffect(() => {
+  const getWallets = () => {
     walletService
       .list()
       .then(setWallets)
       .finally(() => setIsLoading(false));
+  };
+  useEffect(() => {
+    // walletService
+    //   .list()
+    //   .then(setWallets)
+    //   .finally(() => setIsLoading(false));
+
+    walletService.findOne(1).then(console.log);
   }, []);
+
+  // return (
+  //   <>
+  //     <Button onClick={getWallets}>Click</Button>
+  //     {wallets.length && <p>{wallets[0].name}</p>}
+  //   </>
+  // );
 
   return (
     <>
@@ -72,7 +87,7 @@ function WalletsList() {
             </Card.Group>
             {!!selectedWallet && (
               <WalletsListPasswordModal
-                wallet={selectedWallet}
+                wallet={selectedWallet!}
                 onCancel={() => setSelectedWallet(undefined)}
               />
             )}

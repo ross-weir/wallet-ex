@@ -56,9 +56,8 @@ function WalletActionForm() {
       mnemonic: values.phrase.join(' '),
       mnemonicPass: values.mnemonicPassphrase,
     });
-    const seed = await wallet.retrieveSeed(values.password);
 
-    navigate(`/wallets/${wallet.id}`, { state: { seed } });
+    navigate(`/wallets/${wallet.id}`, { state: { seed: wallet.seed } });
   };
 
   const totalSteps = {

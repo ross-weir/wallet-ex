@@ -1,7 +1,7 @@
 // nested routes:
 // - send, recv, transactions inside <Outlet />
 
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router';
 import {
@@ -52,8 +52,8 @@ function WalletView() {
       const walletId = parseInt(walletIdParam as string, 10);
 
       const walletsRequest = walletService.findOne(walletId).then((wallet) => {
-        if (state.seed && !wallet.hasSeed()) {
-          wallet.setSeed(state.seed);
+        if (state.seed && !wallet?.hasSeed()) {
+          wallet!.seed = state.seed;
         }
 
         setWallet(wallet);

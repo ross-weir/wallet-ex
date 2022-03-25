@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
 import Container from 'typedi';
 
-import { Account, AccountService, Wallet } from '../../entities';
-import { capitalize } from '../../utils/fmt';
+import { Account, AccountService, Wallet } from '@/entities';
+import { capitalize } from '@/utils/fmt';
 
 export interface CreateAccountModalProps {
   trigger: React.ReactNode;
@@ -47,6 +47,7 @@ function CreateAccountModal({
     setIsLoading(true);
     try {
       const newAccount = await accountService.create(wallet, {
+        deriveIdx: 2, // dxie
         name: accountName,
         coinType: 429,
       });
