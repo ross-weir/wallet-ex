@@ -1,5 +1,5 @@
 import { Ergo, getErgo } from '@/ergo';
-import { getAppConfig } from '@/storage';
+import { getAppConfig } from '@/internal';
 
 import { getHdStandardForWallet, HdStandard } from './hdStandard';
 import { DeriveAddressArgs, WalletInterface } from './walletInterface';

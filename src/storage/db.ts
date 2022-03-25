@@ -1,6 +1,6 @@
 import Dexie, { Table } from 'dexie';
 
-import { Account, Address, Wallet } from '@/entities';
+import { Account, Address, Wallet } from '@/internal';
 
 export class WalletExDatabase extends Dexie {
   wallets!: Table<Wallet, number>;
@@ -15,8 +15,6 @@ export class WalletExDatabase extends Dexie {
       accounts: '++id, name, coinType, deriveIdx, walletId',
       addresses: '++id, address, deriveIdx, accountId, balance',
     });
-
-    console.log(Wallet, Account, Address);
 
     this.wallets.mapToClass(Wallet);
     this.accounts.mapToClass(Account);

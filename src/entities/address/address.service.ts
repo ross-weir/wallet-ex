@@ -1,19 +1,16 @@
 import { Inject, Service } from 'typedi';
 
 import type { BlockchainClient } from '@/blockchains';
+import { Address, db, WalletExDatabase } from '@/internal';
 import { BlockchainClientToken } from '@/ioc';
 
-import { Address } from './address.entity';
 import { CreateAddressDto } from './dto';
-import { db, WalletExDatabase } from '@/storage';
 
 @Service()
 export class AddressService {
-  private readonly db: WalletExDatabase;
+  private readonly db: WalletExDatabase = db;
 
-  constructor(@Inject(BlockchainClientToken) private chain: BlockchainClient) {
-    this.db = db;
-  }
+  constructor(@Inject(BlockchainClientToken) private chain: BlockchainClient) {}
 
   public async create(dto: CreateAddressDto): Promise<Address> {
     const balanceResponse = await this.chain.accountBalance({

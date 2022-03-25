@@ -1,21 +1,17 @@
 import { Service } from 'typedi';
 
 import { hashPassword } from '@/crypto';
-import { AccountService } from '@/entities';
 import { getErgo } from '@/ergo';
+import { AccountService, db, Wallet, WalletExDatabase } from '@/internal';
 
 import { CreateWalletDto } from './dto';
-import { Wallet } from './wallet.entity';
-import { db, WalletExDatabase } from '@/storage';
 
 @Service()
 export class WalletService {
-  private readonly db: WalletExDatabase;
+  private readonly db: WalletExDatabase = db;
   private readonly ergo = getErgo();
 
-  constructor(private accountService: AccountService) {
-    this.db = db;
-  }
+  constructor(private accountService: AccountService) {}
 
   public async create(dto: CreateWalletDto): Promise<Wallet> {
     const password = await hashPassword(dto.password);
@@ -24,13 +20,14 @@ export class WalletService {
       password,
       interface: 'local',
     });
-    const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
+    wallet.seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
-    wallet.seed = seed;
+    const walletId = await db.wallets.add(wallet);
+    // Id is used when storing the secret seed to get a unique storage key
+    wallet.id = walletId;
 
     await Promise.all([
-      this.db.wallets.add(wallet),
-      wallet.storeSeed(dto.password, seed),
+      wallet.storeSeed(dto.password, wallet.seed),
       // If we support other coins we probably will stop creating accounts when creating wallets
       this.accountService.create(wallet, {
         deriveIdx: 1, // dxie
@@ -47,8 +44,6 @@ export class WalletService {
   }
 
   public async list(): Promise<Wallet[]> {
-    const wallets = await this.db.wallets.toArray();
-    console.log(wallets);
-    return wallets;
+    return this.db.wallets.toArray();
   }
 }

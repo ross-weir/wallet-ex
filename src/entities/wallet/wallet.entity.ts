@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 
 import { checkPassword } from '@/crypto';
-import { BaseEntity } from '@/entities/baseEntity';
+import { BaseEntity } from '@/internal';
 import { getInterfaceForWallet } from '@/services';
 import { toBase16 } from '@/utils/fmt';
 
@@ -21,6 +21,10 @@ export class Wallet extends BaseEntity implements IWallet {
   constructor() {
     super();
     Object.defineProperty(this, 'seed', { enumerable: false });
+  }
+
+  public static fromJson(obj: IWallet): Wallet {
+    return plainToClass(Wallet, obj);
   }
 
   public hasSeed(): boolean {
@@ -58,10 +62,6 @@ export class Wallet extends BaseEntity implements IWallet {
       seedBytes: this.seed,
       hdStandardArgs,
     });
-  }
-
-  public static fromJson(obj: IWallet): Wallet {
-    return plainToClass(Wallet, obj);
   }
 
   private async seedStorageKey(): Promise<string> {

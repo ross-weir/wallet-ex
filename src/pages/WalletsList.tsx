@@ -17,7 +17,7 @@ import {
 import { Container as IocContainer } from 'typedi';
 
 import WalletsListPasswordModal from '@/components/WalletsListPasswordModal';
-import { Wallet, WalletService } from '@/entities';
+import { Wallet, WalletService } from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
 function WalletsList() {
@@ -28,27 +28,12 @@ function WalletsList() {
   const navigate = useNavigate();
   const walletService = IocContainer.get(WalletService);
 
-  const getWallets = () => {
+  useEffect(() => {
     walletService
       .list()
       .then(setWallets)
       .finally(() => setIsLoading(false));
-  };
-  useEffect(() => {
-    // walletService
-    //   .list()
-    //   .then(setWallets)
-    //   .finally(() => setIsLoading(false));
-
-    walletService.findOne(1).then(console.log);
   }, []);
-
-  // return (
-  //   <>
-  //     <Button onClick={getWallets}>Click</Button>
-  //     {wallets.length && <p>{wallets[0].name}</p>}
-  //   </>
-  // );
 
   return (
     <>

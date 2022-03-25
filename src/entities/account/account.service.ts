@@ -1,18 +1,20 @@
 import { Service } from 'typedi';
 
-import { AddressService, Wallet } from '@/entities';
+import {
+  Account,
+  AddressService,
+  db,
+  Wallet,
+  WalletExDatabase,
+} from '@/internal';
 
-import { Account } from './account.entity';
 import { CreateAccountDto } from './dto';
-import { db, WalletExDatabase } from '@/storage';
 
 @Service()
 export class AccountService {
-  private readonly db: WalletExDatabase;
+  private readonly db: WalletExDatabase = db;
 
-  constructor(private addressService: AddressService) {
-    this.db = db;
-  }
+  constructor(private addressService: AddressService) {}
 
   public async create(wallet: Wallet, dto: CreateAccountDto): Promise<Account> {
     const account = Account.fromJson({

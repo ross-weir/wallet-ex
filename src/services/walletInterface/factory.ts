@@ -1,4 +1,4 @@
-import { Wallet } from '@/entities';
+import { Wallet } from '@/internal';
 
 import { LocalWalletInterface } from './localWalletInterface';
 import { WalletInterface } from './walletInterface';

@@ -1,6 +1,6 @@
 import { plainToClass } from 'class-transformer';
 
-import { BaseEntity } from '../baseEntity';
+import { BaseEntity } from '@/internal';
 
 export interface IAddress {
   id?: number;

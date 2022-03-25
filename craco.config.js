@@ -2,7 +2,6 @@ const { addBeforeLoader, loaderByName } = require('@craco/craco');
 const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const tauriConfig = require('./src-tauri/tauri.conf.json');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
   babel: {
@@ -31,10 +30,6 @@ module.exports = {
 
       webpackConfig.plugins.push(
         new webpack.ContextReplacementPlugin(/ergo-lib-wasm-browser/),
-        new CircularDependencyPlugin({
-          exclude: /a\.js|node_modules/,
-          include: /src/,
-        }),
       );
 
       webpackConfig.resolve.plugins.push(new TsconfigPathsPlugin());

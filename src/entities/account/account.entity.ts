@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 
-import { BaseEntity } from '../baseEntity';
+import { BaseEntity } from '@/internal';
 
 export interface IAccount {
   id?: number;
