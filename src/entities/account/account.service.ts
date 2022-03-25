@@ -9,6 +9,7 @@ import {
 } from '@/internal';
 
 import { CreateAccountDto } from './dto';
+import { WalletContext } from '@/internal';
 
 @Service()
 export class AccountService {
@@ -16,7 +17,10 @@ export class AccountService {
 
   constructor(private addressService: AddressService) {}
 
-  public async create(wallet: Wallet, dto: CreateAccountDto): Promise<Account> {
+  public async create(
+    { wallet, seed }: WalletContext,
+    dto: CreateAccountDto,
+  ): Promise<Account> {
     const account = Account.fromJson({
       ...dto,
       walletId: wallet.id,
@@ -25,6 +29,7 @@ export class AccountService {
     const [accountId, addressStr] = await Promise.all([
       this.db.accounts.add(account),
       wallet.deriveAddress({
+        seed,
         addressIdx: 0,
         accountIdx: account.deriveIdx,
       }),
