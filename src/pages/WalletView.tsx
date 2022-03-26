@@ -107,57 +107,54 @@ function WalletView() {
 
   return (
     <>
-      <Grid stackable padded>
-        <Grid.Column width={4}>
-          <Card onClick={() => null} fluid>
-            <Card.Content>
-              {isLoading ? (
-                <p>loading..</p>
-              ) : (
-                <>
-                  <Image src={walletImg} size="mini" floated="left" />
-                  <Card.Header>{wallet?.name}</Card.Header>
-                  <Card.Meta>
-                    <SensitiveComponent>{walletSubtitle()}</SensitiveComponent>
-                  </Card.Meta>
-                </>
-              )}
-            </Card.Content>
-          </Card>
-          <Card fluid>
-            <Card.Content>
-              <Card.Header
+      <Grid style={{ height: 'calc(100% - 55px)' }}>
+        <Grid.Column width={3} style={{ paddingBottom: 0 }}>
+          <Menu
+            vertical
+            fluid
+            style={{ height: '100%', minWidth: '275px' }}
+            borderless
+          >
+            <Menu.Item>
+              <Header as="h3">
+                {wallet?.name}
+                <Header.Subheader>{walletSubtitle()}</Header.Subheader>
+              </Header>
+            </Menu.Item>
+            <Divider />
+            <Menu.Item>
+              <Header
+                as="h2"
                 style={{
-                  lineHeight: 2,
+                  lineHeight: 1.2,
                   display: 'inline-block',
                   verticalAlign: 'middle',
                 }}
               >
                 {t('walletView:myAccounts')}
-              </Card.Header>
+              </Header>
               <CreateAccountModal
                 handleAccountCreate={handleAccountCreate}
-                trigger={<Button floated="right" icon="add" size="tiny" />}
+                trigger={<Button floated="right" icon="add" size="mini" />}
               />
-            </Card.Content>
-            <Menu vertical fluid>
-              {accountList.length &&
-                accountList.map((account, idx) => (
-                  <Menu.Item
-                    key={account.id}
-                    active={selectedAccount?.id === account.id}
-                    onClick={() => setSelectedAccount(accountList[idx])}
-                  >
-                    <SensitiveComponent>
-                      <Header as="h4">
-                        {account.name}
-                        <Header.Subheader>$999.00</Header.Subheader>
-                      </Header>
-                    </SensitiveComponent>
-                  </Menu.Item>
-                ))}
-            </Menu>
-          </Card>
+            </Menu.Item>
+            {accountList.length &&
+              accountList.map((account, idx) => (
+                <Menu.Item
+                  style={{ margin: 8 }}
+                  key={account.id}
+                  active={selectedAccount?.id === account.id}
+                  onClick={() => setSelectedAccount(accountList[idx])}
+                >
+                  <SensitiveComponent>
+                    <Header as="h3">
+                      {account.name}
+                      <Header.Subheader>$999.00</Header.Subheader>
+                    </Header>
+                  </SensitiveComponent>
+                </Menu.Item>
+              ))}
+          </Menu>
         </Grid.Column>
         <Grid.Column stretched width={12}>
           <Container style={{ paddingLeft: 60, paddingRight: 60 }}>
@@ -175,6 +172,57 @@ function WalletView() {
           </Container>
         </Grid.Column>
       </Grid>
+      {/* <Card onClick={() => null} fluid>
+              <Card.Content>
+                {isLoading ? (
+                  <p>loading..</p>
+                ) : (
+                  <>
+                    <Image src={walletImg} size="mini" floated="left" />
+                    <Card.Header>{wallet?.name}</Card.Header>
+                    <Card.Meta>
+                      <SensitiveComponent>
+                        {walletSubtitle()}
+                      </SensitiveComponent>
+                    </Card.Meta>
+                  </>
+                )}
+              </Card.Content>
+            </Card> */}
+      {/* <Card fluid>
+              <Card.Content>
+                <Card.Header
+                  style={{
+                    lineHeight: 2,
+                    display: 'inline-block',
+                    verticalAlign: 'middle',
+                  }}
+                >
+                  {t('walletView:myAccounts')}
+                </Card.Header>
+                <CreateAccountModal
+                  handleAccountCreate={handleAccountCreate}
+                  trigger={<Button floated="right" icon="add" size="tiny" />}
+                />
+              </Card.Content>
+              <Menu vertical fluid>
+                {accountList.length &&
+                  accountList.map((account, idx) => (
+                    <Menu.Item
+                      key={account.id}
+                      active={selectedAccount?.id === account.id}
+                      onClick={() => setSelectedAccount(accountList[idx])}
+                    >
+                      <SensitiveComponent>
+                        <Header as="h4">
+                          {account.name}
+                          <Header.Subheader>$999.00</Header.Subheader>
+                        </Header>
+                      </SensitiveComponent>
+                    </Menu.Item>
+                  ))}
+              </Menu>
+            </Card> */}
     </>
   );
 }

@@ -22,7 +22,7 @@ function AppBarTop({ attached }: AppBarTopProps) {
 
   return (
     <>
-      <Segment inverted attached={attached}>
+      <Segment inverted attached={attached} style={{ marginBottom: 0 }}>
         <Menu inverted secondary>
           <Menu.Item header>{t('productName')}</Menu.Item>
           <Menu.Menu position="right">
