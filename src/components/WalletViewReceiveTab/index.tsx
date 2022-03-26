@@ -44,9 +44,8 @@ function WalletViewReceiveTab({
     addressService
       .filterByAccountId(account.id)
       .then(setAddresses)
-      .catch((err) => console.log(`handle this m8: ${err}`));
-
-    setIsLoading(false);
+      .catch((err) => console.log(`handle this m8: ${err}`))
+      .finally(() => setIsLoading(false));
   }, [account.id]);
 
   const onNewAddress = async () => {

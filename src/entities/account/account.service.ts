@@ -35,13 +35,15 @@ export class AccountService {
       }),
     ]);
 
+    account.id = accountId;
+
     await this.addressService.create({
       deriveIdx: 0,
       accountId,
       address: addressStr,
     });
 
-    return Account.fromJson(account);
+    return account;
   }
 
   public async filterByWalletId(walletId: number): Promise<Account[]> {

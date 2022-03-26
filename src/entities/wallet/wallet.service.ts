@@ -33,7 +33,7 @@ export class WalletService {
       wallet.storeSeed(dto.password, seed),
       // If we support other coins we probably will stop creating accounts when creating wallets
       this.accountService.create(walletCtx, {
-        deriveIdx: 1, // dxie
+        deriveIdx: 0,
         name: 'Main',
         coinType: 429,
       }),

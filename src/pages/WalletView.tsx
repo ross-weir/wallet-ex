@@ -21,7 +21,7 @@ import SensitiveComponent from '@/components/SensitiveComponent';
 import walletImg from '@/components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
 import { useAuthenticatedWallet } from '@/hooks';
-import { Account, AccountService, Wallet } from '@/internal';
+import { Account, AccountService } from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
 function WalletView() {
@@ -87,6 +87,24 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
+  const handleAccountCreate = async ({ name }: { name: string }) => {
+    const latestAccount = accountList.reduce((prev, current) =>
+      prev.deriveIdx > current.deriveIdx ? prev : current,
+    );
+
+    const account = await accountService.create(
+      { wallet: wallet!, seed: seed! },
+      {
+        deriveIdx: latestAccount.deriveIdx + 1,
+        name,
+        coinType: 429,
+      },
+    );
+
+    setAccountList((accts) => [...accts, account]);
+    setSelectedAccount(account);
+  };
+
   return (
     <>
       <Grid stackable padded>
@@ -118,10 +136,7 @@ function WalletView() {
                 {t('walletView:myAccounts')}
               </Card.Header>
               <CreateAccountModal
-                walletCtx={{ wallet: wallet!, seed: seed! }}
-                onAccountCreated={(account) =>
-                  setAccountList((accts) => [...accts, account])
-                }
+                handleAccountCreate={handleAccountCreate}
                 trigger={<Button floated="right" icon="add" size="tiny" />}
               />
             </Card.Content>
