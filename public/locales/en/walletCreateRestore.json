@@ -1,6 +1,8 @@
 {
-  "createWallet": "Create Wallet",
-  "restoreWallet": "Restore Wallet",
+  "createWallet": "Create a new wallet",
+  "createWalletDescription": "Choose this option if this is your first time using cryptocurrency.",
+  "restoreWallet": "Restore an existing wallet",
+  "restoreWalletDescription": "Enter your mnemonic seed and optional mnemonic passphrase to restore an existing wallet.",
   "detailsForm": {
     "title": "Wallet details",
     "description": "Enter wallet information",

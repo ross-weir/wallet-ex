@@ -7,9 +7,9 @@ import {
   Wallet,
   WalletExDatabase,
 } from '@/internal';
+import { WalletContext } from '@/internal';
 
 import { CreateAccountDto } from './dto';
-import { WalletContext } from '@/internal';
 
 @Service()
 export class AccountService {
