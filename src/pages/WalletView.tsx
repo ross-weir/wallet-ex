@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router';
 import {
   Button,
   Card,
@@ -22,25 +21,16 @@ import SensitiveComponent from '@/components/SensitiveComponent';
 import walletImg from '@/components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
 import { useAuthenticatedWallet } from '@/hooks';
-import { Account, AccountService, Wallet } from '@/internal';
+import { Account, AccountService } from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
 function WalletView() {
-  // at this point we should be at /wallets/{id}/accounts/{accountId}
-  // the code that directs to WalletView should also have the id of it's first ever accountId
-  // If we're creating/restoring we will have the accountId because that creator/restoring will create
-  // the initial account.
-  // If we're coming from a wallet list then I guess that will also need to have details about the wallets
-  // accounts including the first wallet accounts Id - the wallet list page could list account count etc
-
-  // There should always be a selected account, not sure when we wouldn't want that to be the case
-  // Default to the first account for the wallet, there should always be one when creating wallet
   const { t } = useTranslation(['common', 'walletView']);
   const [isLoading, setIsLoading] = useState(true);
   const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
   const accountService = IocContainer.get(AccountService);
-  const { wallet } = useAuthenticatedWallet();
+  const { wallet, seed } = useAuthenticatedWallet();
 
   // TODO: loading indicator/state
   useEffect(() => {
@@ -82,7 +72,7 @@ function WalletView() {
       render: () => (
         <WalletViewReceiveTab
           account={selectedAccount as Account}
-          wallet={wallet as Wallet}
+          walletCtx={{ wallet: wallet!, seed: seed! }}
         />
       ),
     },
@@ -95,6 +85,24 @@ function WalletView() {
     const walletBalance = '$1,000';
 
     return `${acctCount} · ${walletBalance}`;
+  };
+
+  const handleAccountCreate = async ({ name }: { name: string }) => {
+    const latestAccount = accountList.reduce((prev, current) =>
+      prev.deriveIdx > current.deriveIdx ? prev : current,
+    );
+
+    const account = await accountService.create(
+      { wallet: wallet!, seed: seed! },
+      {
+        deriveIdx: latestAccount.deriveIdx + 1,
+        name,
+        coinType: 429,
+      },
+    );
+
+    setAccountList((accts) => [...accts, account]);
+    setSelectedAccount(account);
   };
 
   return (
@@ -128,10 +136,7 @@ function WalletView() {
                 {t('walletView:myAccounts')}
               </Card.Header>
               <CreateAccountModal
-                wallet={wallet!}
-                onAccountCreated={(account) =>
-                  setAccountList((accts) => [...accts, account])
-                }
+                handleAccountCreate={handleAccountCreate}
                 trigger={<Button floated="right" icon="add" size="tiny" />}
               />
             </Card.Content>

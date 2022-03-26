@@ -14,3 +14,4 @@ export * from '@/entities/account/account.service';
 export * from '@/entities/wallet/wallet.service';
 
 export * from '@/storage';
+export * from '@/types';

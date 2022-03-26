@@ -15,9 +15,3 @@ change me do not use me change me do not use me
 ```
 
 The wallet passwords are `testing123`.
-
-Run the app like so:
-
-```
-./src-tauri/target/release/wallet-x.exe --seed_db ./data/db-seed.json
-```

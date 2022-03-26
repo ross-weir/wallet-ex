@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
-import Container from 'typedi';
 
-import { Account, AccountService, Wallet } from '@/entities';
 import { capitalize } from '@/utils/fmt';
+
+export interface CreateAccountForm {
+  name: string;
+}
 
 export interface CreateAccountModalProps {
   trigger: React.ReactNode;
-  wallet: Wallet;
-  onAccountCreated: (account: Account) => void;
+  handleAccountCreate: (form: CreateAccountForm) => Promise<void>;
 }
 
 function CreateAccountModal({
   trigger,
-  onAccountCreated,
-  wallet,
+  handleAccountCreate,
 }: CreateAccountModalProps) {
   const { t } = useTranslation(['common', 'walletView']);
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,6 @@ function CreateAccountModal({
   const [accountNameError, setAccountNameError] = useState<
     string | undefined
   >();
-  const accountService = Container.get(AccountService);
 
   const validate = () => {
     if (!accountName) {
@@ -45,14 +44,10 @@ function CreateAccountModal({
     if (!validate()) return;
 
     setIsLoading(true);
-    try {
-      const newAccount = await accountService.create(wallet, {
-        deriveIdx: 2, // dxie
-        name: accountName,
-        coinType: 429,
-      });
 
-      onAccountCreated(newAccount);
+    try {
+      await handleAccountCreate({ name: accountName });
+
       setIsOpen(false);
       setAccountName('');
       setAccountNameError(undefined);

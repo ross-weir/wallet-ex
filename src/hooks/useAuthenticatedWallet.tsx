@@ -1,16 +1,11 @@
 import React from 'react';
 
-import { Wallet } from '@/internal';
-
-interface AuthenticatedWallet {
-  wallet: Wallet;
-  seed: Uint8Array;
-}
+import { Wallet, WalletContext } from '@/internal';
 
 interface IAuthenticatedWalletContext {
   wallet?: Wallet;
   seed?: Uint8Array;
-  setAuthenticatedWallet: (state: AuthenticatedWallet) => void;
+  setAuthenticatedWallet: (state: WalletContext) => void;
   clearWallet: () => void;
 }
 
@@ -33,7 +28,7 @@ function AuthenticatedWalletProvider({
     setSeed(undefined);
   };
 
-  const setAuthenticatedWallet = ({ wallet, seed }: AuthenticatedWallet) => {
+  const setAuthenticatedWallet = ({ wallet, seed }: WalletContext) => {
     setWallet(wallet);
     setSeed(seed);
   };

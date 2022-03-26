@@ -26,18 +26,20 @@ export class WalletService {
     // Id is used when storing the secret seed to get a unique storage key
     wallet.id = walletId;
 
+    const walletCtx = { wallet, seed };
+
     await Promise.all([
       // storeSeed needs the wallet.id to be set
       wallet.storeSeed(dto.password, seed),
       // If we support other coins we probably will stop creating accounts when creating wallets
-      this.accountService.create(wallet, {
-        deriveIdx: 1, // dxie
+      this.accountService.create(walletCtx, {
+        deriveIdx: 0,
         name: 'Main',
         coinType: 429,
       }),
     ]);
 
-    return { wallet, seed };
+    return walletCtx;
   }
 
   public async findOne(id: number): Promise<Wallet | undefined> {
