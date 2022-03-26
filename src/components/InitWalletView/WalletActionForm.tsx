@@ -121,15 +121,17 @@ function WalletActionForm() {
       validationSchema={getValidationSchema()}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         try {
-          setActiveStep(state.activeStep + 1);
-
           // last form submit
           if (state.activeStep === totalSteps - 1) {
-            handleSubmit(values);
-
-            resetState();
-            resetForm();
+            try {
+              await handleSubmit(values);
+            } catch (e) {
+              // display a error
+              // resetForm();
+            }
           }
+
+          setActiveStep(state.activeStep + 1);
         } finally {
           setSubmitting(false);
         }
