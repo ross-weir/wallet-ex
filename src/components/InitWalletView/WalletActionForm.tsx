@@ -129,9 +129,9 @@ function WalletActionForm() {
               // display a error
               // resetForm();
             }
+          } else {
+            setActiveStep(state.activeStep + 1);
           }
-
-          setActiveStep(state.activeStep + 1);
         } finally {
           setSubmitting(false);
         }
