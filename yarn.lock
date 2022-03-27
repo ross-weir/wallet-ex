@@ -12710,6 +12710,11 @@ mini-css-extract-plugin@0.11.3:
     schema-utils "^1.0.0"
     webpack-sources "^1.1.0"
 
+minidenticons@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/minidenticons/-/minidenticons-1.0.3.tgz#13c2393acc4dc508e00c64cd7ee0ff45afb9d028"
+  integrity sha512-I+wUlbARKcPQp9NCqX9yxilN5T7x6DgxzCyb3IR2QHAqPaU36cyPAKsExmRCRjxK9AD2nCI1zYKeOGNAkQnnvA==
+
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/minimalistic-assert/-/minimalistic-assert-1.0.1.tgz"

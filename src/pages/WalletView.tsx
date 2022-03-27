@@ -8,8 +8,11 @@ import {
   Header,
   Menu,
   Tab,
+  Image,
+  Label,
 } from 'semantic-ui-react';
 import { Container as IocContainer } from 'typedi';
+import { identicon } from 'minidenticons';
 
 import { AccountMenuItem } from '@/components/AccountMenuItem';
 import CreateAccountModal, {
@@ -19,7 +22,7 @@ import SensitiveComponent from '@/components/SensitiveComponent';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
 import { useAuthenticatedWallet } from '@/hooks';
 import { Account, AccountService } from '@/internal';
-import { capitalize } from '@/utils/fmt';
+import { capitalize, toBase16 } from '@/utils/fmt';
 
 function WalletView() {
   const { t } = useTranslation(['common', 'walletView']);
@@ -146,8 +149,22 @@ function WalletView() {
           >
             <Menu.Item>
               <Header as="h3">
+                <Image
+                  style={{ background: '#F0F0F0' }}
+                  bordered
+                  avatar
+                  circular
+                  size="huge"
+                  floated="left"
+                  src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                    identicon(toBase16(seed!), 80, 30),
+                  )}`}
+                />
                 {wallet?.name}
-                <Header.Subheader>{walletSubtitle()}</Header.Subheader>
+                <Label size="tiny">Software wallet</Label>
+                <Header.Subheader style={{ marginTop: 8 }}>
+                  {walletSubtitle()}
+                </Header.Subheader>
               </Header>
             </Menu.Item>
             <Divider />
@@ -178,7 +195,6 @@ function WalletView() {
           </Menu>
           <Menu
             vertical
-            fluid
             style={{
               minWidth: '300px',
               height: 120,
