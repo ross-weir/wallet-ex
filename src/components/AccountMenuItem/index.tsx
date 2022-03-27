@@ -1,4 +1,4 @@
-import { Header, Image,Menu } from 'semantic-ui-react';
+import { Header, Image, Menu } from 'semantic-ui-react';
 
 import {
   Account,
@@ -19,7 +19,6 @@ export function AccountMenuItem({
   active,
   onClick,
 }: AccountMenuItemProps) {
-  console.log(coinTypeToBlockchain(account.coinType), account.network);
   return (
     <Menu.Item
       style={{ margin: 8 }}
