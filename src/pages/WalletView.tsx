@@ -1,24 +1,21 @@
-// nested routes:
-// - send, recv, transactions inside <Outlet />
-
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
-  Card,
   Container,
   Divider,
   Grid,
   Header,
-  Image,
   Menu,
   Tab,
 } from 'semantic-ui-react';
 import { Container as IocContainer } from 'typedi';
 
-import CreateAccountModal from '@/components/CreateAccountModal';
+import { AccountMenuItem } from '@/components/AccountMenuItem';
+import CreateAccountModal, {
+  CreateAccountForm,
+} from '@/components/CreateAccountModal';
 import SensitiveComponent from '@/components/SensitiveComponent';
-import walletImg from '@/components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
 import { useAuthenticatedWallet } from '@/hooks';
 import { Account, AccountService } from '@/internal';
@@ -87,17 +84,45 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
-  const handleAccountCreate = async ({ name }: { name: string }) => {
-    const latestAccount = accountList.reduce((prev, current) =>
-      prev.deriveIdx > current.deriveIdx ? prev : current,
+  const getDeriveIndex = (coinType: number, network: string) => {
+    const hasExisting = accountList.find(
+      (a) => a.coinType === coinType && a.network === network,
     );
+
+    if (!hasExisting) {
+      return 0;
+    }
+
+    const latestAccount = accountList.reduce((prev, current) => {
+      if (
+        prev.network === current.network &&
+        prev.coinType === current.coinType
+      ) {
+        return prev.deriveIdx > current.deriveIdx ? prev : current;
+      }
+
+      return prev;
+    });
+
+    return latestAccount.deriveIdx + 1;
+  };
+
+  const handleAccountCreate = async ({
+    name,
+    coinType,
+    network,
+  }: CreateAccountForm) => {
+    const deriveIdx = getDeriveIndex(coinType, network);
+
+    console.log(name, coinType, network);
 
     const account = await accountService.create(
       { wallet: wallet!, seed: seed! },
       {
-        deriveIdx: latestAccount.deriveIdx + 1,
+        deriveIdx,
         name,
-        coinType: 429,
+        network,
+        coinType,
       },
     );
 
@@ -107,13 +132,17 @@ function WalletView() {
 
   return (
     <>
-      <Grid style={{ height: 'calc(100% - 55px)' }}>
+      {/* appbar + bottom menu */}
+      <Grid style={{ height: 'calc(100% - (55px + 120px))' }}>
         <Grid.Column width={3} style={{ paddingBottom: 0 }}>
           <Menu
             vertical
-            fluid
-            style={{ height: '100%', minWidth: '275px' }}
+            style={{
+              height: '100%',
+              minWidth: '300px',
+            }}
             borderless
+            attached="top"
           >
             <Menu.Item>
               <Header as="h3">
@@ -138,22 +167,32 @@ function WalletView() {
                 trigger={<Button floated="right" icon="add" size="mini" />}
               />
             </Menu.Item>
-            {accountList.length &&
+            {!!accountList.length &&
               accountList.map((account, idx) => (
-                <Menu.Item
-                  style={{ margin: 8 }}
-                  key={account.id}
+                <AccountMenuItem
+                  account={account}
                   active={selectedAccount?.id === account.id}
                   onClick={() => setSelectedAccount(accountList[idx])}
-                >
-                  <SensitiveComponent>
-                    <Header as="h3">
-                      {account.name}
-                      <Header.Subheader>$999.00</Header.Subheader>
-                    </Header>
-                  </SensitiveComponent>
-                </Menu.Item>
+                />
               ))}
+          </Menu>
+          <Menu
+            vertical
+            fluid
+            style={{
+              minWidth: '300px',
+              height: 120,
+            }}
+            attached
+          >
+            <Menu.Item>
+              <Header size="small">
+                Local Infrastructure
+                <Header.Subheader>
+                  No locally running infrastructure.
+                </Header.Subheader>
+              </Header>
+            </Menu.Item>
           </Menu>
         </Grid.Column>
         <Grid.Column stretched width={12}>
@@ -172,57 +211,6 @@ function WalletView() {
           </Container>
         </Grid.Column>
       </Grid>
-      {/* <Card onClick={() => null} fluid>
-              <Card.Content>
-                {isLoading ? (
-                  <p>loading..</p>
-                ) : (
-                  <>
-                    <Image src={walletImg} size="mini" floated="left" />
-                    <Card.Header>{wallet?.name}</Card.Header>
-                    <Card.Meta>
-                      <SensitiveComponent>
-                        {walletSubtitle()}
-                      </SensitiveComponent>
-                    </Card.Meta>
-                  </>
-                )}
-              </Card.Content>
-            </Card> */}
-      {/* <Card fluid>
-              <Card.Content>
-                <Card.Header
-                  style={{
-                    lineHeight: 2,
-                    display: 'inline-block',
-                    verticalAlign: 'middle',
-                  }}
-                >
-                  {t('walletView:myAccounts')}
-                </Card.Header>
-                <CreateAccountModal
-                  handleAccountCreate={handleAccountCreate}
-                  trigger={<Button floated="right" icon="add" size="tiny" />}
-                />
-              </Card.Content>
-              <Menu vertical fluid>
-                {accountList.length &&
-                  accountList.map((account, idx) => (
-                    <Menu.Item
-                      key={account.id}
-                      active={selectedAccount?.id === account.id}
-                      onClick={() => setSelectedAccount(accountList[idx])}
-                    >
-                      <SensitiveComponent>
-                        <Header as="h4">
-                          {account.name}
-                          <Header.Subheader>$999.00</Header.Subheader>
-                        </Header>
-                      </SensitiveComponent>
-                    </Menu.Item>
-                  ))}
-              </Menu>
-            </Card> */}
     </>
   );
 }

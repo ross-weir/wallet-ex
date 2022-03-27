@@ -1,5 +1,4 @@
 import { Ergo, getErgo } from '@/ergo';
-import { getAppConfig } from '@/internal';
 
 import { getHdStandardForWallet, HdStandard } from './hdStandard';
 import { DeriveAddressArgs, WalletInterface } from './walletInterface';
@@ -26,9 +25,7 @@ export class LocalWalletInterface implements WalletInterface {
       );
     }
 
-    const conf = await getAppConfig().get();
-
-    const network = conf?.network;
+    const network = args.hdStandardArgs.network;
 
     if (!network) {
       throw new Error('Failed to retrieve network');

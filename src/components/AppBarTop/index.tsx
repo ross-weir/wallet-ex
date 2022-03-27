@@ -9,7 +9,7 @@ export interface AppBarTopProps {
 }
 
 function AppBarTop({ attached }: AppBarTopProps) {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'appBarTop']);
   const { wallet, clearWallet } = useAuthenticatedWallet();
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
   const navigate = useNavigate();
@@ -24,18 +24,28 @@ function AppBarTop({ attached }: AppBarTopProps) {
     <>
       <Segment inverted attached={attached} style={{ marginBottom: 0 }}>
         <Menu inverted secondary>
-          <Menu.Item header>{t('productName')}</Menu.Item>
+          <Menu.Item header>{t('common:productName')}</Menu.Item>
           <Menu.Menu position="right">
-            <Menu.Item
-              icon={sensitiveModeEnabled ? 'eye slash' : 'eye'}
-              onClick={() => setSensitiveMode(!sensitiveModeEnabled)}
+            <Popup
+              trigger={
+                <Menu.Item
+                  icon={sensitiveModeEnabled ? 'eye slash' : 'eye'}
+                  onClick={() => setSensitiveMode(!sensitiveModeEnabled)}
+                />
+              }
+              content={t(
+                `appBarTop:${
+                  sensitiveModeEnabled ? 'showSensitive' : 'hideSensitive'
+                }`,
+              )}
             />
+
             <Menu.Item icon="cog" />
             {!!wallet && (
               <Popup
                 trigger={<Menu.Item icon="log out" onClick={handleLogout} />}
                 size="small"
-                content="Logout of wallet"
+                content={t('appBarTop:logout')}
               />
             )}
           </Menu.Menu>

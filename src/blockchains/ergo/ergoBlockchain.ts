@@ -32,7 +32,7 @@ interface ErgoLocalDependencies {
 }
 
 const setupLocalDependencies = async (
-  cfg: Omit<BlockchainFactoryConfig, 'useLocalNode'>,
+  cfg: Omit<BlockchainFactoryConfig, 'useLocalInfra'>,
 ): Promise<ErgoLocalDependencies> => {
   const node = await ergoNodeFactory(cfg);
   const rosettaApi = await ergoRosettaApiFactory({
@@ -51,9 +51,9 @@ const setupLocalDependencies = async (
 
 const getDependencyManager = ({
   baseDir,
-  useLocalNode,
+  useLocalInfra,
 }: BlockchainFactoryConfig): DependencyManager | undefined => {
-  if (!useLocalNode) {
+  if (!useLocalInfra) {
     return;
   }
 
@@ -137,11 +137,11 @@ const getSyncStatus = async (b: Blockchain): Promise<BlockchainSyncStatus> => {
 export const ergoBlockchainFactory = async (
   cfg: BlockchainFactoryConfig,
 ): Promise<Blockchain> => {
-  const { baseDir, useLocalNode, network } = cfg;
+  const { baseDir, useLocalInfra, network } = cfg;
   const sidecars: SidecarEntry[] = [];
   let client: BlockchainClient = new ErgoExplorerClient(network);
 
-  if (useLocalNode) {
+  if (useLocalInfra) {
     const {
       node,
       rosettaApi,
@@ -160,7 +160,7 @@ export const ergoBlockchainFactory = async (
     baseDir,
     network,
     sidecars,
-    useLocalNode,
+    useLocalInfra,
     client,
     capabilities,
     getSyncStatus,

@@ -7,7 +7,6 @@ import Container from 'typedi';
 import { Account, Wallet } from '@/entities';
 import { db } from '@/storage';
 
-import { getBlockchain } from '../blockchains';
 import { SupportedBlockchain } from '../blockchains/types';
 import { BackendServiceToken } from '../ioc';
 import { DependencyManager, RemoteDependency } from '../services';
@@ -17,28 +16,6 @@ export function Test() {
   useEffect(() => {
     const run = async () => {
       const backend = Container.get(BackendServiceToken);
-
-      const wallet = Wallet.fromJson({
-        name: 'test',
-        password: 'test',
-        interface: 'local',
-      });
-
-      const walletId = await db.wallets.add(wallet);
-
-      const wallet2 = await db.wallets.get(walletId);
-      console.log('test', wallet2);
-
-      const acct = Account.fromJson({
-        name: 'test',
-        deriveIdx: 0,
-        coinType: 429,
-        walletId: 1,
-      });
-      const acctId = await db.accounts.add(acct);
-
-      const acctGet = await db.accounts.get(acctId);
-      console.log(acctGet);
     };
 
     run();
