@@ -12,6 +12,7 @@ if (typeof global.TextDecoder === 'undefined') {
 }
 
 if (typeof global.crypto === 'undefined') {
+  // requires node version > 15
   const crypto = require('crypto');
   global.crypto = crypto.webcrypto;
 }

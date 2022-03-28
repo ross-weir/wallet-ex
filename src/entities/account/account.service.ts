@@ -1,7 +1,12 @@
 import { Service } from 'typedi';
 
-import { Account, AddressService, db, WalletExDatabase } from '@/internal';
-import { WalletContext } from '@/internal';
+import {
+  Account,
+  AddressService,
+  db,
+  WalletExDatabase,
+  WalletContext,
+} from '@/internal';
 
 import { CreateAccountDto } from './dto';
 
@@ -48,5 +53,40 @@ export class AccountService {
 
   public async filterByWalletId(walletId: number): Promise<Account[]> {
     return this.db.accounts.where('walletId').equals(walletId).toArray();
+  }
+
+  /**
+   * Given a list of accounts and a cointype + network, determine the
+   * next derive index for the cointype + network combo.
+   *
+   * @param accounts List of existing accounts
+   * @param coinType Coin type we're deriving for
+   * @param network Blockchain network we're deriving for (testnet vs mainnet, etc)
+   * @returns The next index to use for deriviation
+   */
+  public getNextDeriveIndex(
+    accounts: Account[],
+    coinType: number,
+    network: string,
+  ): number {
+    const hasExisting = accounts.find(
+      (a) => a.coinType === coinType && a.network === network,
+    );
+
+    if (!hasExisting) {
+      return 0;
+    }
+
+    // latest account matching coinType/network
+    const latestAccount = accounts.reduce((prev, current) => {
+      if (network === current.network && coinType === current.coinType) {
+        return prev.deriveIdx > current.deriveIdx ? prev : current;
+      }
+
+      // different coin+network combo
+      return prev;
+    });
+
+    return latestAccount.deriveIdx + 1;
   }
 }

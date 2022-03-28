@@ -87,38 +87,16 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
-  const getDeriveIndex = (coinType: number, network: string) => {
-    const hasExisting = accountList.find(
-      (a) => a.coinType === coinType && a.network === network,
-    );
-
-    if (!hasExisting) {
-      return 0;
-    }
-
-    const latestAccount = accountList.reduce((prev, current) => {
-      if (
-        prev.network === current.network &&
-        prev.coinType === current.coinType
-      ) {
-        return prev.deriveIdx > current.deriveIdx ? prev : current;
-      }
-
-      return prev;
-    });
-
-    return latestAccount.deriveIdx + 1;
-  };
-
   const handleAccountCreate = async ({
     name,
     coinType,
     network,
   }: CreateAccountForm) => {
-    const deriveIdx = getDeriveIndex(coinType, network);
-
-    console.log(name, coinType, network);
-
+    const deriveIdx = accountService.getNextDeriveIndex(
+      accountList,
+      coinType,
+      network,
+    );
     const account = await accountService.create(
       { wallet: wallet!, seed: seed! },
       {
