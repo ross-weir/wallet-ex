@@ -36,7 +36,7 @@ export function AccountMenuItem({
           floated="left"
         />
         <span style={{ lineHeight: 2 }}>
-          <Header as="h3" style={{ marginLeft: 35 }}>
+          <Header as="h3" style={{ marginLeft: 38 }}>
             {account.name}
             <Header.Subheader style={{ lineHeight: 1.6 }}>
               Ergo Testnet

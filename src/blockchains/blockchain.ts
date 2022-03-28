@@ -49,6 +49,7 @@ export class Blockchain extends EventEmitter {
 
   public async initialize(): Promise<void> {
     this.updateState(BlockchainState.Initializing);
+
     const { sidecars, dependencyManager } = this.config;
 
     this.updateState(BlockchainState.CheckingDependencies);
