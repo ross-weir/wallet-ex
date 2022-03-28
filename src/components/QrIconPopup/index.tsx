@@ -1,3 +1,4 @@
+import { SupportedBlockchain } from '@/internal';
 import QRCode from 'qrcode.react';
 import { Icon, Popup } from 'semantic-ui-react';
 
@@ -5,7 +6,7 @@ export interface QrIconPopupProps {
   value: string;
   iconStyle?: React.CSSProperties;
   // controls the QR image settings
-  coinType?: number;
+  blockchain?: SupportedBlockchain;
 }
 
 interface QrImgSettings {
@@ -15,24 +16,23 @@ interface QrImgSettings {
   width?: number;
 }
 
-// coinType -> image settings
-const qrImageMap: Record<number, QrImgSettings> = {
-  429: {
+const qrImageMap: Record<SupportedBlockchain, QrImgSettings> = {
+  [SupportedBlockchain.Ergo]: {
     excavate: true,
     height: 50,
     width: 50,
-    src: 'https://raw.githubusercontent.com/ergoplatform/awesome-ergo/master/graphics/Logo/symbol_bold__1080px__orange.svg',
+    src: '/icons/blockchains/ergo/ergo_black.svg',
   },
 };
 
-function QrIconPopup({ value, iconStyle = {}, coinType }: QrIconPopupProps) {
+function QrIconPopup({ value, iconStyle = {}, blockchain }: QrIconPopupProps) {
   return (
     <Popup
       trigger={<Icon name="qrcode" link style={iconStyle} />}
       content={
         <QRCode
           value={value}
-          imageSettings={coinType ? qrImageMap[coinType] : undefined}
+          imageSettings={blockchain ? qrImageMap[blockchain] : undefined}
         />
       }
       on="hover"

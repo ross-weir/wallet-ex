@@ -1,6 +1,8 @@
+import { SupportedBlockchain } from '@/internal';
+
 export class CreateAccountDto {
   name!: string;
-  coinType!: number;
+  blockchainName!: SupportedBlockchain;
   deriveIdx!: number;
   network!: string;
 }

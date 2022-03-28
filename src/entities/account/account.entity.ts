@@ -1,12 +1,17 @@
 import { plainToInstance } from 'class-transformer';
 
-import { BaseEntity, Blockchain, getBlockchain } from '@/internal';
+import {
+  BaseEntity,
+  Blockchain,
+  getBlockchain,
+  SupportedBlockchain,
+} from '@/internal';
 
 export interface IAccount {
   id?: number;
   name: string;
   deriveIdx: number;
-  coinType: number;
+  blockchainName: SupportedBlockchain;
   network: string;
   walletId: number;
 }
@@ -14,12 +19,12 @@ export interface IAccount {
 export class Account extends BaseEntity implements IAccount {
   name!: string;
   deriveIdx!: number;
-  coinType!: number;
+  blockchainName!: SupportedBlockchain;
   network!: string;
   walletId!: number;
 
-  public blockchain(): Blockchain | undefined {
-    return getBlockchain(this.coinType, this.network);
+  public getBlockchain(): Blockchain | undefined {
+    return getBlockchain(this.blockchainName, this.network);
   }
 
   public static fromJson(obj: IAccount): Account {

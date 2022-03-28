@@ -1,3 +1,4 @@
+import { identicon } from 'minidenticons';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,13 +7,12 @@ import {
   Divider,
   Grid,
   Header,
-  Menu,
-  Tab,
   Image,
   Label,
+  Menu,
+  Tab,
 } from 'semantic-ui-react';
 import { Container as IocContainer } from 'typedi';
-import { identicon } from 'minidenticons';
 
 import { AccountMenuItem } from '@/components/AccountMenuItem';
 import CreateAccountModal, {
@@ -89,12 +89,12 @@ function WalletView() {
 
   const handleAccountCreate = async ({
     name,
-    coinType,
+    blockchain,
     network,
   }: CreateAccountForm) => {
     const deriveIdx = accountService.getNextDeriveIndex(
       accountList,
-      coinType,
+      blockchain,
       network,
     );
     const account = await accountService.create(
@@ -103,7 +103,7 @@ function WalletView() {
         deriveIdx,
         name,
         network,
-        coinType,
+        blockchainName: blockchain,
       },
     );
 

@@ -20,10 +20,14 @@ const factoryMap: Record<SupportedBlockchain, BlockchainFactoryFn> = {
   [SupportedBlockchain.Ergo]: ergoBlockchainFactory,
 };
 
+const supportedNetworksMap: Record<SupportedBlockchain, string[]> = {
+  [SupportedBlockchain.Ergo]: ['mainnet', 'testnet'],
+};
+
 /**
  * @returns Array of supported blockchains/coins
  */
-export const getSupportedBlockchains = (): string[] =>
+export const getSupportedBlockchains = (): SupportedBlockchain[] =>
   Object.values(SupportedBlockchain);
 
 /**
@@ -36,28 +40,7 @@ export const getSupportedBlockchains = (): string[] =>
  */
 export const getNetworksForBlockchain = (
   blockchain: SupportedBlockchain,
-): string[] =>
-  ({
-    [SupportedBlockchain.Ergo]: ['mainnet', 'testnet'],
-  }[blockchain]);
-
-/**
- * Get a name from the supplied coin type.
- *
- * List of coins: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
- *
- * @param coinType SLIP-0044 cointype
- * @returns Name of the blockchain belonging to the coinType
- */
-export const coinTypeToBlockchain = (coinType: number): string => {
-  for (const [chain, coin] of Object.entries(bip44Map)) {
-    if (coinType === coin.coinType) {
-      return chain;
-    }
-  }
-
-  return '';
-};
+): string[] => supportedNetworksMap[blockchain];
 
 /**
  * Get an icon path based on the blockchain & network.
@@ -69,7 +52,7 @@ export const coinTypeToBlockchain = (coinType: number): string => {
  * @returns Path to an icon in the public directory
  */
 export const getIconForBlockchain = (
-  blockchain: string,
+  blockchain: SupportedBlockchain,
   network: string,
 ): string => iconMap[blockchain][network];
 
@@ -81,26 +64,20 @@ const blockchainCache: Partial<
 /**
  * Get an instance of `Blockchain` for the supplied blockchainId.
  *
- * @param blockchainId Name | coinType of the blockchain
+ * @param blockchain name of the blockchain
  * @param network Network of the blockchain
  * @returns An instance of `Blockchain` if it has been created
  * otherwise `undefined`.
  */
 export const getBlockchain = (
-  blockchainId: string | number,
+  blockchain: SupportedBlockchain,
   network: string,
 ): Blockchain | undefined => {
-  if (typeof blockchainId === 'number') {
-    blockchainId = coinTypeToBlockchain(blockchainId);
-  }
-
-  const bc = blockchainId as SupportedBlockchain;
-
-  if (!blockchainCache[bc]) {
+  if (!blockchainCache[blockchain]) {
     return;
   }
 
-  return blockchainCache[bc]![network];
+  return blockchainCache[blockchain]![network];
 };
 
 /**

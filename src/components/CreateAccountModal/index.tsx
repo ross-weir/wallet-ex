@@ -13,7 +13,7 @@ import { capitalize } from '@/utils/fmt';
 
 export interface CreateAccountForm {
   name: string;
-  coinType: number;
+  blockchain: SupportedBlockchain;
   network: string;
 }
 
@@ -41,12 +41,10 @@ function CreateAccountModal({
     const opts = [];
 
     for (const blockchain of getSupportedBlockchains()) {
-      const bc = blockchain as SupportedBlockchain;
-      const { coinType } = bip44Map[blockchain];
-      const networks = getNetworksForBlockchain(bc);
+      const networks = getNetworksForBlockchain(blockchain);
 
       for (const network of networks) {
-        const id = `${coinType}.${network}`;
+        const id = `${blockchain}.${network}`;
 
         opts.push({
           key: id,
@@ -88,11 +86,11 @@ function CreateAccountModal({
     setIsLoading(true);
 
     try {
-      const [coinType, network] = coin.split('.');
+      const [blockchain, network] = coin.split('.');
 
       await handleAccountCreate({
         name: accountName,
-        coinType: Number(coinType),
+        blockchain: blockchain as SupportedBlockchain,
         network,
       });
 

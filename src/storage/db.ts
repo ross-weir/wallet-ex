@@ -12,7 +12,7 @@ export class WalletExDatabase extends Dexie {
 
     this.version(1).stores({
       wallets: '++id, name, password, interface',
-      accounts: '++id, name, coinType, deriveIdx, walletId, network',
+      accounts: '++id, name, blockchainName, deriveIdx, walletId, network',
       addresses: '++id, address, deriveIdx, accountId, balance',
     });
 

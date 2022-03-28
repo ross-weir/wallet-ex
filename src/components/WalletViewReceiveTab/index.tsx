@@ -64,7 +64,7 @@ function WalletViewReceiveTab({
           accountId: account.id,
           deriveIdx: addressIdx,
         },
-        account.blockchain(),
+        account.getBlockchain(),
       );
 
       setAddresses((addrs) => [...addrs, addr]);
@@ -104,7 +104,7 @@ function WalletViewReceiveTab({
                     />
                     <QrIconPopup
                       value={latestAddress.address}
-                      coinType={account.coinType}
+                      blockchain={account.blockchainName}
                     />
                   </div>
                 </SensitiveComponent>
@@ -154,7 +154,7 @@ function WalletViewReceiveTab({
                         />
                         <QrIconPopup
                           value={addr.address}
-                          coinType={account.coinType}
+                          blockchain={account.blockchainName}
                         />
                       </SensitiveComponent>
                     </Table.Cell>
