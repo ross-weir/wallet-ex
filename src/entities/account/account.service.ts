@@ -61,17 +61,17 @@ export class AccountService {
    * next derive index for the cointype + network combo.
    *
    * @param accounts List of existing accounts
-   * @param blockchain blockchain name we're deriving for
+   * @param blockchainName blockchain name we're deriving for
    * @param network Blockchain network we're deriving for (testnet vs mainnet, etc)
    * @returns The next index to use for deriviation
    */
   public getNextDeriveIndex(
     accounts: Account[],
-    blockchain: SupportedBlockchain,
+    blockchainName: SupportedBlockchain,
     network: string,
   ): number {
     const hasExisting = accounts.find(
-      (a) => a.blockchainName === blockchain && a.network === network,
+      (a) => a.blockchainName === blockchainName && a.network === network,
     );
 
     if (!hasExisting) {
@@ -82,7 +82,7 @@ export class AccountService {
     const latestAccount = accounts.reduce((prev, current) => {
       if (
         network === current.network &&
-        blockchain === current.blockchainName
+        blockchainName === current.blockchainName
       ) {
         return prev.deriveIdx > current.deriveIdx ? prev : current;
       }

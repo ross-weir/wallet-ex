@@ -89,12 +89,12 @@ function WalletView() {
 
   const handleAccountCreate = async ({
     name,
-    blockchain,
+    blockchainName,
     network,
   }: CreateAccountForm) => {
     const deriveIdx = accountService.getNextDeriveIndex(
       accountList,
-      blockchain,
+      blockchainName,
       network,
     );
     const account = await accountService.create(
@@ -103,7 +103,7 @@ function WalletView() {
         deriveIdx,
         name,
         network,
-        blockchainName: blockchain,
+        blockchainName,
       },
     );
 

@@ -12,8 +12,8 @@ export interface AccountMenuItemProps {
 }
 
 function AccountSubtitle({ account }: { account: Account }) {
-  const { blockchainName: blockchain, network, deriveIdx } = account;
-  const subtitle = `${capitalize(blockchain)} ${capitalize(
+  const { blockchainName, network, deriveIdx } = account;
+  const subtitle = `${capitalize(blockchainName)} ${capitalize(
     network,
   )} - #${deriveIdx}`;
 
