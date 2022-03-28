@@ -16,6 +16,7 @@ export const initCfg = {
     'initializing',
     'node',
     'appBarTop',
+    'form',
   ],
   defaultNS: 'common',
   fallbackLng: 'en',

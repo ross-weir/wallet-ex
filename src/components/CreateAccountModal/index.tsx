@@ -3,17 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
 
 import {
-  bip44Map,
   getIconForBlockchain,
   getNetworksForBlockchain,
   getSupportedBlockchains,
   SupportedBlockchain,
 } from '@/internal';
 import { capitalize } from '@/utils/fmt';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 export interface CreateAccountForm {
   name: string;
-  blockchain: SupportedBlockchain;
+  blockchainName: SupportedBlockchain;
   network: string;
 }
 
@@ -26,33 +27,25 @@ function CreateAccountModal({
   trigger,
   handleAccountCreate,
 }: CreateAccountModalProps) {
-  const { t } = useTranslation(['common', 'walletView']);
+  const { t } = useTranslation(['common', 'walletView', 'form']);
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  // TODO: use formik if more fields added
-  const [accountName, setAccountName] = useState('');
-  const [coin, setCoin] = useState('');
-  const [accountNameError, setAccountNameError] = useState<
-    string | undefined
-  >();
-  const [coinError, setCoinError] = useState<string | undefined>();
 
   const coinOpts = (): any[] => {
     const opts = [];
 
-    for (const blockchain of getSupportedBlockchains()) {
-      const networks = getNetworksForBlockchain(blockchain);
+    for (const blockchainName of getSupportedBlockchains()) {
+      const networks = getNetworksForBlockchain(blockchainName);
 
       for (const network of networks) {
-        const id = `${blockchain}.${network}`;
+        const id = `${blockchainName}.${network}`;
 
         opts.push({
           key: id,
-          text: `${capitalize(blockchain)} (${capitalize(network)})`,
+          text: `${capitalize(blockchainName)} ${capitalize(network)}`,
           value: id,
           image: {
             avatar: true,
-            src: getIconForBlockchain(blockchain, network),
+            src: getIconForBlockchain(blockchainName, network),
           },
         });
       }
@@ -61,112 +54,101 @@ function CreateAccountModal({
     return opts;
   };
 
-  const validate = () => {
-    if (!accountName) {
-      setAccountNameError(t('walletView:createAccount:nameRequiredErr'));
-      return false;
-    }
-
-    if (accountName.length > 20) {
-      setAccountNameError(t('walletView:createAccount:nameCharacterLimitErr'));
-      return false;
-    }
-
-    if (!coin) {
-      setCoinError('Must select coin');
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) return;
-
-    setIsLoading(true);
-
-    try {
-      const [blockchain, network] = coin.split('.');
-
-      await handleAccountCreate({
-        name: accountName,
-        blockchain: blockchain as SupportedBlockchain,
-        network,
-      });
-
-      setIsOpen(false);
-      setAccountName('');
-      setCoin('');
-      setAccountNameError(undefined);
-      setCoinError(undefined);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleInput = (e: any) => {
-    setAccountNameError(undefined);
-    setAccountName(e.target.value);
-  };
-
-  const handleKeyUp = (e: any) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false);
-    }
-  };
-
-  const handleCoinSelect = (e: any, { name, value }: any) => {
-    setCoinError(undefined);
-    setCoin(value);
-  };
+  const schema = Yup.object().shape({
+    accountName: Yup.string()
+      .required(t('walletView:createAccount:nameRequiredErr'))
+      .max(20, t('walletView:createAccount:nameCharacterLimitErr')),
+    coin: Yup.string().required(
+      t('form:error:required', { fieldName: 'Coin' }),
+    ),
+  });
 
   return (
-    <Modal
-      open={isOpen}
-      trigger={trigger}
-      size="small"
-      onClose={() => setIsOpen(false)}
-      onOpen={() => setIsOpen(true)}
+    <Formik
+      initialValues={{ accountName: '', coin: '' }}
+      validationSchema={schema}
+      onSubmit={async ({ coin, accountName }, { setSubmitting, resetForm }) => {
+        try {
+          const [blockchain, network] = coin.split('.');
+
+          await handleAccountCreate({
+            name: accountName,
+            blockchainName: blockchain as SupportedBlockchain,
+            network,
+          });
+
+          setIsOpen(false);
+          resetForm();
+        } finally {
+          setSubmitting(false);
+        }
+      }}
     >
-      <Modal.Header>{t('walletView:createAccount:title')}</Modal.Header>
-      <Modal.Content>
-        <Form>
-          <Form.Input
-            name="accountName"
-            value={accountName}
-            error={accountNameError}
-            label={t('walletView:createAccount:nameLabel')}
-            placeholder={t('walletView:createAccount:namePlaceholder')}
-            onChange={handleInput}
-            onKeyUp={handleKeyUp}
-            required
-          />
-          <Form.Dropdown
-            name="coin"
-            label="Coin"
-            value={coin}
-            error={coinError}
-            options={coinOpts()}
-            selection
-            required
-            onChange={handleCoinSelect}
-          />
-        </Form>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button onClick={() => setIsOpen(false)} tabIndex={100}>
-          {capitalize(t('common:cancel'))}
-        </Button>
-        <Button
-          primary
-          loading={isLoading}
-          disabled={isLoading}
-          onClick={handleSubmit}
+      {({
+        values,
+        errors,
+        touched,
+        getFieldProps,
+        handleSubmit,
+        handleBlur,
+        setFieldValue,
+        isSubmitting,
+      }) => (
+        <Modal
+          open={isOpen}
+          as={Form}
+          trigger={trigger}
+          size="small"
+          onClose={() => setIsOpen(false)}
+          onOpen={() => setIsOpen(true)}
+          onSubmit={handleSubmit}
         >
-          {capitalize(t('common:submit'))}
-        </Button>
-      </Modal.Actions>
-    </Modal>
+          <Modal.Header>{t('walletView:createAccount:title')}</Modal.Header>
+          <Modal.Content>
+            <Form.Input
+              required
+              id="accountName"
+              label={t('walletView:createAccount:nameLabel')}
+              placeholder={t('walletView:createAccount:namePlaceholder')}
+              error={touched.accountName && errors.accountName}
+              {...getFieldProps('accountName')}
+            />
+            {/* Cant use getFieldProps because this dropdown doesn't use a 'input' element */}
+            <Form.Dropdown
+              id="coin"
+              label="Coin"
+              required
+              options={coinOpts()}
+              placeholder={t('form:placeholder:select', { fieldName: 'Coin' })}
+              selection
+              error={touched.coin && errors.coin}
+              value={values.coin}
+              onBlur={handleBlur}
+              onChange={(_, { value }) => setFieldValue('coin', value)}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              onClick={() => setIsOpen(false)}
+              tabIndex={100}
+              type="button"
+              disabled={isSubmitting}
+            >
+              {capitalize(t('common:cancel'))}
+            </Button>
+            <Button
+              id="submit"
+              primary
+              loading={isSubmitting}
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {capitalize(t('common:submit'))}
+            </Button>
+          </Modal.Actions>
+        </Modal>
+      )}
+    </Formik>
   );
 }
 
