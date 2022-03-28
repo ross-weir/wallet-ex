@@ -15,6 +15,7 @@ export const initCfg = {
     'modeSelection',
     'initializing',
     'node',
+    'appBarTop',
   ],
   defaultNS: 'common',
   fallbackLng: 'en',

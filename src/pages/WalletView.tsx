@@ -1,28 +1,28 @@
-// nested routes:
-// - send, recv, transactions inside <Outlet />
-
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
-  Card,
   Container,
   Divider,
   Grid,
   Header,
-  Image,
   Menu,
   Tab,
+  Image,
+  Label,
 } from 'semantic-ui-react';
 import { Container as IocContainer } from 'typedi';
+import { identicon } from 'minidenticons';
 
-import CreateAccountModal from '@/components/CreateAccountModal';
+import { AccountMenuItem } from '@/components/AccountMenuItem';
+import CreateAccountModal, {
+  CreateAccountForm,
+} from '@/components/CreateAccountModal';
 import SensitiveComponent from '@/components/SensitiveComponent';
-import walletImg from '@/components/WalletDetailCard/wallet.svg';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
 import { useAuthenticatedWallet } from '@/hooks';
 import { Account, AccountService } from '@/internal';
-import { capitalize } from '@/utils/fmt';
+import { capitalize, toBase16 } from '@/utils/fmt';
 
 function WalletView() {
   const { t } = useTranslation(['common', 'walletView']);
@@ -87,17 +87,23 @@ function WalletView() {
     return `${acctCount} · ${walletBalance}`;
   };
 
-  const handleAccountCreate = async ({ name }: { name: string }) => {
-    const latestAccount = accountList.reduce((prev, current) =>
-      prev.deriveIdx > current.deriveIdx ? prev : current,
+  const handleAccountCreate = async ({
+    name,
+    coinType,
+    network,
+  }: CreateAccountForm) => {
+    const deriveIdx = accountService.getNextDeriveIndex(
+      accountList,
+      coinType,
+      network,
     );
-
     const account = await accountService.create(
       { wallet: wallet!, seed: seed! },
       {
-        deriveIdx: latestAccount.deriveIdx + 1,
+        deriveIdx,
         name,
-        coinType: 429,
+        network,
+        coinType,
       },
     );
 
@@ -107,57 +113,81 @@ function WalletView() {
 
   return (
     <>
-      <Grid stackable padded>
-        <Grid.Column width={4}>
-          <Card onClick={() => null} fluid>
-            <Card.Content>
-              {isLoading ? (
-                <p>loading..</p>
-              ) : (
-                <>
-                  <Image src={walletImg} size="mini" floated="left" />
-                  <Card.Header>{wallet?.name}</Card.Header>
-                  <Card.Meta>
-                    <SensitiveComponent>{walletSubtitle()}</SensitiveComponent>
-                  </Card.Meta>
-                </>
-              )}
-            </Card.Content>
-          </Card>
-          <Card fluid>
-            <Card.Content>
-              <Card.Header
+      {/* appbar + bottom menu */}
+      <Grid style={{ height: 'calc(100% - (55px + 120px))' }}>
+        <Grid.Column width={3} style={{ paddingBottom: 0 }}>
+          <Menu
+            vertical
+            style={{
+              height: '100%',
+              minWidth: '300px',
+            }}
+            borderless
+            attached="top"
+          >
+            <Menu.Item>
+              <Header as="h3">
+                <Image
+                  style={{ background: '#F0F0F0' }}
+                  bordered
+                  avatar
+                  circular
+                  size="huge"
+                  floated="left"
+                  src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                    identicon(toBase16(seed!), 80, 30),
+                  )}`}
+                />
+                {wallet?.name}
+                <Label size="tiny">Software wallet</Label>
+                <Header.Subheader style={{ marginTop: 8 }}>
+                  {walletSubtitle()}
+                </Header.Subheader>
+              </Header>
+            </Menu.Item>
+            <Divider />
+            <Menu.Item>
+              <Header
+                as="h2"
                 style={{
-                  lineHeight: 2,
+                  lineHeight: 1.2,
                   display: 'inline-block',
                   verticalAlign: 'middle',
                 }}
               >
                 {t('walletView:myAccounts')}
-              </Card.Header>
+              </Header>
               <CreateAccountModal
                 handleAccountCreate={handleAccountCreate}
-                trigger={<Button floated="right" icon="add" size="tiny" />}
+                trigger={<Button floated="right" icon="add" size="mini" />}
               />
-            </Card.Content>
-            <Menu vertical fluid>
-              {accountList.length &&
-                accountList.map((account, idx) => (
-                  <Menu.Item
-                    key={account.id}
-                    active={selectedAccount?.id === account.id}
-                    onClick={() => setSelectedAccount(accountList[idx])}
-                  >
-                    <SensitiveComponent>
-                      <Header as="h4">
-                        {account.name}
-                        <Header.Subheader>$999.00</Header.Subheader>
-                      </Header>
-                    </SensitiveComponent>
-                  </Menu.Item>
-                ))}
-            </Menu>
-          </Card>
+            </Menu.Item>
+            {!!accountList.length &&
+              accountList.map((account, idx) => (
+                <AccountMenuItem
+                  account={account}
+                  active={selectedAccount?.id === account.id}
+                  onClick={() => setSelectedAccount(accountList[idx])}
+                />
+              ))}
+          </Menu>
+          <Menu
+            vertical
+            style={{
+              minWidth: '300px',
+              height: 120,
+            }}
+            attached
+          >
+            <Menu.Item>
+              <Header size="small">
+                Local Infrastructure
+                <Header.Subheader>
+                  No locally running infrastructure.
+                </Header.Subheader>
+              </Header>
+            </Menu.Item>
+          </Menu>
         </Grid.Column>
         <Grid.Column stretched width={12}>
           <Container style={{ paddingLeft: 60, paddingRight: 60 }}>

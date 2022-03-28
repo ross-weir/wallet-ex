@@ -2,7 +2,7 @@
   "state": {
     "stopped": "Stopped",
     "checkingDependencies": "Checking blockchain dependencies",
-    "ready": "Beginning blockchain sync",
+    "running": "Everything is setup",
     "initializing": "Starting blockchain resources",
     "shuttingDown": "Shutting down blockchain resources",
     "error": "Something went wrong"

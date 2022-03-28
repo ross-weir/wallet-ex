@@ -12,8 +12,10 @@ export function Root() {
     <SensitiveModeProvider>
       <WalletExProvider>
         <AuthenticatedWalletProvider>
-          <AppBarTop />
-          <Outlet />
+          <div style={{ height: '100vh' }}>
+            <AppBarTop />
+            <Outlet />
+          </div>
         </AuthenticatedWalletProvider>
       </WalletExProvider>
     </SensitiveModeProvider>

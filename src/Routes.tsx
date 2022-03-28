@@ -10,7 +10,6 @@ import WalletActionForm from './components/InitWalletView/WalletActionForm';
 import {
   AddWallet,
   FirstUse,
-  Initializing,
   ModeSelection,
   Root,
   WalletsList,
@@ -26,7 +25,6 @@ export function Routes() {
           <Route index element={<Navigate to="/wallets" />} />
 
           <Route path="modeSelect" element={<ModeSelection />} />
-          <Route path="initializing" element={<Initializing />} />
           <Route path="firstUse" element={<FirstUse />} />
 
           <Route path="wallets" element={<WalletsList />} />

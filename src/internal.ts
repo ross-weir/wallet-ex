@@ -15,3 +15,10 @@ export * from '@/entities/wallet/wallet.service';
 
 export * from '@/storage';
 export * from '@/types';
+
+export * from '@/blockchains/types';
+export * from '@/blockchains/blockchain';
+export * from '@/blockchains/blockchainRegistry';
+export * from '@/blockchains/blockchainClient';
+export * from '@/blockchains/mappings';
+export * from '@/blockchains/mappings';

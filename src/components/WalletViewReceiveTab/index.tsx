@@ -23,7 +23,6 @@ export interface WalletViewReceiveTabProps {
 }
 
 // TODO: paginate addresses?
-// TODO: display "create address" snackbar: https://www.npmjs.com/package/react-simple-snackbar
 function WalletViewReceiveTab({
   walletCtx,
   account,
@@ -56,12 +55,17 @@ function WalletViewReceiveTab({
         seed,
         accountIdx: account.deriveIdx,
         addressIdx,
+        network: account.network,
       });
-      const addr = await addressService.create({
-        address: newAddr,
-        accountId: account.id,
-        deriveIdx: addressIdx,
-      });
+
+      const addr = await addressService.create(
+        {
+          address: newAddr,
+          accountId: account.id,
+          deriveIdx: addressIdx,
+        },
+        account.blockchain(),
+      );
 
       setAddresses((addrs) => [...addrs, addr]);
       // TODO: handle err

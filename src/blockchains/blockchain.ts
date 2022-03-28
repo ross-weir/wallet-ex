@@ -1,22 +1,21 @@
 import EventEmitter from 'events';
 
 import { ImproperlyConfiguredError, UnsupportedOperationError } from '@/errors';
-import { DependencyManager } from '@/services';
-import { Node, NodeConfig } from '@/sidecars';
-
-import { BlockchainClient } from './blockchainClient';
 import {
   BlockchainCapabilities,
+  BlockchainClient,
   BlockchainSidecarRole,
   BlockchainState,
   BlockchainSyncStatus,
   SidecarEntry,
-} from './types';
+} from '@/internal';
+import { DependencyManager } from '@/services';
+import { Node, NodeConfig } from '@/sidecars';
 
 export interface BlockchainFactoryConfig {
   baseDir: string;
   network: string;
-  useLocalNode: boolean;
+  useLocalInfra: boolean;
 }
 
 export interface BlockchainConfig extends BlockchainFactoryConfig {
@@ -30,7 +29,15 @@ export interface BlockchainConfig extends BlockchainFactoryConfig {
   getSyncStatus?: (b: Blockchain) => Promise<BlockchainSyncStatus>;
 }
 
-// Events: 'stateChanged'
+/**
+ * `Blockchain` is a facade class that encompasses
+ * many different parts of a blockchain.
+ *
+ * It's a way to group things like sidecar infrastrcture,
+ * API clients, blockchain status updates, etc.
+ *
+ * Emits events: 'stateChanged'
+ */
 export class Blockchain extends EventEmitter {
   private readonly config: BlockchainConfig;
   private _state = BlockchainState.Stopped; // TODO: Do we need to store/restore this between runs?
@@ -42,6 +49,7 @@ export class Blockchain extends EventEmitter {
 
   public async initialize(): Promise<void> {
     this.updateState(BlockchainState.Initializing);
+
     const { sidecars, dependencyManager } = this.config;
 
     this.updateState(BlockchainState.CheckingDependencies);
@@ -52,7 +60,7 @@ export class Blockchain extends EventEmitter {
 
     await Promise.all(sidecars.map(({ sidecar }) => sidecar.spawn()));
 
-    this.updateState(BlockchainState.Ready);
+    this.updateState(BlockchainState.Running);
   }
 
   public async shutdown(): Promise<void> {
@@ -64,7 +72,7 @@ export class Blockchain extends EventEmitter {
   }
 
   public async getSyncStatus(): Promise<BlockchainSyncStatus> {
-    if (!this.hasLocalNode) {
+    if (!this.hasLocalInfra) {
       throw new UnsupportedOperationError(
         `getStatus is not supported for ${this.config.name}, no local node`,
       );
@@ -89,12 +97,12 @@ export class Blockchain extends EventEmitter {
     return this._state;
   }
 
-  public get hasLocalNode(): boolean {
-    return this.config.useLocalNode;
+  public get hasLocalInfra(): boolean {
+    return this.config.useLocalInfra;
   }
 
   public getNode<T extends NodeConfig>(): Node<T> {
-    if (!this.hasLocalNode) {
+    if (!this.hasLocalInfra) {
       throw new UnsupportedOperationError('local node is not supported');
     }
 

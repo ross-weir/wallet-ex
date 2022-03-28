@@ -9,7 +9,6 @@ import {
   Segment,
 } from 'semantic-ui-react';
 
-import { SupportedBlockchain } from '@/blockchains/types';
 import { useWalletEx } from '@/hooks';
 import { ApplicationState } from '@/storage';
 import { OperatingMode } from '@/types';
@@ -29,9 +28,6 @@ export function ModeSelection() {
   const onFullNodeSelection = async () => {
     const cfgUpdate = configStore.updatePartial({
       operatingMode: OperatingMode.FullNode,
-      useLocalNode: true,
-      blockchain: SupportedBlockchain.Ergo,
-      network: 'testnet',
     });
     const stateUpdate = stateStore.update(
       'state',

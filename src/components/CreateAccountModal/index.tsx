@@ -2,10 +2,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
 
+import {
+  bip44Map,
+  getIconForBlockchain,
+  getNetworksForBlockchain,
+  getSupportedBlockchains,
+  SupportedBlockchain,
+} from '@/internal';
 import { capitalize } from '@/utils/fmt';
 
 export interface CreateAccountForm {
   name: string;
+  coinType: number;
+  network: string;
 }
 
 export interface CreateAccountModalProps {
@@ -22,9 +31,37 @@ function CreateAccountModal({
   const [isLoading, setIsLoading] = useState(false);
   // TODO: use formik if more fields added
   const [accountName, setAccountName] = useState('');
+  const [coin, setCoin] = useState('');
   const [accountNameError, setAccountNameError] = useState<
     string | undefined
   >();
+  const [coinError, setCoinError] = useState<string | undefined>();
+
+  const coinOpts = (): any[] => {
+    const opts = [];
+
+    for (const blockchain of getSupportedBlockchains()) {
+      const bc = blockchain as SupportedBlockchain;
+      const { coinType } = bip44Map[blockchain];
+      const networks = getNetworksForBlockchain(bc);
+
+      for (const network of networks) {
+        const id = `${coinType}.${network}`;
+
+        opts.push({
+          key: id,
+          text: `${capitalize(blockchain)} (${capitalize(network)})`,
+          value: id,
+          image: {
+            avatar: true,
+            src: getIconForBlockchain(blockchain, network),
+          },
+        });
+      }
+    }
+
+    return opts;
+  };
 
   const validate = () => {
     if (!accountName) {
@@ -37,6 +74,11 @@ function CreateAccountModal({
       return false;
     }
 
+    if (!coin) {
+      setCoinError('Must select coin');
+      return false;
+    }
+
     return true;
   };
 
@@ -46,11 +88,19 @@ function CreateAccountModal({
     setIsLoading(true);
 
     try {
-      await handleAccountCreate({ name: accountName });
+      const [coinType, network] = coin.split('.');
+
+      await handleAccountCreate({
+        name: accountName,
+        coinType: Number(coinType),
+        network,
+      });
 
       setIsOpen(false);
       setAccountName('');
+      setCoin('');
       setAccountNameError(undefined);
+      setCoinError(undefined);
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +115,11 @@ function CreateAccountModal({
     if (e.key === 'Escape') {
       setIsOpen(false);
     }
+  };
+
+  const handleCoinSelect = (e: any, { name, value }: any) => {
+    setCoinError(undefined);
+    setCoin(value);
   };
 
   return (
@@ -87,6 +142,16 @@ function CreateAccountModal({
             onChange={handleInput}
             onKeyUp={handleKeyUp}
             required
+          />
+          <Form.Dropdown
+            name="coin"
+            label="Coin"
+            value={coin}
+            error={coinError}
+            options={coinOpts()}
+            selection
+            required
+            onChange={handleCoinSelect}
           />
         </Form>
       </Modal.Content>

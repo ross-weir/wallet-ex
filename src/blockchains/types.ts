@@ -1,7 +1,7 @@
 import { Sidecar } from '@/sidecars';
 
 export enum SupportedBlockchain {
-  Ergo = 'Ergo',
+  Ergo = 'ergo',
 }
 
 export interface BlockchainCapabilities {
@@ -33,7 +33,13 @@ export enum BlockchainState {
   Stopped = 'stopped',
   CheckingDependencies = 'checkingDependencies',
   Initializing = 'initializing',
-  Ready = 'ready',
+  Running = 'running',
   ShuttingDown = 'shuttingDown',
   Error = 'error',
+}
+
+export interface Bip44 {
+  coinType: number;
+  symbol: string;
+  name: string;
 }
