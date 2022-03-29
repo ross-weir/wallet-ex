@@ -25,6 +25,11 @@ function EntitiesProvider({ children }: EntitiesProviderProps) {
 
   React.useEffect(() => {
     if (!wallet) {
+      // We logged out of wallet
+      if (accounts.length) {
+        setAccounts([]);
+      }
+
       return;
     }
 

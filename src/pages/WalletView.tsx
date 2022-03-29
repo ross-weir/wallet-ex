@@ -62,10 +62,7 @@ function WalletView() {
       },
       // typecasting until we have type gaurds ensuring the entities aren't undefined
       render: () => (
-        <WalletViewReceiveTab
-          account={selectedAccount as Account}
-          walletCtx={{ wallet: wallet!, seed: seed! }}
-        />
+        <WalletViewReceiveTab account={selectedAccount as Account} />
       ),
     },
   ];

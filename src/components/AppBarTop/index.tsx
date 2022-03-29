@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Menu, Popup, Segment } from 'semantic-ui-react';
 
-import { useAuthenticatedWallet, useEntities, useSensitiveMode } from '@/hooks';
+import { useAuthenticatedWallet, useSensitiveMode } from '@/hooks';
 
 export interface AppBarTopProps {
   attached?: boolean | 'top' | 'bottom' | undefined;
@@ -12,12 +12,10 @@ function AppBarTop({ attached }: AppBarTopProps) {
   const { t } = useTranslation(['common', 'appBarTop']);
   const { wallet, clearWallet } = useAuthenticatedWallet();
   const { sensitiveModeEnabled, setSensitiveMode } = useSensitiveMode();
-  const { setAccounts } = useEntities();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     clearWallet();
-    setAccounts([]);
 
     navigate('/wallets');
   };
