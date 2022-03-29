@@ -1,0 +1,11 @@
+{
+  "error": {
+    "required": "{{fieldName}} field is required",
+    "maxCharacters": "{{fieldName}} field cannot be more than {{maxCharacters}} characters",
+    "minCharacters": "{{fieldName}} must be at least {{minCharacters}} characters"
+  },
+  "placeholder": {
+    "input": "Enter {{fieldName}}",
+    "select": "Select {{fieldName}}"
+  }
+}

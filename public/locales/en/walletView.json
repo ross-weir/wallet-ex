@@ -5,6 +5,7 @@
     "nameLabel": "Account name",
     "namePlaceholder": "Enter account name...",
     "nameRequiredErr": "Account name is required",
-    "nameCharacterLimitErr": "Account name cannot be more than 20 characters"
+    "nameCharacterLimitErr": "Account name cannot be more than 20 characters",
+    "coinLabel": "Coin"
   }
 }

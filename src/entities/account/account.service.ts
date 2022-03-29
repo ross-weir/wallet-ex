@@ -4,8 +4,9 @@ import {
   Account,
   AddressService,
   db,
-  WalletExDatabase,
   WalletContext,
+  WalletExDatabase,
+  SupportedBlockchain,
 } from '@/internal';
 
 import { CreateAccountDto } from './dto';
@@ -45,7 +46,7 @@ export class AccountService {
         accountId,
         address: addressStr,
       },
-      account.blockchain(),
+      account.getBlockchain(),
     );
 
     return account;
@@ -60,17 +61,17 @@ export class AccountService {
    * next derive index for the cointype + network combo.
    *
    * @param accounts List of existing accounts
-   * @param coinType Coin type we're deriving for
+   * @param blockchainName blockchain name we're deriving for
    * @param network Blockchain network we're deriving for (testnet vs mainnet, etc)
    * @returns The next index to use for deriviation
    */
   public getNextDeriveIndex(
     accounts: Account[],
-    coinType: number,
+    blockchainName: SupportedBlockchain,
     network: string,
   ): number {
     const hasExisting = accounts.find(
-      (a) => a.coinType === coinType && a.network === network,
+      (a) => a.blockchainName === blockchainName && a.network === network,
     );
 
     if (!hasExisting) {
@@ -79,7 +80,10 @@ export class AccountService {
 
     // latest account matching coinType/network
     const latestAccount = accounts.reduce((prev, current) => {
-      if (network === current.network && coinType === current.coinType) {
+      if (
+        network === current.network &&
+        blockchainName === current.blockchainName
+      ) {
         return prev.deriveIdx > current.deriveIdx ? prev : current;
       }
 

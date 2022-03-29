@@ -18,7 +18,7 @@ export class WalletService {
     const wallet = Wallet.fromJson({
       name: dto.name,
       password,
-      interface: 'local',
+      interface: 'software',
     });
     const seed = this.ergo.Mnemonic.to_seed(dto.mnemonic, dto.mnemonicPass);
 
