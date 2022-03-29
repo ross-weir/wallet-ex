@@ -9,13 +9,13 @@ export interface IWallet {
   id?: number;
   name: string;
   password: string;
-  interface: 'local' | 'ledger';
+  interface: 'software' | 'ledger';
 }
 
 export class Wallet extends BaseEntity implements IWallet {
   name!: string;
   password!: string;
-  interface!: 'local' | 'ledger';
+  interface!: 'software' | 'ledger';
 
   public static fromJson(obj: IWallet): Wallet {
     return plainToClass(Wallet, obj);
