@@ -7,6 +7,23 @@ module.exports = {
   babel: {
     plugins: ['babel-plugin-transform-typescript-metadata'],
   },
+  jest: {
+    configure(jestConfig) {
+      jestConfig.preset = 'ts-jest/presets/default-esm';
+      jestConfig.globals = {
+        'ts-jest': {
+          useESM: true,
+        },
+      };
+
+      jestConfig.moduleNameMapper = {
+        '^(\\.{1,2}/.*)\\.js$': '$1',
+        '@/(.*)': '<rootDir>/src/$1',
+      };
+
+      return jestConfig;
+    },
+  },
   webpack: {
     configure(webpackConfig) {
       const wasmExtensionRegExp = /\.wasm$/;
