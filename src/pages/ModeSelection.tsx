@@ -27,7 +27,7 @@ export function ModeSelection() {
 
   const onFullNodeSelection = async () => {
     const cfgUpdate = configStore.updatePartial({
-      operatingMode: OperatingMode.FullNode,
+      operatingMode: OperatingMode.LocalInfrastructure,
     });
     const stateUpdate = stateStore.update(
       'state',

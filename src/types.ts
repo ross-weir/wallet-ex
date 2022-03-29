@@ -1,7 +1,7 @@
 import { Wallet } from '@/internal';
 
 export enum OperatingMode {
-  FullNode = 'fullNode',
+  LocalInfrastructure = 'localInfrastructure',
   Simple = 'simple',
 }
 

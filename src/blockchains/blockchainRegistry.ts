@@ -104,8 +104,8 @@ export const newBlockchain = async (
   const baseDir = path.join(appDir, blockchainName);
 
   const bc = await factoryMap[blockchainName]({
-    baseDir,
     ...cfg,
+    baseDir,
   });
 
   if (!blockchainCache[blockchainName]) {

@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 
-import { Address, Blockchain,db, WalletExDatabase } from '@/internal';
+import { Address, Blockchain, db, WalletExDatabase } from '@/internal';
 
 import { CreateAddressDto } from './dto';
 
@@ -15,11 +15,16 @@ export class AddressService {
     let balance = 0;
 
     if (blockchain) {
-      const response = await blockchain.client.accountBalance({
-        accountIdentifier: { address: dto.address },
-      });
+      try {
+        const response = await blockchain.client.accountBalance({
+          accountIdentifier: { address: dto.address },
+        });
 
-      balance = Number(response.balances[0].value);
+        balance = Number(response.balances[0].value);
+      } catch (e) {
+        // No problem, will be fetched later by syncing module
+        balance = 0;
+      }
     }
 
     const address = Address.fromJson({ ...dto, balance });
