@@ -29,8 +29,9 @@ function CreateAccountModal({
 }: CreateAccountModalProps) {
   const { t } = useTranslation(['common', 'walletView', 'form']);
   const [isOpen, setIsOpen] = useState(false);
+  const blockchainStr = capitalize(t('common:blockchain'));
 
-  const coinOpts = (): any[] => {
+  const blockchainOpts = (): any[] => {
     const opts = [];
 
     for (const blockchainName of getSupportedBlockchains()) {
@@ -58,22 +59,27 @@ function CreateAccountModal({
     accountName: Yup.string()
       .required(t('walletView:createAccount:nameRequiredErr'))
       .max(20, t('walletView:createAccount:nameCharacterLimitErr')),
-    coin: Yup.string().required(
-      t('form:error:required', { fieldName: 'Coin' }),
+    blockchain: Yup.string().required(
+      t('form:error:required', {
+        fieldName: blockchainStr,
+      }),
     ),
   });
 
   return (
     <Formik
-      initialValues={{ accountName: '', coin: '' }}
+      initialValues={{ accountName: '', blockchain: '' }}
       validationSchema={schema}
-      onSubmit={async ({ coin, accountName }, { setSubmitting, resetForm }) => {
+      onSubmit={async (
+        { blockchain, accountName },
+        { setSubmitting, resetForm },
+      ) => {
         try {
-          const [blockchain, network] = coin.split('.');
+          const [blockchainName, network] = blockchain.split('.');
 
           await handleAccountCreate({
             name: accountName,
-            blockchainName: blockchain as SupportedBlockchain,
+            blockchainName: blockchainName as SupportedBlockchain,
             network,
           });
 
@@ -115,16 +121,18 @@ function CreateAccountModal({
             />
             {/* Cant use getFieldProps because this dropdown doesn't use a 'input' element */}
             <Form.Dropdown
-              id="coin"
-              label="Coin"
+              id="blockchain"
+              label={blockchainStr}
               required
-              options={coinOpts()}
-              placeholder={t('form:placeholder:select', { fieldName: 'Coin' })}
+              options={blockchainOpts()}
+              placeholder={t('form:placeholder:select', {
+                fieldName: blockchainStr,
+              })}
               selection
-              error={touched.coin && errors.coin}
-              value={values.coin}
+              error={touched.blockchain && errors.blockchain}
+              value={values.blockchain}
               onBlur={handleBlur}
-              onChange={(_, { value }) => setFieldValue('coin', value)}
+              onChange={(_, { value }) => setFieldValue('blockchain', value)}
             />
           </Modal.Content>
           <Modal.Actions>

@@ -17,6 +17,7 @@
   "cancel": "cancel",
   "reveal": "reveal",
   "hide": "hide",
+  "blockchain": "blockchain",
   "incorrectPassword": "Incorrect password",
   "walletPassword": "Wallet password",
   "addWallet": "Add Wallet"
