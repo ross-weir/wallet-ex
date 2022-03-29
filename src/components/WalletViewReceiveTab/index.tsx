@@ -10,7 +10,8 @@ import {
 } from 'semantic-ui-react';
 import Container from 'typedi';
 
-import { Account, Address, AddressService, WalletContext } from '@/internal';
+import { useAuthenticatedWallet } from '@/hooks';
+import { Account, Address, AddressService } from '@/internal';
 
 import CopyIcon from '../CopyIcon';
 import ErgDisplay from '../ErgDisplay';
@@ -18,22 +19,18 @@ import QrIconPopup from '../QrIconPopup';
 import SensitiveComponent from '../SensitiveComponent';
 
 export interface WalletViewReceiveTabProps {
-  walletCtx: WalletContext;
   account: Account;
 }
 
 // TODO: paginate addresses?
-function WalletViewReceiveTab({
-  walletCtx,
-  account,
-}: WalletViewReceiveTabProps) {
+function WalletViewReceiveTab({ account }: WalletViewReceiveTabProps) {
   const { t } = useTranslation('walletReceiveTab');
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeriving, setIsDeriving] = useState(false);
   const addressService = Container.get(AddressService);
   let latestAddress!: Address;
-  const { wallet, seed } = walletCtx;
+  const { wallet, seed } = useAuthenticatedWallet();
 
   // Only trigger reload if accountId changes
   // When creating a new address we will add it to the state locally on success
@@ -51,7 +48,7 @@ function WalletViewReceiveTab({
     setIsDeriving(true);
     try {
       const addressIdx = latestAddress.deriveIdx + 1;
-      const newAddr = await wallet.deriveAddress({
+      const newAddr = await wallet!.deriveAddress({
         seed,
         accountIdx: account.deriveIdx,
         addressIdx,

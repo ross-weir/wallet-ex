@@ -1,6 +1,7 @@
-import { SupportedBlockchain } from '@/internal';
 import QRCode from 'qrcode.react';
 import { Icon, Popup } from 'semantic-ui-react';
+
+import { SupportedBlockchain } from '@/internal';
 
 export interface QrIconPopupProps {
   value: string;

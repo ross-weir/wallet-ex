@@ -4,9 +4,9 @@ import {
   Account,
   AddressService,
   db,
+  SupportedBlockchain,
   WalletContext,
   WalletExDatabase,
-  SupportedBlockchain,
 } from '@/internal';
 
 import { CreateAccountDto } from './dto';

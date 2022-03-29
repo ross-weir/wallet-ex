@@ -20,30 +20,22 @@ import CreateAccountModal, {
 } from '@/components/CreateAccountModal';
 import SensitiveComponent from '@/components/SensitiveComponent';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
-import { useAuthenticatedWallet } from '@/hooks';
+import { useAuthenticatedWallet, useEntities } from '@/hooks';
 import { Account, AccountService } from '@/internal';
 import { capitalize, toBase16 } from '@/utils/fmt';
 
 function WalletView() {
   const { t } = useTranslation(['common', 'walletView']);
-  const [isLoading, setIsLoading] = useState(true);
-  const [accountList, setAccountList] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
   const accountService = IocContainer.get(AccountService);
   const { wallet, seed } = useAuthenticatedWallet();
+  const { accounts, setAccounts } = useEntities();
 
-  // TODO: loading indicator/state
   useEffect(() => {
-    setIsLoading(true);
-
-    accountService
-      .filterByWalletId(wallet!.id)
-      .then((accounts) => {
-        setAccountList(accounts);
-        setSelectedAccount(accounts[0]);
-      })
-      .finally(() => setIsLoading(false));
-  }, [wallet, accountService]);
+    if (accounts.length && !selectedAccount) {
+      setSelectedAccount(accounts[0]);
+    }
+  }, [accounts, selectedAccount]);
 
   const panes = () => [
     {
@@ -70,17 +62,14 @@ function WalletView() {
       },
       // typecasting until we have type gaurds ensuring the entities aren't undefined
       render: () => (
-        <WalletViewReceiveTab
-          account={selectedAccount as Account}
-          walletCtx={{ wallet: wallet!, seed: seed! }}
-        />
+        <WalletViewReceiveTab account={selectedAccount as Account} />
       ),
     },
   ];
 
   const walletSubtitle = () => {
-    const acctCount = `${accountList.length} Account${
-      accountList.length > 1 ? 's' : ''
+    const acctCount = `${accounts.length} Account${
+      accounts.length > 1 ? 's' : ''
     }`;
     const walletBalance = '$1,000';
 
@@ -93,7 +82,7 @@ function WalletView() {
     network,
   }: CreateAccountForm) => {
     const deriveIdx = accountService.getNextDeriveIndex(
-      accountList,
+      accounts,
       blockchainName,
       network,
     );
@@ -107,7 +96,9 @@ function WalletView() {
       },
     );
 
-    setAccountList((accts) => [...accts, account]);
+    // fetch useLocalInfra from config
+    account.initBlockchain({ useLocalInfra: false });
+    setAccounts((accounts) => [...accounts, account]);
     setSelectedAccount(account);
   };
 
@@ -162,12 +153,12 @@ function WalletView() {
                 trigger={<Button floated="right" icon="add" size="mini" />}
               />
             </Menu.Item>
-            {!!accountList.length &&
-              accountList.map((account, idx) => (
+            {!!accounts.length &&
+              accounts.map((account, idx) => (
                 <AccountMenuItem
                   account={account}
                   active={selectedAccount?.id === account.id}
-                  onClick={() => setSelectedAccount(accountList[idx])}
+                  onClick={() => setSelectedAccount(accounts[idx])}
                 />
               ))}
           </Menu>

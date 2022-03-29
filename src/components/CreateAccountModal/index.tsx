@@ -1,6 +1,8 @@
+import { Formik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, Modal } from 'semantic-ui-react';
+import * as Yup from 'yup';
 
 import {
   getIconForBlockchain,
@@ -9,8 +11,6 @@ import {
   SupportedBlockchain,
 } from '@/internal';
 import { capitalize } from '@/utils/fmt';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
 
 export interface CreateAccountForm {
   name: string;
