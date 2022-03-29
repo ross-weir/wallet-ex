@@ -10,13 +10,13 @@ import {
 } from 'semantic-ui-react';
 import Container from 'typedi';
 
-import { Account, Address, AddressService, WalletContext } from '@/internal';
+import { useAuthenticatedWallet } from '@/hooks';
+import { Account, Address, AddressService } from '@/internal';
 
 import CopyIcon from '../CopyIcon';
 import ErgDisplay from '../ErgDisplay';
 import QrIconPopup from '../QrIconPopup';
 import SensitiveComponent from '../SensitiveComponent';
-import { useAuthenticatedWallet } from '@/hooks';
 
 export interface WalletViewReceiveTabProps {
   account: Account;
