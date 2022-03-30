@@ -1,2 +1,2 @@
 export * from './steps';
-export * from './wallets';
+export * from './entities';

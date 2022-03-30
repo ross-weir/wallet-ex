@@ -1,5 +1,7 @@
 import { CreateWalletPage } from '../pageObjects';
 
+export const DEFAULT_WALLET_PASSWORD = 'testing123';
+
 export const createAndLoginWallet = async (
   name: string,
   password?: string,
@@ -8,7 +10,7 @@ export const createAndLoginWallet = async (
   await CreateWalletPage.open();
   await CreateWalletPage.completeForm(
     name,
-    password || 'testing123',
+    password || DEFAULT_WALLET_PASSWORD,
     mnemonicPass || '',
   );
 
