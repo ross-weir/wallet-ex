@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import 'reflect-metadata';
 
 // Polyfill globals that exist on `window` in the browser
 if (typeof global.TextEncoder === 'undefined') {

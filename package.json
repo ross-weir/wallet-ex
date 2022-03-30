@@ -53,7 +53,7 @@
   "scripts": {
     "start": "cross-env BROWSER=none craco start",
     "build": "craco build",
-    "test": "craco test",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules craco test",
     "eject": "react-scripts eject",
     "prepare": "husky install",
     "tauri": "tauri",
@@ -127,6 +127,7 @@
     "lint-staged": "^12.1.2",
     "prettier": "^2.4.1",
     "storybook-react-i18next": "^1.0.13",
+    "ts-jest": "^27.1.4",
     "ts-node": "^10.4.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "wdio-chromedriver-service": "^7.2.2"

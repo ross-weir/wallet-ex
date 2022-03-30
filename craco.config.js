@@ -7,6 +7,26 @@ module.exports = {
   babel: {
     plugins: ['babel-plugin-transform-typescript-metadata'],
   },
+  jest: {
+    configure(jestConfig) {
+      // Get ESM modules required so tauri works
+      jestConfig.preset = 'ts-jest/presets/default-esm';
+      jestConfig.globals = {
+        'ts-jest': {
+          useESM: true,
+        },
+      };
+
+      jestConfig.moduleNameMapper = {
+        '^(\\.{1,2}/.*)\\.js$': '$1',
+        '@/(.*)': '<rootDir>/src/$1',
+      };
+
+      jestConfig.transformIgnorePatterns = ['node_modules/(?!@tauri-apps)'];
+
+      return jestConfig;
+    },
+  },
   webpack: {
     configure(webpackConfig) {
       const wasmExtensionRegExp = /\.wasm$/;
