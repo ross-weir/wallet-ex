@@ -16,7 +16,5 @@
       "expect-webdriverio/jest"
     ]
   },
-  "include": [
-    "e2e"
-  ]
+  "include": ["e2e"]
 }

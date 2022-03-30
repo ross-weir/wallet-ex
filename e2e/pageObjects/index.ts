@@ -1,3 +1,4 @@
 import CreateWalletPage from './createWallet.page';
+import WalletViewPage from './walletView.page';
 
-export { CreateWalletPage };
+export { CreateWalletPage, WalletViewPage };

@@ -5,6 +5,7 @@ import { spawnSync, spawn } from 'child_process';
 
 let tauriDriver;
 
+const debug = process.env.DEBUG;
 const failedRunsDir = resolve(__dirname, '.e2e-failure');
 const isWindows = platform() === 'win32';
 const appExt = isWindows ? '.exe' : '';
@@ -69,7 +70,9 @@ export const config: WebdriverIO.Config = {
       // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
       // excludeDriverLogs: ['bugreport', 'server'],
       'tauri:options': {
-        application: `./src-tauri/target/release/wallet-ex${appExt}`,
+        application: `./src-tauri/target/${
+          debug ? 'debug' : 'release'
+        }/wallet-ex${appExt}`,
       },
     },
   ],
@@ -148,7 +151,7 @@ export const config: WebdriverIO.Config = {
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
     // <string[]> (file/dir) require files before executing features
-    require: ['./e2e/stepDefinitions/steps.ts'],
+    require: ['./e2e/stepDefinitions'],
     // <boolean> show full backtrace for errors
     backtrace: false,
     // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
@@ -248,6 +251,7 @@ export const config: WebdriverIO.Config = {
    * @param {Object}                 context  Cucumber World object
    */
   // beforeScenario: function (world, context) {
+  //   return setupTests();
   // },
   /**
    *

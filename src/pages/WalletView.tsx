@@ -150,7 +150,14 @@ function WalletView() {
               </Header>
               <CreateAccountModal
                 handleAccountCreate={handleAccountCreate}
-                trigger={<Button floated="right" icon="add" size="mini" />}
+                trigger={
+                  <Button
+                    id="accountCreateModalBtn"
+                    floated="right"
+                    icon="add"
+                    size="mini"
+                  />
+                }
               />
             </Menu.Item>
             {!!accounts.length &&

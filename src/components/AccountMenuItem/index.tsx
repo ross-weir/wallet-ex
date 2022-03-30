@@ -34,6 +34,7 @@ export function AccountMenuItem({
 }: AccountMenuItemProps) {
   return (
     <Menu.Item
+      className="accountMenuItem"
       style={{ margin: 8 }}
       key={account.id}
       active={active}
@@ -46,7 +47,7 @@ export function AccountMenuItem({
           floated="left"
         />
         <span style={{ lineHeight: 2 }}>
-          <Header as="h3" style={{ marginLeft: 38 }}>
+          <Header className="accountDetail" as="h3" style={{ marginLeft: 38 }}>
             {account.name}
             <Header.Subheader style={{ lineHeight: 1.6 }}>
               <AccountSubtitle account={account} />
