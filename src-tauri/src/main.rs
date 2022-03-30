@@ -3,6 +3,8 @@
   windows_subsystem = "windows"
 )]
 
+use tauri_plugin_log::{LogTarget, LoggerBuilder};
+
 mod cmd;
 mod hash;
 mod net;
@@ -17,6 +19,11 @@ fn main() -> anyhow::Result<()> {
       cmd::digest_file,
       cmd::path_exists,
     ])
+    .plugin(
+      LoggerBuilder::new()
+        .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
+        .build(),
+    )
     .run(ctx)
     .expect("error while running application");
 
