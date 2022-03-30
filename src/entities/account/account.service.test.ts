@@ -38,5 +38,66 @@ describe('AccountService', () => {
         ),
       ).toBe(0);
     });
+
+    it('should return next index if existing coin type & network', () => {
+      const accounts: Account[] = [
+        Account.fromJson({
+          name: 'test',
+          deriveIdx: 0,
+          blockchainName: SupportedBlockchain.Ergo,
+          network: 'testnet',
+          walletId: 1,
+        }),
+        Account.fromJson({
+          name: 'test',
+          deriveIdx: 1,
+          blockchainName: SupportedBlockchain.Ergo,
+          network: 'testnet',
+          walletId: 1,
+        }),
+      ];
+
+      expect(
+        accountService.getNextDeriveIndex(
+          accounts,
+          SupportedBlockchain.Ergo,
+          'testnet',
+        ),
+      ).toBe(2);
+    });
+
+    it('should return next index with multiple existing combinations', () => {
+      const accounts: Account[] = [
+        Account.fromJson({
+          name: 'test',
+          deriveIdx: 0,
+          blockchainName: SupportedBlockchain.Ergo,
+          network: 'testnet',
+          walletId: 1,
+        }),
+        Account.fromJson({
+          name: 'test',
+          deriveIdx: 0,
+          blockchainName: SupportedBlockchain.Ergo,
+          network: 'mainnet',
+          walletId: 1,
+        }),
+        Account.fromJson({
+          name: 'test',
+          deriveIdx: 1,
+          blockchainName: SupportedBlockchain.Ergo,
+          network: 'mainnet',
+          walletId: 1,
+        }),
+      ];
+
+      expect(
+        accountService.getNextDeriveIndex(
+          accounts,
+          SupportedBlockchain.Ergo,
+          'testnet',
+        ),
+      ).toBe(1);
+    });
   });
 });

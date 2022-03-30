@@ -9,6 +9,7 @@ module.exports = {
   },
   jest: {
     configure(jestConfig) {
+      // Get ESM modules required so tauri works
       jestConfig.preset = 'ts-jest/presets/default-esm';
       jestConfig.globals = {
         'ts-jest': {
@@ -20,6 +21,8 @@ module.exports = {
         '^(\\.{1,2}/.*)\\.js$': '$1',
         '@/(.*)': '<rootDir>/src/$1',
       };
+
+      jestConfig.transformIgnorePatterns = ['node_modules/(?!@tauri-apps)'];
 
       return jestConfig;
     },

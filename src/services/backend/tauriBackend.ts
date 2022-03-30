@@ -10,11 +10,6 @@ import {
   StoreSecretSeedArgs,
 } from './backend';
 
-const cfgPath = async () => {
-  const appDir = await path.appDir();
-  return `${appDir}${path.sep}.wallet-x.json`;
-};
-
 // TODO: dynamically import tauri
 export class TauriBackend extends BackendService {
   private readonly aes = AesCrypto.default();
@@ -48,11 +43,11 @@ export class TauriBackend extends BackendService {
   }
 
   async readConfig(): BackendOpResult<string> {
-    return fs.readTextFile(await cfgPath());
+    return fs.readTextFile(await this.cfgPath());
   }
 
   async writeConfig(cfg: string): BackendOpResult<void> {
-    const file = { contents: cfg, path: await cfgPath() };
+    const file = { contents: cfg, path: await this.cfgPath() };
     return fs.writeFile(file);
   }
 
@@ -113,5 +108,10 @@ export class TauriBackend extends BackendService {
 
   getFreePort(): BackendOpResult<number> {
     return invoke('get_free_port');
+  }
+
+  private async cfgPath() {
+    const appDir = await path.appDir();
+    return `${appDir}${path.sep}.wallet-ex.json`;
   }
 }
