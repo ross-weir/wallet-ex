@@ -1,5 +1,6 @@
+import { Paper } from '@mantine/core';
+
 import { Wallet } from '@/internal';
-import { Modal, Paper } from '@mantine/core';
 import { WalletOverviewBox } from '@@/components/WalletOverviewBox';
 
 interface WalletDetailProps {

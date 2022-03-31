@@ -1,18 +1,24 @@
-import { Wallet, WalletService } from '@/internal';
-import { Group, Paper, Stack, Title, Container } from '@mantine/core';
+import { Container, Group, Stack, Title } from '@mantine/core';
+import { useModals } from '@mantine/modals';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Container as IoCContainer } from 'typedi';
-import { LoginModal } from './LoginModal/LoginModal';
-import { AddWalletTrigger, WalletFormSchema } from './AddWalletTrigger';
+
+import { useAuthenticatedWallet, Wallet, WalletService } from '@/internal';
+
+import { AddWalletTrigger } from './AddWalletTrigger';
+import { LoginForm } from './LoginForm/LoginForm';
 import { WalletDetail } from './WalletDetail/WalletDetail';
 
 export function WalletList() {
   const { t } = useTranslation(['walletsList', 'common']);
-  const [selectedWallet, setSelectedWallet] = useState<Wallet | undefined>();
+  const { setAuthenticatedWallet } = useAuthenticatedWallet();
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const walletService = IoCContainer.get(WalletService);
+  const modals = useModals();
 
   useEffect(() => {
     walletService
@@ -21,30 +27,68 @@ export function WalletList() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const onAddWallet = (form: WalletFormSchema) => {};
+  const openLoginModal = (wallet: Wallet) => {
+    const id = modals.openModal({
+      title: t('walletsList:walletPasswordTitle', { walletName: wallet.name }),
+      children: (
+        <LoginForm
+          onCancel={() => modals.closeModal(id)}
+          onSubmit={(form, setLoading) => {
+            const { password } = form.values;
 
-  const onLogin = () => {};
+            wallet
+              .checkCredentials(password)
+              .then(async (isValid: boolean) => {
+                if (!isValid) {
+                  form.setFieldError('password', t('common:incorrectPassword'));
+
+                  return;
+                }
+
+                const seed = await wallet.retrieveSeed(password);
+
+                setAuthenticatedWallet({ wallet, seed });
+
+                navigate(`/wallets/${wallet.id}`);
+                modals.closeModal(id);
+              })
+              .finally(() => setLoading(false));
+          }}
+        />
+      ),
+    });
+  };
 
   return (
     <>
-      {!!selectedWallet && (
-        <LoginModal
-          onClose={() => setSelectedWallet(undefined)}
-          wallet={selectedWallet!}
-        />
-      )}
-
       <Container size="sm">
         <Group position="center" spacing="xl" pb="xl">
           <Title order={3}>{t('walletsList:walletsListTitle')}</Title>
-          <AddWalletTrigger onAddWallet={onAddWallet} />
+          <AddWalletTrigger
+            onAddWallet={async (form, setLoading) => {
+              const { name, password, mnemonic, mnemonicPass } = form.values;
+              const { wallet, seed } = await walletService.create({
+                name,
+                password,
+                mnemonic,
+                mnemonicPass,
+              });
+
+              setAuthenticatedWallet({ wallet, seed });
+
+              navigate(`/wallets/${wallet.id}`);
+
+              modals.closeAll();
+              setLoading(false);
+            }}
+          />
         </Group>
 
         <Stack align="center" justify="flex-start" spacing="xl">
           {wallets.map((wallet) => (
             <WalletDetail
               wallet={wallet!}
-              onClick={() => setSelectedWallet(wallet)}
+              onClick={() => openLoginModal(wallet)}
             />
           ))}
         </Stack>

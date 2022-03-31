@@ -1,9 +1,10 @@
 import { AppShell } from '@mantine/core';
+import { Outlet, useNavigate } from 'react-router-dom';
+
+import { useAuthenticatedWallet } from '@/hooks';
 
 import { Header } from './Header/Header';
 import { Navbar } from './Navbar/Navbar';
-import { useAuthenticatedWallet } from '@/hooks';
-import { Outlet, useNavigate } from 'react-router-dom';
 
 export function Layout() {
   const { wallet, clearWallet } = useAuthenticatedWallet();

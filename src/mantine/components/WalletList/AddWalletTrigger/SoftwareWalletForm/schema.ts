@@ -30,4 +30,4 @@ export const walletFormSchema = Yup.object({
   ),
 });
 
-export type WalletFormSchema = typeof walletFormInitialValues;
+export type SoftwareWalletSchema = typeof walletFormInitialValues;

@@ -1,6 +1,6 @@
-import { useMantineColorScheme, ActionIcon } from '@mantine/core';
+import { ActionIcon, useMantineColorScheme } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import { Sun, MoonStars } from 'tabler-icons-react';
+import { MoonStars, Sun } from 'tabler-icons-react';
 
 export function ColorSchemeToggle() {
   const { t } = useTranslation('appBarTop');

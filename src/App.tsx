@@ -1,16 +1,18 @@
-import React, { Suspense, useEffect, useState } from 'react';
 import {
-  MantineProvider,
-  ColorSchemeProvider,
   ColorScheme,
+  ColorSchemeProvider,
+  MantineProvider,
 } from '@mantine/core';
-import { Routes } from './Routes';
+import { ModalsProvider } from '@mantine/modals';
+import React, { Suspense, useEffect, useState } from 'react';
+
+import { initErgo } from './ergo';
 import {
-  WalletExProvider,
   AuthenticatedWalletProvider,
   EntitiesProvider,
+  WalletExProvider,
 } from './hooks';
-import { initErgo } from './ergo';
+import { Routes } from './Routes';
 
 function App() {
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
@@ -42,7 +44,9 @@ function App() {
             <WalletExProvider>
               <AuthenticatedWalletProvider>
                 <EntitiesProvider>
-                  <Routes />
+                  <ModalsProvider>
+                    <Routes />
+                  </ModalsProvider>
                 </EntitiesProvider>
               </AuthenticatedWalletProvider>
             </WalletExProvider>

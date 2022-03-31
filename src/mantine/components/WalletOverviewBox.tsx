@@ -1,4 +1,3 @@
-import { Wallet } from '@/internal';
 import {
   Box,
   Group,
@@ -8,6 +7,8 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { identicon } from 'minidenticons';
+
+import { Wallet } from '@/internal';
 
 export interface WalletOverviewBoxProps {
   wallet: Wallet;

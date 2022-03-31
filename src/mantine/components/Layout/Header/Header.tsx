@@ -1,12 +1,6 @@
-import { useAuthenticatedWallet } from '@/hooks';
-import {
-  useMantineColorScheme,
-  ActionIcon,
-  Header as MantineHeader,
-  Group,
-  Title,
-} from '@mantine/core';
+import { Group, Header as MantineHeader, Title } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
+
 import { ColorSchemeToggle } from './ColorSchemeToggle/ColorSchemeToggle';
 import useStyles from './Header.styles';
 import { Logout } from './Logout/Logout';

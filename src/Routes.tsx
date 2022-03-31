@@ -6,8 +6,8 @@ import {
 } from 'react-router-dom';
 
 import { WalletList } from '@/mantine/components/WalletList/WalletList';
-import { Layout } from './mantine/components/Layout';
 
+import { Layout } from './mantine/components/Layout';
 import { Test } from './pages/Test';
 
 export function Routes() {

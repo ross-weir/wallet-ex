@@ -1,11 +1,7 @@
+import { Box, Navbar as MantineNavbar } from '@mantine/core';
+
 import { useAuthenticatedWallet } from '@/hooks';
 import { Wallet } from '@/internal';
-import {
-  Box,
-  Divider,
-  Navbar as MantineNavbar,
-  useMantineTheme,
-} from '@mantine/core';
 
 export interface WalletOverviewProps {
   wallet: Wallet;
