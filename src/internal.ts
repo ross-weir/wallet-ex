@@ -22,3 +22,7 @@ export * from '@/blockchains/blockchainRegistry';
 export * from '@/blockchains/blockchainClient';
 export * from '@/blockchains/mappings';
 export * from '@/blockchains/mappings';
+
+export * from '@/hooks/useAuthenticatedWallet';
+
+export * from '@/utils/fmt';

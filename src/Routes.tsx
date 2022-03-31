@@ -7,6 +7,8 @@ import {
 
 import InitWalletView from './components/InitWalletView';
 import WalletActionForm from './components/InitWalletView/WalletActionForm';
+import { WalletList } from '@@/components/WalletList';
+import { WalletExApp } from './mantine/layouts/AppShell';
 import {
   AddWallet,
   FirstUse,
@@ -21,7 +23,12 @@ export function Routes() {
   return (
     <BrowserRouter>
       <ReactRoutes>
-        <Route path="/" element={<Root />}>
+        <Route path="/" element={<WalletExApp />}>
+          <Route index element={<Navigate to="/wallets" />} />
+
+          <Route path="wallets" element={<WalletList />} />
+        </Route>
+        {/* <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="/wallets" />} />
 
           <Route path="modeSelect" element={<ModeSelection />} />
@@ -37,7 +44,7 @@ export function Routes() {
           <Route path="test" element={<Test />} />
 
           <Route path="*" element={<p>How did you get hur?</p>} />
-        </Route>
+        </Route> */}
       </ReactRoutes>
     </BrowserRouter>
   );

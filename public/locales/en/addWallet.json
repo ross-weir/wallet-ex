@@ -1,0 +1,9 @@
+{
+  "title": "Add wallet",
+  "mnemonic": "Mnemonic",
+  "mnemonicPass": "Mnemonic passphrase",
+  "mnemonicPassConfirm": "Confirm mnemonic passphrase",
+  "manageWallets": "Manage wallets",
+  "createWallet": "Create wallet",
+  "restoreWallet": "Restore wallet"
+}
