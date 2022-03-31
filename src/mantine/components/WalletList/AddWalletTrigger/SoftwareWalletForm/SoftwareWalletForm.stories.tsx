@@ -11,6 +11,6 @@ const Template: ComponentStory<typeof SoftwareWalletForm> = () => (
   <SoftwareWalletForm onSubmit={console.log} action="create" />
 );
 
-export const AddWalletFormStory = Template.bind({});
+export const SoftwareWalletFormStory = Template.bind({});
 
-AddWalletFormStory.args = {};
+SoftwareWalletFormStory.args = {};

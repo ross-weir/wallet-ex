@@ -1,5 +1,6 @@
 {
   "showSensitive": "Show sensitive content",
   "hideSensitive": "Hide sensitive content",
-  "logout": "Logout of wallet"
+  "logout": "Logout of wallet",
+  "toggleColorScheme": "Toggle color scheme"
 }

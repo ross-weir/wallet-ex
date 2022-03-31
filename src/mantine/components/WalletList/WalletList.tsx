@@ -3,9 +3,9 @@ import { Group, Paper, Stack, Title, Container } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container as IoCContainer } from 'typedi';
-import { WalletOverviewBox } from '@@/components/WalletOverviewBox';
-import { LoginModal } from './LoginModal';
-import { AddWalletTrigger } from './AddWallet';
+import { LoginModal } from './LoginModal/LoginModal';
+import { AddWalletTrigger, WalletFormSchema } from './AddWalletTrigger';
+import { WalletDetail } from './WalletDetail/WalletDetail';
 
 export function WalletList() {
   const { t } = useTranslation(['walletsList', 'common']);
@@ -21,6 +21,10 @@ export function WalletList() {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const onAddWallet = (form: WalletFormSchema) => {};
+
+  const onLogin = () => {};
+
   return (
     <>
       {!!selectedWallet && (
@@ -33,19 +37,15 @@ export function WalletList() {
       <Container size="sm">
         <Group position="center" spacing="xl" pb="xl">
           <Title order={3}>{t('walletsList:walletsListTitle')}</Title>
-          <AddWalletTrigger />
+          <AddWalletTrigger onAddWallet={onAddWallet} />
         </Group>
 
         <Stack align="center" justify="flex-start" spacing="xl">
           {wallets.map((wallet) => (
-            <Paper
-              shadow="xs"
-              radius="md"
-              sx={{ width: '100%' }}
+            <WalletDetail
+              wallet={wallet!}
               onClick={() => setSelectedWallet(wallet)}
-            >
-              <WalletOverviewBox wallet={wallet} />
-            </Paper>
+            />
           ))}
         </Stack>
       </Container>

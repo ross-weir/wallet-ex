@@ -5,25 +5,16 @@ import {
   Routes as ReactRoutes,
 } from 'react-router-dom';
 
-import InitWalletView from './components/InitWalletView';
-import WalletActionForm from './components/InitWalletView/WalletActionForm';
-import { WalletList } from '@@/components/WalletList';
-import { WalletExApp } from './mantine/layouts/AppShell';
-import {
-  AddWallet,
-  FirstUse,
-  ModeSelection,
-  Root,
-  WalletsList,
-  WalletView,
-} from './pages';
+import { WalletList } from '@/mantine/components/WalletList/WalletList';
+import { Layout } from './mantine/components/Layout';
+
 import { Test } from './pages/Test';
 
 export function Routes() {
   return (
     <BrowserRouter>
       <ReactRoutes>
-        <Route path="/" element={<WalletExApp />}>
+        <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/wallets" />} />
 
           <Route path="wallets" element={<WalletList />} />

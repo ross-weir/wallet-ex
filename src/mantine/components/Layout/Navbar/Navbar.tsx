@@ -1,6 +1,11 @@
 import { useAuthenticatedWallet } from '@/hooks';
 import { Wallet } from '@/internal';
-import { Box, Divider, Navbar, useMantineTheme } from '@mantine/core';
+import {
+  Box,
+  Divider,
+  Navbar as MantineNavbar,
+  useMantineTheme,
+} from '@mantine/core';
 
 export interface WalletOverviewProps {
   wallet: Wallet;
@@ -23,20 +28,20 @@ function WalletOverview({ wallet }: WalletOverviewProps) {
   );
 }
 
-export function AppNavbar() {
+export function Navbar() {
   const { wallet } = useAuthenticatedWallet();
 
   return (
-    <Navbar width={{ base: 300 }} p="xs">
-      <Navbar.Section mt="sm">
+    <MantineNavbar width={{ base: 300 }} p="xs">
+      <MantineNavbar.Section mt="sm">
         <WalletOverview wallet={wallet!} />
-      </Navbar.Section>
-      <Navbar.Section grow mt="xs">
+      </MantineNavbar.Section>
+      <MantineNavbar.Section grow mt="xs">
         <p>test</p>
-      </Navbar.Section>
-      <Navbar.Section>
+      </MantineNavbar.Section>
+      <MantineNavbar.Section>
         <p>test2</p>
-      </Navbar.Section>
-    </Navbar>
+      </MantineNavbar.Section>
+    </MantineNavbar>
   );
 }

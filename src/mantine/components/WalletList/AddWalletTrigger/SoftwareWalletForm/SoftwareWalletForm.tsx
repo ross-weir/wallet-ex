@@ -34,14 +34,17 @@ export function SoftwareWalletForm({
   });
 
   useEffect(() => {
+    // if restoring user will input the mnemonic
+    // if creating we generate for them and set the field value
     if (action === 'restore') {
       return;
     }
 
     setIsLoading(true);
-    // set loading
-    // generate mnemonic
-    // set mnemonic field
+
+    const mnemonic = '';
+    form.setFieldValue('mnemonic', mnemonic);
+
     setIsLoading(false);
   }, []);
 
