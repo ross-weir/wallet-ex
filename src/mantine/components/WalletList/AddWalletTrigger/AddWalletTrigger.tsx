@@ -28,6 +28,7 @@ export function AddWalletTrigger({ onAddWallet }: AddWalletTriggerProps) {
           onCancel={() => modals.closeModal(id)}
         />
       ),
+      size: 'xl',
     });
   };
 

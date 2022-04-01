@@ -17,9 +17,11 @@ export const walletFormSchema = Yup.object({
   passwordConfirm: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required(),
-  mnemonic: Yup.string().test('Failed', (v) => {
-    return true;
-  }),
+  mnemonic: Yup.string().test(
+    'mnemonic',
+    'Recovery phrase must be 12, 15 or 24 characters long',
+    (v) => [12, 15, 24].includes(v?.split(' ').length ?? 0),
+  ),
   mnemonicPass: Yup.string(),
   mnemonicPassConfirm: Yup.string().when('mnemonicPass', (mnemonicPass) =>
     !!mnemonicPass

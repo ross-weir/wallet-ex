@@ -1,12 +1,14 @@
 import { PasswordInput, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import { UseFormReturnType } from '@mantine/form/lib/use-form';
+import { generateMnemonic } from 'bip39';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { capitalize } from '@/internal';
 import { StackedForm } from '@/mantine/components/Form';
 
+import { MnemonicInput } from './MnemonicInput/MnemonicInput';
 import {
   AddWalletAction,
   SoftwareWalletSchema,
@@ -22,6 +24,10 @@ export interface SoftwareWalletFormProps {
   onCancel: () => void;
   action: AddWalletAction;
 }
+
+// 15 words
+// TODO: make this configurable
+const MNEMONIC_ENTROPHY = 160;
 
 export function SoftwareWalletForm({
   onSubmit,
@@ -43,12 +49,25 @@ export function SoftwareWalletForm({
     }
 
     setLoading(true);
-
-    const mnemonic = '';
-    form.setFieldValue('mnemonic', mnemonic);
-
+    form.setFieldValue('mnemonic', generateMnemonic(MNEMONIC_ENTROPHY));
     setLoading(false);
   }, []);
+
+  const updateMnemonic = (word: string) => {
+    const { mnemonic } = form.values;
+    const newValue = !!mnemonic ? `${mnemonic} ${word}` : word;
+
+    form.setFieldValue('mnemonic', newValue);
+  };
+
+  const removeMnemonic = (wordIndex: number) => {
+    const newValue = form.values.mnemonic
+      .split(' ')
+      .filter((_, i) => i !== wordIndex)
+      .join(' ');
+
+    form.setFieldValue('mnemonic', newValue);
+  };
 
   const handleSubmit = () => {
     setLoading(true);
@@ -80,7 +99,15 @@ export function SoftwareWalletForm({
         placeholder={t('common:passwordConfirm')}
         {...form.getInputProps('passwordConfirm')}
       />
-      {/* mnemonc field, populates mnemonics field */}
+      <MnemonicInput
+        readonly={action === 'create'}
+        value={
+          !!form.values.mnemonic.length ? form.values.mnemonic.split(' ') : []
+        }
+        error={form.errors.mnemonic}
+        onMnemonicClick={removeMnemonic}
+        onMnemonicAdded={updateMnemonic}
+      />
       <PasswordInput
         label={t('addWallet:mnemonicPass')}
         placeholder={t('addWallet:mnemonicPass')}
