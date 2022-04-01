@@ -105,6 +105,8 @@ export function SoftwareWalletForm({
           !!form.values.mnemonic.length ? form.values.mnemonic.split(' ') : []
         }
         error={form.errors.mnemonic}
+        label={t('addWallet:recoveryPhrase')}
+        placeholder={t('addWallet:recoveryPhrase')}
         onMnemonicClick={removeMnemonic}
         onMnemonicAdded={updateMnemonic}
       />

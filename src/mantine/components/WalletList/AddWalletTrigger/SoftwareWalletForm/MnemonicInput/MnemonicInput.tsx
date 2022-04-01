@@ -9,6 +9,8 @@ interface MnemonicInputProps {
   readonly: boolean;
   value: string[];
   error?: ReactNode;
+  label?: string;
+  placeholder?: string;
   onMnemonicClick: (idx: number) => void;
   onMnemonicAdded?: (mnemonic: string) => void;
 }
@@ -17,6 +19,8 @@ export function MnemonicInput({
   readonly,
   value,
   error,
+  label,
+  placeholder,
   onMnemonicClick,
   onMnemonicAdded,
 }: MnemonicInputProps) {
@@ -27,7 +31,7 @@ export function MnemonicInput({
       <InputWrapper
         id="mnemonic"
         required
-        label="Recovery phrase"
+        label={label}
         description="This is your wallet recovery phrase"
         error={error}
       >
@@ -51,6 +55,7 @@ export function MnemonicInput({
         </Paper>
         {!readonly && onMnemonicAdded && (
           <WordInput
+            placeholder={placeholder}
             invalid={!!error}
             pt="md"
             onWord={(word) => onMnemonicAdded(word)}

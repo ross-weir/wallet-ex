@@ -6,6 +6,7 @@
   "name": "name",
   "password": "password",
   "passwordConfirm": "Confirm password",
+  "passwordMismatch": "Passwords must match",
   "create": "create",
   "restore": "restore",
   "connect": "connect",
