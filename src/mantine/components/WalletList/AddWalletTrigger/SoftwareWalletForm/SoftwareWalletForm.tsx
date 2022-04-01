@@ -110,16 +110,6 @@ export function SoftwareWalletForm({
         onMnemonicClick={removeMnemonic}
         onMnemonicAdded={updateMnemonic}
       />
-      <PasswordInput
-        label={t('addWallet:mnemonicPass')}
-        placeholder={t('addWallet:mnemonicPass')}
-        {...form.getInputProps('mnemonicPass')}
-      />
-      <PasswordInput
-        label={t('addWallet:mnemonicPassConfirm')}
-        placeholder={t('addWallet:mnemonicPassConfirm')}
-        {...form.getInputProps('mnemonicPassConfirm')}
-      />
     </StackedForm>
   );
 }

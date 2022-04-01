@@ -9,7 +9,7 @@ interface RemoveButtonProps {
 export function RemoveButton({ size = 10, onClick }: RemoveButtonProps) {
   return (
     <ActionIcon
-      // leftSection adds margin that can't be overriden
+      // leftSection prop of parent adds margin that can't be overriden
       sx={{ marginRight: '-5px' }}
       color="blue"
       variant="transparent"

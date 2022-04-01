@@ -18,7 +18,7 @@ export function StackedForm({
   stackProps,
 }: PropsWithChildren<StackedFormProps>) {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} autoComplete="off" autoSave="off">
       <Stack {...stackProps}>
         <LoadingOverlay visible={loading} />
         {children}

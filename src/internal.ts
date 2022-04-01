@@ -26,3 +26,5 @@ export * from '@/blockchains/mappings';
 export * from '@/hooks/useAuthenticatedWallet';
 
 export * from '@/utils/fmt';
+
+export * from '@/i18n';

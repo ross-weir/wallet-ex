@@ -66,12 +66,12 @@ export function WalletList() {
           <Title order={3}>{t('walletsList:walletsListTitle')}</Title>
           <AddWalletTrigger
             onAddWallet={async (form, setLoading) => {
-              const { name, password, mnemonic, mnemonicPass } = form.values;
+              const { name, password, mnemonic } = form.values;
               const { wallet, seed } = await walletService.create({
                 name,
                 password,
                 mnemonic,
-                mnemonicPass,
+                mnemonicPass: '',
               });
 
               setAuthenticatedWallet({ wallet, seed });
