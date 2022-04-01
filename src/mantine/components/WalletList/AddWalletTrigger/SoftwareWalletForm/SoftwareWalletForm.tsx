@@ -53,9 +53,12 @@ export function SoftwareWalletForm({
     setLoading(false);
   }, []);
 
-  const updateMnemonic = (word: string) => {
+  /**
+   * @param value a single word or set of words separated by a space.
+   */
+  const updateMnemonic = (value: string) => {
     const { mnemonic } = form.values;
-    const newValue = !!mnemonic ? `${mnemonic} ${word}` : word;
+    const newValue = !!mnemonic ? `${mnemonic} ${value}` : value;
 
     form.setFieldValue('mnemonic', newValue);
   };

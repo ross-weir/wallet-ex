@@ -1,12 +1,12 @@
 import { Input, InputProps } from '@mantine/core';
-import { ChangeEvent, KeyboardEvent,useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState, ClipboardEvent } from 'react';
 
 interface WordInputProps {
-  onWord: (word: string) => void;
+  onValue: (value: string) => void;
 }
 
 export function WordInput({
-  onWord,
+  onValue,
   ...rest
 }: WordInputProps & InputProps<'input'>) {
   const [input, setInput] = useState('');
@@ -27,14 +27,20 @@ export function WordInput({
     }
 
     setInput('');
-    onWord(value);
+    onValue(value);
   };
 
   const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      onWord(input);
+      onValue(input);
       setInput('');
     }
+  };
+
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setInput('');
+    onValue(e.clipboardData.getData('Text').trim());
   };
 
   return (
@@ -42,6 +48,7 @@ export function WordInput({
       value={input}
       onChange={handleInput}
       onKeyUp={handleKeyUp}
+      onPaste={handlePaste}
       {...rest}
     />
   );

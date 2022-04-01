@@ -12,7 +12,7 @@ interface MnemonicInputProps {
   label?: string;
   placeholder?: string;
   onMnemonicClick: (idx: number) => void;
-  onMnemonicAdded?: (mnemonic: string) => void;
+  onMnemonicAdded?: (value: string) => void;
 }
 
 export function MnemonicInput({
@@ -58,7 +58,7 @@ export function MnemonicInput({
             placeholder={placeholder}
             invalid={!!error}
             pt="md"
-            onWord={(word) => onMnemonicAdded(word)}
+            onValue={(value) => onMnemonicAdded(value)}
           />
         )}
       </InputWrapper>
