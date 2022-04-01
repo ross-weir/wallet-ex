@@ -1,4 +1,4 @@
-import { Badge } from '@mantine/core';
+import { Badge, MantineStyleSystemProps } from '@mantine/core';
 
 import { RemoveButton } from '../RemoveButton/RemoveButton';
 
@@ -12,12 +12,13 @@ export function MnemonicBadge({
   readonly,
   value,
   onClick,
-}: MnemonicBadgeProps) {
+  ...rest
+}: MnemonicBadgeProps & MantineStyleSystemProps) {
   return (
     <Badge
-      pl={0}
       radius="sm"
       leftSection={!readonly && <RemoveButton onClick={onClick} />}
+      {...rest}
     >
       {value}
     </Badge>

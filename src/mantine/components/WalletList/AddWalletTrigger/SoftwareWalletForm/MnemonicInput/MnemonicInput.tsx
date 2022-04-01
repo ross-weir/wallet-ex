@@ -40,6 +40,7 @@ export function MnemonicInput({
           <Group>
             {value.map((mnemonic, i) => (
               <MnemonicBadge
+                pl={!readonly ? 0 : undefined}
                 key={`${mnemonic}-${i}`}
                 value={`${i + 1}. ${mnemonic}`}
                 readonly={readonly}
