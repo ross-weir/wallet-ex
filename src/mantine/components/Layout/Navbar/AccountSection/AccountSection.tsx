@@ -2,10 +2,11 @@ import { Account } from '@/internal';
 import { useModals } from '@mantine/modals';
 import { AccountsHeader } from './AccountsHeader/AccountsHeader';
 import { CreateAccountForm } from './CreateAccountForm/CreateAccountForm';
+import { CreateAccountProcessedSchema } from './CreateAccountForm/schema';
 
-interface AccountSectionProps {
+export interface AccountSectionProps {
   accounts: Account[];
-  onAccountCreate: (form: any) => void;
+  onAccountCreate: (form: CreateAccountProcessedSchema) => Promise<void>;
 }
 
 export function AccountSection({
@@ -19,11 +20,14 @@ export function AccountSection({
       title: 'Create account',
       children: (
         <CreateAccountForm
-          onCancel={() => modals.closeModal(id)}
-          onSubmit={async (form: any) => {
+          onCancel={() => modals.closeModal(id, true)}
+          onSubmit={async (form, setLoading) => {
             try {
-              onAccountCreate(form);
-            } catch (e) {}
+              await onAccountCreate(form);
+              modals.closeModal(id);
+            } finally {
+              setLoading(false);
+            }
           }}
         />
       ),
@@ -33,6 +37,11 @@ export function AccountSection({
   return (
     <>
       <AccountsHeader iconProps={{ onClick: openCreateAccountModal }} />
+      <div>
+        {accounts.map((a) => (
+          <p>{a.name}</p>
+        ))}
+      </div>
     </>
   );
 }

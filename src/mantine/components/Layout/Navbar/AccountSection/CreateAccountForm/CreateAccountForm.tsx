@@ -3,29 +3,40 @@ import {
   getIconForBlockchain,
   getNetworksForBlockchain,
   getSupportedBlockchains,
+  SupportedBlockchain,
 } from '@/internal';
 import { SelectItemImage } from '@@/components/SelectItemImage/SelectItemImage';
 import { StackedForm } from '@@/components/Form';
 import { Avatar, Select, SelectItem, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { ReactElement, useState } from 'react';
-import { CreateAccountSchema } from './schema';
+import { useForm, yupResolver } from '@mantine/form';
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+import {
+  CreateAccountFormSchema,
+  CreateAccountProcessedSchema,
+  createAccountSchema,
+} from './schema';
+import { useTranslation } from 'react-i18next';
 
-interface CreateAccountFormProps {
+export interface CreateAccountFormProps {
   onCancel: () => void;
-  onSubmit: (form: CreateAccountSchema) => void;
+  onSubmit: (
+    form: CreateAccountProcessedSchema,
+    setLoading: Dispatch<SetStateAction<boolean>>,
+  ) => void;
 }
 
 export function CreateAccountForm({
   onCancel,
   onSubmit,
 }: CreateAccountFormProps) {
+  const { t } = useTranslation('common');
   const [loading, setLoading] = useState(false);
-  const form = useForm<CreateAccountSchema>({
+  const form = useForm<CreateAccountFormSchema>({
     initialValues: {
       accountName: '',
       blockchain: '',
     },
+    schema: yupResolver(createAccountSchema),
   });
 
   const blockchainOpts = (): SelectItem[] => {
@@ -63,10 +74,22 @@ export function CreateAccountForm({
     return <Avatar size="xs" src={image} />;
   };
 
-  const handleSubmit = (values: CreateAccountSchema) => {
-    const [blockchain, network] = values.accountName.split('.');
+  const handleSubmit = ({
+    blockchain,
+    accountName,
+  }: CreateAccountFormSchema) => {
+    setLoading(true);
 
-    // onSubmit({ blockchain, network, name });
+    const [blockchainName, network] = blockchain.split('.');
+
+    onSubmit(
+      {
+        blockchainName: blockchainName as SupportedBlockchain,
+        network,
+        name: accountName,
+      },
+      setLoading,
+    );
   };
 
   return (
@@ -78,14 +101,14 @@ export function CreateAccountForm({
       <TextInput
         data-autofocus
         required
-        label="Name"
-        placeholder="Name"
+        label={capitalize(t('name'))}
+        placeholder={capitalize(t('name'))}
         {...form.getInputProps('accountName')}
       />
       <Select
         required
-        label="Blockchain"
-        placeholder="Blockchain"
+        label={capitalize(t('blockchain'))}
+        placeholder={capitalize(t('blockchain'))}
         itemComponent={SelectItemImage}
         data={blockchainOpts()}
         icon={getSelectIcon(form.values.blockchain)}

@@ -4,7 +4,7 @@ import { useAuthenticatedWallet, useEntities } from '@/hooks';
 import { Account, AccountService, Wallet } from '@/internal';
 import Container from 'typedi';
 import { useEffect, useState } from 'react';
-import { AccountSection } from './AccountSection/AccountSection';
+import { AccountSection, CreateAccountProcessedSchema } from './AccountSection';
 
 export interface WalletOverviewProps {
   wallet: Wallet;
@@ -36,11 +36,9 @@ export function Navbar() {
 
   useEffect(() => {}, [accounts]);
 
-  const handleAccountCreate = async ({
-    name,
-    blockchainName,
-    network,
-  }: any) => {
+  const onAccountCreate = async (form: CreateAccountProcessedSchema) => {
+    const { blockchainName, network, name } = form;
+
     const deriveIdx = accountService.getNextDeriveIndex(
       accounts,
       blockchainName,
@@ -68,10 +66,10 @@ export function Navbar() {
         <WalletOverview wallet={wallet!} />
       </MantineNavbar.Section>
       <MantineNavbar.Section grow component={ScrollArea} mt="xs">
-        <AccountSection accounts={accounts} />
+        <AccountSection accounts={accounts} onAccountCreate={onAccountCreate} />
       </MantineNavbar.Section>
       <MantineNavbar.Section>
-        <p>test2</p>
+        <p>infrastructure</p>
       </MantineNavbar.Section>
     </MantineNavbar>
   );

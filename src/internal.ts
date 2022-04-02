@@ -13,6 +13,8 @@ export * from '@/entities/address/address.service';
 export * from '@/entities/account/account.service';
 export * from '@/entities/wallet/wallet.service';
 
+export * from '@/entities/account/dto';
+
 export * from '@/storage';
 export * from '@/types';
 

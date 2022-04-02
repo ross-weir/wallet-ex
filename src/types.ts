@@ -15,3 +15,5 @@ export interface WalletContext {
   wallet: Wallet;
   seed: Uint8Array;
 }
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
