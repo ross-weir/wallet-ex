@@ -18,6 +18,8 @@ export function Routes() {
           <Route index element={<Navigate to="/wallets" />} />
 
           <Route path="wallets" element={<WalletList />} />
+
+          <Route path="*" element={<p>How did you get hur?</p>} />
         </Route>
         {/* <Route path="/" element={<Root />}>
           <Route index element={<Navigate to="/wallets" />} />
@@ -25,16 +27,10 @@ export function Routes() {
           <Route path="modeSelect" element={<ModeSelection />} />
           <Route path="firstUse" element={<FirstUse />} />
 
-          <Route path="wallets" element={<WalletsList />} />
-          <Route path="wallets/add" element={<AddWallet />}>
-            <Route index element={<InitWalletView />} />
-            <Route path=":action" element={<WalletActionForm />} />
-          </Route>
           <Route path="wallets/:walletId" element={<WalletView />} />
 
           <Route path="test" element={<Test />} />
 
-          <Route path="*" element={<p>How did you get hur?</p>} />
         </Route> */}
       </ReactRoutes>
     </BrowserRouter>

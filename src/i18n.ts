@@ -18,6 +18,7 @@ export const initCfg = {
     'appBarTop',
     'form',
     'addWallet',
+    'accountSection',
   ],
   defaultNS: 'common',
   fallbackLng: 'en',

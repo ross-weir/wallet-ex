@@ -6,12 +6,12 @@ import { FormButtonGroup } from '../ButtonGroup/ButtonGroup';
 interface StackedFormProps {
   onSubmit: (form: FormEvent<HTMLElement>) => void;
   onCancel: () => void;
-  loading: boolean;
+  loading?: boolean;
   stackProps?: StackProps;
 }
 
 export function StackedForm({
-  loading,
+  loading = false,
   onSubmit,
   onCancel,
   children,
