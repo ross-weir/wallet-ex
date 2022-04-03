@@ -7,6 +7,7 @@ import {
 
 import { WalletList } from '@/mantine/components/WalletList/WalletList';
 
+import { AccountPage } from './mantine/components/AccountPage';
 import { Layout } from './mantine/components/Layout';
 import { Test } from './pages/Test';
 
@@ -18,6 +19,14 @@ export function Routes() {
           <Route index element={<Navigate to="/wallets" />} />
 
           <Route path="wallets" element={<WalletList />} />
+
+          {/* Wallet overview page */}
+          <Route path="wallets/:walletId" element={<p>wallet overview</p>} />
+
+          <Route
+            path="wallets/:walletId/accounts/:accountId"
+            element={<AccountPage />}
+          />
 
           <Route path="*" element={<p>How did you get hur?</p>} />
         </Route>

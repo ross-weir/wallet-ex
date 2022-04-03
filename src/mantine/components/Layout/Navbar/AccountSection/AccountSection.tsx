@@ -1,7 +1,8 @@
 import { Box } from '@mantine/core';
 import { useModals } from '@mantine/modals';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { useEntities } from '@/hooks';
+import { useAccounts } from '@/hooks';
 import { Account } from '@/internal';
 
 import { AccountDetail } from './AccountDetail/AccountDetail';
@@ -18,8 +19,10 @@ export function AccountSection({
   accounts,
   onAccountCreate,
 }: AccountSectionProps) {
+  const navigate = useNavigate();
+  const { walletId } = useParams();
   const modals = useModals();
-  const { setSelectedAccount, selectedAccount } = useEntities();
+  const { setSelectedAccount, selectedAccount } = useAccounts();
 
   const openCreateAccountModal = () => {
     const id = modals.openModal({
@@ -40,16 +43,22 @@ export function AccountSection({
     });
   };
 
+  const onAccountClicked = (account: Account) => {
+    setSelectedAccount(account);
+
+    navigate(`wallets/${walletId}/accounts/${account.id}`);
+  };
+
   return (
     <>
       <AccountsHeader iconProps={{ onClick: openCreateAccountModal }} mb="sm" />
       <Box>
-        {accounts.map((a) => (
+        {accounts.map((account) => (
           <AccountDetail
-            account={a}
-            selected={selectedAccount === a}
-            key={a.id}
-            onClick={() => setSelectedAccount(a)}
+            account={account}
+            selected={selectedAccount === account}
+            key={account.id}
+            onClick={() => onAccountClicked(account)}
           />
         ))}
       </Box>

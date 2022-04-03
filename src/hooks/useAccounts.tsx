@@ -5,22 +5,22 @@ import { Account, AccountService } from '@/internal';
 
 import { useAuthenticatedWallet } from './useAuthenticatedWallet';
 
-interface IEntitiesContext {
+interface IAccountsContext {
   accounts: Account[];
   setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
   selectedAccount: Account | undefined;
   setSelectedAccount: React.Dispatch<React.SetStateAction<Account | undefined>>;
 }
 
-const EntitiesContext = React.createContext<IEntitiesContext | undefined>(
+const AccountsContext = React.createContext<IAccountsContext | undefined>(
   undefined,
 );
 
-interface EntitiesProviderProps {
+interface AccountsProviderProps {
   children: React.ReactNode;
 }
 
-function EntitiesProvider({ children }: EntitiesProviderProps) {
+function AccountsProvider({ children }: AccountsProviderProps) {
   const accountService = Container.get(AccountService);
   const [accounts, setAccounts] = React.useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = React.useState<
@@ -45,25 +45,25 @@ function EntitiesProvider({ children }: EntitiesProviderProps) {
         setSelectedAccount(accounts[0]);
       }
     });
-  }, [wallet, accountService]);
+  }, [wallet, accountService, accounts.length]);
 
   return (
-    <EntitiesContext.Provider
+    <AccountsContext.Provider
       value={{ accounts, setAccounts, selectedAccount, setSelectedAccount }}
     >
       {children}
-    </EntitiesContext.Provider>
+    </AccountsContext.Provider>
   );
 }
 
-function useEntities() {
-  const ctx = React.useContext(EntitiesContext);
+function useAccounts() {
+  const ctx = React.useContext(AccountsContext);
 
   if (!ctx) {
-    throw new Error('useEntities must be within EntitiesProvider');
+    throw new Error('useAccounts must be within AccountsProvider');
   }
 
   return ctx;
 }
 
-export { EntitiesProvider, useEntities };
+export { AccountsProvider, useAccounts };

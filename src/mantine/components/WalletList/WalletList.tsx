@@ -25,7 +25,7 @@ export function WalletList() {
       .list()
       .then(setWallets)
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [walletService]);
 
   const openLoginModal = (wallet: Wallet) => {
     const id = modals.openModal({
@@ -87,6 +87,7 @@ export function WalletList() {
         <Stack align="center" justify="flex-start" spacing="xl">
           {wallets.map((wallet) => (
             <WalletDetail
+              key={wallet!.id}
               wallet={wallet!}
               onClick={() => openLoginModal(wallet)}
             />

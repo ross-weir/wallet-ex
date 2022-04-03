@@ -20,7 +20,7 @@ import CreateAccountModal, {
 } from '@/components/CreateAccountModal';
 import SensitiveComponent from '@/components/SensitiveComponent';
 import WalletViewReceiveTab from '@/components/WalletViewReceiveTab';
-import { useAuthenticatedWallet, useEntities } from '@/hooks';
+import { useAccounts,useAuthenticatedWallet } from '@/hooks';
 import { Account, AccountService } from '@/internal';
 import { capitalize, toBase16 } from '@/utils/fmt';
 
@@ -29,7 +29,7 @@ function WalletView() {
   const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
   const accountService = IocContainer.get(AccountService);
   const { wallet, seed } = useAuthenticatedWallet();
-  const { accounts, setAccounts } = useEntities();
+  const { accounts, setAccounts } = useAccounts();
 
   useEffect(() => {
     if (accounts.length && !selectedAccount) {

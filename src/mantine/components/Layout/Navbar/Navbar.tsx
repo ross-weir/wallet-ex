@@ -1,8 +1,7 @@
 import { Box, Navbar as MantineNavbar } from '@mantine/core';
-import { useEffect } from 'react';
 import Container from 'typedi';
 
-import { useAuthenticatedWallet, useEntities } from '@/hooks';
+import { useAccounts, useAuthenticatedWallet } from '@/hooks';
 import { AccountService, Wallet } from '@/internal';
 
 import { AccountSection, CreateAccountProcessedSchema } from './AccountSection';
@@ -30,10 +29,8 @@ function WalletOverview({ wallet }: WalletOverviewProps) {
 
 export function Navbar() {
   const { wallet, seed } = useAuthenticatedWallet();
-  const { accounts, setAccounts, setSelectedAccount } = useEntities();
+  const { accounts, setAccounts, setSelectedAccount } = useAccounts();
   const accountService = Container.get(AccountService);
-
-  useEffect(() => {}, [accounts]);
 
   const onAccountCreate = async (form: CreateAccountProcessedSchema) => {
     const { blockchainName, network, name } = form;

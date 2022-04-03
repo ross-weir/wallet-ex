@@ -51,7 +51,7 @@ export function SoftwareWalletForm({
     setLoading(true);
     form.setFieldValue('mnemonic', generateMnemonic(MNEMONIC_ENTROPHY));
     setLoading(false);
-  }, []);
+  }, [action, form]);
 
   /**
    * @param value a single word or set of words separated by a space.

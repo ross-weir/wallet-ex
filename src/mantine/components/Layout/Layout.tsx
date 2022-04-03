@@ -19,6 +19,7 @@ export function Layout() {
   return (
     <>
       <AppShell
+        padding={0}
         header={<Header onLogout={onLogout} loggedIn={!!wallet} />}
         navbar={!!wallet ? <Navbar /> : undefined}
       >

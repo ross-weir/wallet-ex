@@ -2,8 +2,8 @@ import { Outlet } from 'react-router-dom';
 
 import AppBarTop from '@/components/AppBarTop';
 import {
+  AccountsProvider,
   AuthenticatedWalletProvider,
-  EntitiesProvider,
   SensitiveModeProvider,
   WalletExProvider,
 } from '@/hooks';
@@ -13,12 +13,12 @@ export function Root() {
     <SensitiveModeProvider>
       <WalletExProvider>
         <AuthenticatedWalletProvider>
-          <EntitiesProvider>
+          <AccountsProvider>
             <div style={{ height: '100vh' }}>
               <AppBarTop />
               <Outlet />
             </div>
-          </EntitiesProvider>
+          </AccountsProvider>
         </AuthenticatedWalletProvider>
       </WalletExProvider>
     </SensitiveModeProvider>

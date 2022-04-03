@@ -2,12 +2,12 @@ import { Button, Menu } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { Plus, RotateClockwise, Wallet } from 'tabler-icons-react';
 
-interface AddWalletMenu {
+interface AddWalletMenuProps {
   onCreate: () => void;
   onRestore: () => void;
 }
 
-export function AddWalletMenu({ onCreate, onRestore }: AddWalletMenu) {
+export function AddWalletMenu({ onCreate, onRestore }: AddWalletMenuProps) {
   const { t } = useTranslation('addWallet');
 
   return (

@@ -8,8 +8,8 @@ import React, { Suspense, useEffect, useState } from 'react';
 
 import { initErgo } from './ergo';
 import {
+  AccountsProvider,
   AuthenticatedWalletProvider,
-  EntitiesProvider,
   WalletExProvider,
 } from './hooks';
 import { Routes } from './Routes';
@@ -43,11 +43,11 @@ function App() {
           >
             <WalletExProvider>
               <AuthenticatedWalletProvider>
-                <EntitiesProvider>
+                <AccountsProvider>
                   <ModalsProvider>
                     <Routes />
                   </ModalsProvider>
-                </EntitiesProvider>
+                </AccountsProvider>
               </AuthenticatedWalletProvider>
             </WalletExProvider>
           </MantineProvider>
