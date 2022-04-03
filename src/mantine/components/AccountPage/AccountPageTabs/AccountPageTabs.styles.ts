@@ -15,7 +15,6 @@ export default createStyles((theme) => ({
       paddingLeft: 0,
     },
   },
-
   tabsList: {
     maxWidth: 1082,
     marginLeft: 'auto',
@@ -24,7 +23,6 @@ export default createStyles((theme) => ({
       theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[2]
     }`,
   },
-
   tab: {
     fontSize: 16,
     fontWeight: 500,
@@ -37,9 +35,14 @@ export default createStyles((theme) => ({
         ? `${theme.colors.dark[8]} !important`
         : undefined,
   },
-
   tabContent: {
     paddingLeft: theme.spacing.xl * 2,
     paddingRight: theme.spacing.xl * 2,
+  },
+  main: {
+    width: '100%',
+    maxWidth: 820,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 }));

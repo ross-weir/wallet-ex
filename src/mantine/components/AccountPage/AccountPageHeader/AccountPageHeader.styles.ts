@@ -11,7 +11,6 @@ export default createStyles((theme) => ({
     paddingLeft: theme.spacing.xl * 2,
     paddingRight: theme.spacing.xl * 2,
   },
-
   header: {
     paddingTop: 50,
     maxWidth: 1082,

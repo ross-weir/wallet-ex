@@ -2,9 +2,11 @@ import { Tab, Tabs } from '@mantine/core';
 import { ArrowDown, ArrowUp } from 'tabler-icons-react';
 
 import useStyles from './AccountPageTabs.styles';
+import { ReceiveTab } from './ReceiveTab/ReceiveTab';
+import { TabContent } from './TabContent/TabContent';
 
 export function AccountPageTabs() {
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
 
   // get tabs based on blockchain: (staking vs tokens vs etc)
   // selected tab == 't' query param
@@ -17,10 +19,12 @@ export function AccountPageTabs() {
       }}
     >
       <Tab icon={<ArrowUp />} label="Send" className={classes.tab}>
-        Send
+        <TabContent>Send</TabContent>
       </Tab>
       <Tab icon={<ArrowDown />} label="Recv" className={classes.tab}>
-        Recv
+        <TabContent>
+          <ReceiveTab />
+        </TabContent>
       </Tab>
     </Tabs>
   );

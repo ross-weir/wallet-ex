@@ -1,1 +1,7 @@
-export function ReceiveTab() {}
+export function ReceiveTab() {
+  return (
+    <>
+      <p>Recv tab</p>
+    </>
+  );
+}
