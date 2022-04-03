@@ -1,9 +1,10 @@
-import { Box, Navbar as MantineNavbar, ScrollArea } from '@mantine/core';
+import { Box, Navbar as MantineNavbar } from '@mantine/core';
+import { useEffect } from 'react';
+import Container from 'typedi';
 
 import { useAuthenticatedWallet, useEntities } from '@/hooks';
-import { Account, AccountService, Wallet } from '@/internal';
-import Container from 'typedi';
-import { useEffect, useState } from 'react';
+import { AccountService, Wallet } from '@/internal';
+
 import { AccountSection, CreateAccountProcessedSchema } from './AccountSection';
 
 export interface WalletOverviewProps {
@@ -29,9 +30,7 @@ function WalletOverview({ wallet }: WalletOverviewProps) {
 
 export function Navbar() {
   const { wallet, seed } = useAuthenticatedWallet();
-  const { accounts, setAccounts } = useEntities();
-  const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
-
+  const { accounts, setAccounts, setSelectedAccount } = useEntities();
   const accountService = Container.get(AccountService);
 
   useEffect(() => {}, [accounts]);
@@ -65,7 +64,7 @@ export function Navbar() {
       <MantineNavbar.Section mt="sm">
         <WalletOverview wallet={wallet!} />
       </MantineNavbar.Section>
-      <MantineNavbar.Section grow component={ScrollArea} mt="xs">
+      <MantineNavbar.Section grow mt="xs">
         <AccountSection accounts={accounts} onAccountCreate={onAccountCreate} />
       </MantineNavbar.Section>
       <MantineNavbar.Section>

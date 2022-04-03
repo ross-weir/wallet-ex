@@ -1,5 +1,10 @@
-import { Account } from '@/internal';
+import { Box } from '@mantine/core';
 import { useModals } from '@mantine/modals';
+
+import { useEntities } from '@/hooks';
+import { Account } from '@/internal';
+
+import { AccountDetail } from './AccountDetail/AccountDetail';
 import { AccountsHeader } from './AccountsHeader/AccountsHeader';
 import { CreateAccountForm } from './CreateAccountForm/CreateAccountForm';
 import { CreateAccountProcessedSchema } from './CreateAccountForm/schema';
@@ -14,6 +19,7 @@ export function AccountSection({
   onAccountCreate,
 }: AccountSectionProps) {
   const modals = useModals();
+  const { setSelectedAccount, selectedAccount } = useEntities();
 
   const openCreateAccountModal = () => {
     const id = modals.openModal({
@@ -36,12 +42,17 @@ export function AccountSection({
 
   return (
     <>
-      <AccountsHeader iconProps={{ onClick: openCreateAccountModal }} />
-      <div>
+      <AccountsHeader iconProps={{ onClick: openCreateAccountModal }} mb="sm" />
+      <Box>
         {accounts.map((a) => (
-          <p>{a.name}</p>
+          <AccountDetail
+            account={a}
+            selected={selectedAccount === a}
+            key={a.id}
+            onClick={() => setSelectedAccount(a)}
+          />
         ))}
-      </div>
+      </Box>
     </>
   );
 }

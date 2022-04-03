@@ -1,3 +1,8 @@
+import { Avatar, Select, SelectItem, TextInput } from '@mantine/core';
+import { useForm, yupResolver } from '@mantine/form';
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import {
   capitalize,
   getIconForBlockchain,
@@ -5,17 +10,14 @@ import {
   getSupportedBlockchains,
   SupportedBlockchain,
 } from '@/internal';
-import { SelectItemImage } from '@@/components/SelectItemImage/SelectItemImage';
 import { StackedForm } from '@@/components/Form';
-import { Avatar, Select, SelectItem, TextInput } from '@mantine/core';
-import { useForm, yupResolver } from '@mantine/form';
-import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+import { SelectItemImage } from '@@/components/SelectItemImage/SelectItemImage';
+
 import {
   CreateAccountFormSchema,
   CreateAccountProcessedSchema,
   createAccountSchema,
 } from './schema';
-import { useTranslation } from 'react-i18next';
 
 export interface CreateAccountFormProps {
   onCancel: () => void;

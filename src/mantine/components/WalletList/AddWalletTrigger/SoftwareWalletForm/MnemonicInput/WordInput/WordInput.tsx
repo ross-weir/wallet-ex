@@ -1,5 +1,5 @@
 import { Input, InputProps } from '@mantine/core';
-import { ChangeEvent, KeyboardEvent, useState, ClipboardEvent } from 'react';
+import { ChangeEvent, ClipboardEvent,KeyboardEvent, useState } from 'react';
 
 interface WordInputProps {
   onValue: (value: string) => void;
