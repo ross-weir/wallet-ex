@@ -1,0 +1,1 @@
+export { QrIcon } from './QrIcon';

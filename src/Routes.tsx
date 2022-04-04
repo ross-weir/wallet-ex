@@ -5,7 +5,7 @@ import {
   Routes as ReactRoutes,
 } from 'react-router-dom';
 
-import { WalletList } from '@/mantine/components/WalletList/WalletList';
+import { WalletListPage } from '@/mantine/components/WalletListPage/WalletListPage';
 
 import { AccountPage } from './mantine/components/AccountPage';
 import { Layout } from './mantine/components/Layout';
@@ -18,7 +18,7 @@ export function Routes() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/wallets" />} />
 
-          <Route path="wallets" element={<WalletList />} />
+          <Route path="wallets" element={<WalletListPage />} />
 
           {/* Wallet overview page */}
           <Route path="wallets/:walletId" element={<p>wallet overview</p>} />

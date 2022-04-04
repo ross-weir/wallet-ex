@@ -11,7 +11,7 @@ import { AddWalletTrigger } from './AddWalletTrigger';
 import { LoginForm } from './LoginForm/LoginForm';
 import { WalletDetail } from './WalletDetail/WalletDetail';
 
-export function WalletList() {
+export function WalletListPage() {
   const { t } = useTranslation(['walletsList', 'common']);
   const { setAuthenticatedWallet } = useAuthenticatedWallet();
   const [isLoading, setIsLoading] = useState(true);

@@ -10,6 +10,7 @@ interface IAccountsContext {
   setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
   selectedAccount: Account | undefined;
   setSelectedAccount: React.Dispatch<React.SetStateAction<Account | undefined>>;
+  loadingAccounts: boolean;
 }
 
 const AccountsContext = React.createContext<IAccountsContext | undefined>(
@@ -26,6 +27,7 @@ function AccountsProvider({ children }: AccountsProviderProps) {
   const [selectedAccount, setSelectedAccount] = React.useState<
     Account | undefined
   >();
+  const [loadingAccounts, setLoadingAccounts] = React.useState(false);
   const { wallet } = useAuthenticatedWallet();
 
   React.useEffect(() => {
@@ -38,18 +40,28 @@ function AccountsProvider({ children }: AccountsProviderProps) {
       return;
     }
 
-    accountService.filterByWalletId(wallet.id).then((accounts) => {
-      setAccounts(accounts);
+    setLoadingAccounts(true);
+    accountService
+      .filterByWalletId(wallet.id)
+      .then((accounts) => {
+        setAccounts(accounts);
 
-      if (!!accounts.length) {
-        setSelectedAccount(accounts[0]);
-      }
-    });
+        if (!!accounts.length) {
+          setSelectedAccount(accounts[0]);
+        }
+      })
+      .finally(() => setLoadingAccounts(false));
   }, [wallet, accountService, accounts.length]);
 
   return (
     <AccountsContext.Provider
-      value={{ accounts, setAccounts, selectedAccount, setSelectedAccount }}
+      value={{
+        accounts,
+        setAccounts,
+        selectedAccount,
+        setSelectedAccount,
+        loadingAccounts,
+      }}
     >
       {children}
     </AccountsContext.Provider>
