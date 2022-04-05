@@ -19,6 +19,7 @@ export const initCfg = {
     'form',
     'addWallet',
     'accountSection',
+    'accountPage',
   ],
   defaultNS: 'common',
   fallbackLng: 'en',

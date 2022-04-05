@@ -1,4 +1,4 @@
-import { Title } from '@mantine/core';
+import { Text,Title } from '@mantine/core';
 
 import { Account } from '@/internal';
 
@@ -14,10 +14,14 @@ export function AccountPageHeader({ account }: AccountPageHeaderProps) {
   return (
     <div className={classes.wrapper}>
       <div className={cx(classes.header)}>
-        <Title className={classes.title}>{account.name}</Title>
+        <Title className={classes.title} order={1}>
+          {account.name}
+        </Title>
 
-        {/* account total balance */}
-        {/* fiat conversion subtitle with 'powered by' and icon? */}
+        <div className={classes.description}>
+          <Text>{'319.000000 ERG'}</Text>
+          <Text>= $19 USD - powered by coingecko</Text>
+        </div>
       </div>
     </div>
   );

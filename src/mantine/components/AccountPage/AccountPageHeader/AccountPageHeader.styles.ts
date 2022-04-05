@@ -19,9 +19,7 @@ export default createStyles((theme) => ({
     paddingBottom: theme.spacing.xl * 1.5,
   },
   title: {
-    fontSize: 44,
     marginBottom: theme.spacing.xs / 2,
-    fontWeight: 900,
     color: theme.colorScheme === 'dark' ? theme.white : theme.black,
   },
   description: {

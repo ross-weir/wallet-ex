@@ -1,40 +1,17 @@
-import { Button } from '@mantine/core';
-import {
-  MouseEvent,
-  MouseEventHandler,
-  PropsWithChildren,
-  useState,
-} from 'react';
+import { Button, ButtonProps } from '@mantine/core';
+import { PropsWithChildren } from 'react';
 
 import useStyles from './NewAddressButton.styles';
 
-interface NewAddressButton {
-  onClick: MouseEventHandler<HTMLButtonElement>;
-}
-
 export function NewAddressButton({
-  onClick,
   children,
-}: PropsWithChildren<NewAddressButton>) {
+  ...props
+}: PropsWithChildren<ButtonProps<'button'>>) {
   const { classes } = useStyles();
-  const [loading, setLoading] = useState(false);
-
-  const handleClick = async (e: MouseEvent<HTMLButtonElement>) => {
-    if (!onClick) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      onClick(e);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className={classes.container}>
-      <Button variant="light" loading={loading} onClick={handleClick}>
+      <Button {...props} variant="light">
         {children}
       </Button>
     </div>

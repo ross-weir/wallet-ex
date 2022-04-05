@@ -37,4 +37,18 @@ export class AddressService {
   public async filterByAccountId(accountId: number): Promise<Address[]> {
     return this.db.addresses.where('accountId').equals(accountId).toArray();
   }
+
+  /**
+   * Given the array of addresses find the latest address based on
+   * the derive index. The "latest" address is the one with the
+   * highest derive index.
+   *
+   * @param addresses find the latest address in the provided array
+   * @returns
+   */
+  public getLatestAddressByDeriviation(addresses: Address[]): Address {
+    return addresses.reduce((prev, current) =>
+      prev.deriveIdx > current.deriveIdx ? prev : current,
+    );
+  }
 }

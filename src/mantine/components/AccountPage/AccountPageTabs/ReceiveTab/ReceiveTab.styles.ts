@@ -12,7 +12,7 @@ export default createStyles((theme) => ({
     padding: theme.spacing.xl,
     borderRadius: theme.radius.md,
   },
-  addressBtnContainer: {
-    marginTop: theme.spacing.lg,
+  prevAddressContainer: {
+    marginTop: theme.spacing.xl,
   },
 }));
