@@ -3,7 +3,10 @@
   "or": "or",
   "finish": "finish",
   "continue": "continue",
+  "name": "name",
   "password": "password",
+  "passwordConfirm": "Confirm password",
+  "passwordMismatch": "Passwords must match",
   "create": "create",
   "restore": "restore",
   "connect": "connect",
@@ -19,6 +22,5 @@
   "hide": "hide",
   "blockchain": "blockchain",
   "incorrectPassword": "Incorrect password",
-  "walletPassword": "Wallet password",
-  "addWallet": "Add Wallet"
+  "walletPassword": "Wallet password"
 }

@@ -7,6 +7,7 @@ import {
   BlockchainSidecarRole,
   BlockchainState,
   BlockchainSyncStatus,
+  Coin,
   SidecarEntry,
 } from '@/internal';
 import { DependencyManager } from '@/services';
@@ -20,6 +21,7 @@ export interface BlockchainFactoryConfig {
 
 export interface BlockchainConfig extends BlockchainFactoryConfig {
   name: string;
+  coin: Coin;
   sidecars: SidecarEntry[];
   client: BlockchainClient;
   dependencyManager?: DependencyManager;

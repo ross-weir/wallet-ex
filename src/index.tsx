@@ -1,6 +1,4 @@
 import 'reflect-metadata';
-import 'semantic-ui-css/semantic.min.css';
-import './App.css';
 
 import ReactDOM from 'react-dom';
 

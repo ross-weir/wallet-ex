@@ -13,6 +13,8 @@ export * from '@/entities/address/address.service';
 export * from '@/entities/account/account.service';
 export * from '@/entities/wallet/wallet.service';
 
+export * from '@/entities/account/dto';
+
 export * from '@/storage';
 export * from '@/types';
 
@@ -22,3 +24,9 @@ export * from '@/blockchains/blockchainRegistry';
 export * from '@/blockchains/blockchainClient';
 export * from '@/blockchains/mappings';
 export * from '@/blockchains/mappings';
+
+export * from '@/hooks/useAuthenticatedWallet';
+
+export * from '@/utils/fmt';
+
+export * from '@/i18n';

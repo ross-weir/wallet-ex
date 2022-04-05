@@ -1,0 +1,11 @@
+{
+  "title": "Add wallet",
+  "mnemonic": "Mnemonic",
+  "recoveryPhrase": "Recovery phrase",
+  "mnemonicPass": "Mnemonic passphrase",
+  "mnemonicPassConfirm": "Confirm mnemonic passphrase",
+  "manageWallets": "Manage wallets",
+  "createWallet": "Create wallet",
+  "restoreWallet": "Restore wallet",
+  "wrongMnemonicLength": "Recovery phrase must be 12, 15 or 24 words long"
+}
