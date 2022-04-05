@@ -49,8 +49,8 @@ export function WalletListPage() {
 
                 setAuthenticatedWallet({ wallet, seed });
 
-                navigate(`/wallets/${wallet.id}`);
                 modals.closeModal(id);
+                navigate(`/wallets/${wallet.id}`);
               })
               .finally(() => setLoading(false));
           }}

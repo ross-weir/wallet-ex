@@ -140,6 +140,7 @@ export const ergoBlockchainFactory = async (
   const { baseDir, useLocalInfra, network } = cfg;
   const sidecars: SidecarEntry[] = [];
   let client: BlockchainClient = new ErgoExplorerClient(network);
+  const coin = { symbol: 'ERG', decimals: 9 };
 
   if (useLocalInfra) {
     const {
@@ -158,6 +159,7 @@ export const ergoBlockchainFactory = async (
 
   return new Blockchain({
     baseDir,
+    coin,
     network,
     sidecars,
     useLocalInfra,

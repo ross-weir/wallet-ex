@@ -2,6 +2,7 @@ import { LoadingOverlay, Table } from '@mantine/core';
 
 import { Address } from '@/internal';
 import { AddressText } from '@/mantine/components/AddressText';
+import { BalanceText } from '@/mantine/components/BalanceText';
 
 interface AddressTableProps {
   addresses: Address[];
@@ -28,7 +29,9 @@ export function AddressTable({
               <td>
                 <AddressText value={address.address} />
               </td>
-              <td>{address.balance}</td>
+              <td>
+                <BalanceText value={address.balance} />
+              </td>
             </tr>
           ))}
       </tbody>

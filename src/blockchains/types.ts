@@ -38,6 +38,11 @@ export enum BlockchainState {
   Error = 'error',
 }
 
+export interface Coin {
+  symbol: string;
+  decimals: number;
+}
+
 export interface Bip44 {
   coinType: number;
   symbol: string;
